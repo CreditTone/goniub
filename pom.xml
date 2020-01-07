@@ -175,7 +175,6 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
-				<version>2.4</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -202,16 +201,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<!-- fabude -->
 	<distributionManagement>
 		<repository>
-			<id>rdc-releases</id>
-			<url>https://repo.rdc.aliyun.com/repository/72812-release-GNQPvZ/</url>
+			<id>goniub</id>
+			<url>https://raw.github.com/CreditTone/goniub/master/</url>
 		</repository>
-		<snapshotRepository>
-			<id>rdc-snapshots</id>
-			<url>https://repo.rdc.aliyun.com/repository/72812-snapshot-JbBvHR/</url>
-		</snapshotRepository>
 	</distributionManagement>
 </project>
