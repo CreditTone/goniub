@@ -4,7 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.deep007</groupId>
 	<artifactId>goniub</artifactId>
-	<version>1.8.1-RELEASE</version>
+	<version>1.8.2</version>
+	<name>github</name>
+	<url>https://github.com/CreditTone/goniub</url>
 	<packaging>pom</packaging>
 
 	<licenses>
