@@ -99,9 +99,9 @@ public class LinuxKiller {
 	}
 
 	/**
-	 * 只返回第一个
-	 * @param processName
-	 * @return
+	 * 
+	 * @param processName processName
+	 * @return 只返回第一个
 	 */
 	public static LinuxProcess getLinuxProcess(String processName) {
 		Set<LinuxProcess> lines = executePsCommand(processName);

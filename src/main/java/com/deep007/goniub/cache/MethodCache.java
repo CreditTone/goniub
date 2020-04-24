@@ -13,14 +13,12 @@ public @interface MethodCache {
 	long expires() default DAY_TIME;
 	
 	/**
-	 * 缓存参数
-	 * @return
+	 * @return 缓存参数
 	 */
 	Class<?>[] cacheArgs() default {};
 	
 	/**
-	 * 生成缓存的索引的参数参与，会调用参数的toString方法
-	 * @return
+	 * @return 生成缓存的索引的参数参与，会调用参数的toString方法
 	 */
 	Class<?>[] generateIndexArgs() default {};
 }

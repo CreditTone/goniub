@@ -16,10 +16,8 @@ public class Strings {
 	}
 
 	/**
-	 * 中文字的个数
-	 * 
-	 * @param str
-	 * @return
+	 * @param str 字符串
+	 * @return 中文字的个数
 	 */
 	public static int chineseNumber(String str) {
 		int chineseNumber = 0;
@@ -63,12 +61,8 @@ public class Strings {
 	}
 
 	/**
-	 * unicode转中文
-	 * 
-	 * @param str
-	 * @return
-	 * @author yutao
-	 * @date 2017年1月24日上午10:33:25
+	 * @param str 字符串
+	 * @return unicode转中文
 	 */
 	public static String unicodeToString(String str) {
 
@@ -113,9 +107,9 @@ public class Strings {
 	/**
 	 * 两个大数相减，默认没有符号位，且都为正数
 	 *
-	 * @param a
-	 * @param b
-	 * @return
+	 * @param a a
+	 * @param b b
+	 * @return 相似度
 	 */
 	public static String bigDigitalSub(String a, String b) {
 		// 翻转字符串并转化成数组
@@ -174,9 +168,9 @@ public class Strings {
 	/**
 	 * 采用动态规划的方法解决
 	 *
-	 * @param source
-	 * @param target
-	 * @return
+	 * @param source source
+	 * @param target target
+	 * @return 字符串相似度
 	 */
 	public static int editDistance(String source, String target) {
 		char[] sources = source.toCharArray();
@@ -385,7 +379,7 @@ public class Strings {
 	}
 
 	/**
-	 * @param str
+	 * @param str str
 	 * @return starts ends of array
 	 */
 	public static String[] extractDesensitizationInfo(String str) {
@@ -453,8 +447,8 @@ public class Strings {
 	/**
 	 * 区县名字简易化
 	 *
-	 * @param village
-	 * @return
+	 * @param district addr text
+	 * @return simple name
 	 */
 	public static String district2SimpleText(String district) {
 		if (district.endsWith("市") || district.endsWith("区")) {
@@ -466,8 +460,8 @@ public class Strings {
 	/**
 	 * 乡镇名字简易化
 	 *
-	 * @param village
-	 * @return
+	 * @param village addr text
+	 * @return simple name
 	 */
 	public static String village2SimpleText(String village) {
 		if (village.endsWith("镇") || village.endsWith("乡") || village.endsWith("村") || village.endsWith("组")) {
@@ -483,8 +477,8 @@ public class Strings {
 	/**
 	 * 公司名字简易化
 	 *
-	 * @param companyName
-	 * @return
+	 * @param companyName name
+	 * @return simple name
 	 */
 	public static String companyName2SimpleText(String companyName) {
 		if (companyName.contains("有限公司")) {
@@ -499,8 +493,8 @@ public class Strings {
 	/**
 	 * 去除括号里面的
 	 *
-	 * @param companyName
-	 * @return
+	 * @param addressText addr text
+	 * @return no symbol name
 	 */
 	public static String removeParenthesis(String addressText) {
 		int startIndex = addressText.indexOf("(");

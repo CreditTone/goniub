@@ -1,4 +1,4 @@
-package com.deep077.goniub.selenium.mitm;
+package com.deep007.goniub.selenium.mitm;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -61,10 +61,10 @@ public class HookTracker {
 	
 	/**
 	 * 
-	 * @param contents
-	 * @param messageInfo
+	 * @param contents HttpMessageContents
+	 * @param messageInfo HttpMessageInfo
 	 * @param requestOrResponse 1 request ,2 response
-	 * @return
+	 * @return isHookTracker
 	 */
 	public boolean isHookTracker(HttpMessageContents contents, HttpMessageInfo messageInfo, int requestOrResponse) {
 		String originalUrl = messageInfo.getOriginalUrl();

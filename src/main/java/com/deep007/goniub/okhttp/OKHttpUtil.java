@@ -107,8 +107,7 @@ public class OKHttpUtil {
 	}
 	
 	/**
-	 * 先写屎代理，日后改....
-	 * @return
+	 * @return 先写屎代理，日后改....
 	 */
 	public static OkHttpClient createOkHttpClientWithRandomProxy() {
 		return createOkHttpClientWithRandomProxy(30, TimeUnit.SECONDS, 30, TimeUnit.SECONDS);

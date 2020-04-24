@@ -28,13 +28,8 @@ public final class RequestBuilder {
 	}
 
 	/**
-	 * 创建网页下载请求PageRequest
-	 * 
-	 * @param url
-	 *            这个请求对应的http或者https 地址
-	 * @param processorCls
-	 *            下载完成后处理这个网页Page的PageProcessor的class对象
-	 * @return PageRequest
+	 * @param url 这个请求对应的http或者https 地址
+	 * @return PageRequest 下载请求PageRequest
 	 */
 	public RequestBuilder setUrl(String url) {
 		this.url = url;

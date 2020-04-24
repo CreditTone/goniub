@@ -23,9 +23,10 @@ public class ReflectUtil {
 	
 	/**
 	 * 取得继承类的子泛型
+	 * @param clz clz
 	 * @param indexPath 路径
-	 * @return
-	 * @throws Exception
+	 * @return 泛型
+	 * @throws Exception 异常
 	 */
 	public static final Type getParameterizedType(Class<?> clz, int ... indexPath) throws Exception {
 		ParameterizedType parameterizedType = (ParameterizedType) clz.getGenericSuperclass();
@@ -44,9 +45,10 @@ public class ReflectUtil {
 	
 	/**
 	 * 取得泛型类的子泛型
+	 * @param type Type
 	 * @param indexPath 路径
-	 * @return
-	 * @throws Exception
+	 * @return 泛型
+	 * @throws Exception 异常
 	 */
 	public static final Type getParameterizedType(Type type, int ... indexPath) throws Exception {
 		Type[] parameterizedSubTypes = ((ParameterizedType) type).getActualTypeArguments();
@@ -61,11 +63,11 @@ public class ReflectUtil {
 
 	/**
 	 * 是否是某个类或接口的子类
-	 * @param clz
-	 * @param obj
-	 * @return
+	 * @param superClz 父类clz
+	 * @param obj 效应的对象
+	 * @return true和false
 	 */
-	public static final boolean isInstance(Class<?> superClz,Object obj) {
+	public static final boolean isInstance(Class<?> superClz, Object obj) {
 		if (superClz.isAssignableFrom(obj.getClass())) {
 			return true;
 		}
@@ -80,9 +82,9 @@ public class ReflectUtil {
 	
 	/**
 	 * 是否是某个类或接口的子类
-	 * @param clz
-	 * @param obj
-	 * @return
+	 * @param superClz 父类clz
+	 * @param dataClz 效应的对象
+	 * @return true和false
 	 */
 	public static final boolean isInstance(Class<?> superClz,Class<?> dataClz) {
 		if (superClz.isAssignableFrom(dataClz)) {
@@ -98,9 +100,9 @@ public class ReflectUtil {
 	
 	/**
 	 * 判断某个对象是否使用了某个注解
-	 * @param annotateClz
-	 * @param obj
-	 * @return
+	 * @param annotateClz annotateClz
+	 * @param obj 效应的对象
+	 * @return true和false
 	 */
 	public static final boolean isUsedAnnotate(Class<?> annotateClz, Object obj) {
 		return isUsedAnnotate(annotateClz, obj.getClass()) ;
@@ -108,9 +110,9 @@ public class ReflectUtil {
 	
 	/**
 	 * 判断某个Class是否使用了某个注解
-	 * @param annotateClz
-	 * @param obj
-	 * @return
+	 * @param annotateClz annotateClz
+	 * @param objClz objClz
+	 * @return true和false
 	 */
 	public static final boolean isUsedAnnotate(Class<?> annotateClz, Class<?> objClz) {
 		try {
@@ -124,8 +126,8 @@ public class ReflectUtil {
 	
 	/**
 	 * 扫描包名旗下的所有类、接口的Class
-	 * @param basePackage
-	 * @return
+	 * @param basePackage 包名
+	 * @return 子包下所有的类
 	 */
 	public static final Collection<Class<?>> scanClasses(String basePackage) {
 		Set<Class<?>> clzes = new HashSet<>();

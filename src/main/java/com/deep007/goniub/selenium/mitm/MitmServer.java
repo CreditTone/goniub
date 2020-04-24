@@ -1,4 +1,4 @@
-package com.deep077.goniub.selenium.mitm;
+package com.deep007.goniub.selenium.mitm;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -16,9 +16,9 @@ import java.util.regex.Pattern;
 
 import com.deep007.goniub.Init;
 import com.deep007.goniub.request.HttpsProxy;
+import com.deep007.goniub.selenium.mitm.cache.MemoryMitmCacheProvider;
+import com.deep007.goniub.selenium.mitm.cache.MitmCacheProvider;
 import com.deep007.goniub.util.BootUtil;
-import com.deep077.goniub.selenium.mitm.cache.MemoryMitmCacheProvider;
-import com.deep077.goniub.selenium.mitm.cache.MitmCacheProvider;
 
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.FullHttpResponse;
@@ -122,7 +122,7 @@ public class MitmServer implements RequestFilter, ResponseFilter {
 	
 	/**
 	 * 缓存url的正则表达式，比如"\\.js$"
-	 * @param regulars
+	 * @param regulars cache Url Regulars
 	 */
 	public void addCacheUrlRegulars(String...regulars) {
 		for (int i = 0; regulars != null && i < regulars.length; i++) {
@@ -279,10 +279,6 @@ public class MitmServer implements RequestFilter, ResponseFilter {
 		return results;
 	}
 
-	/**
-	 * 
-	 * @return
-	 */
 	private String extractCloudId(String ua) {
 		if (ua == null) {
 			return null;

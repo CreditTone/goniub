@@ -1,4 +1,4 @@
-package com.deep077.goniub.selenium.mitm.cache;
+package com.deep007.goniub.selenium.mitm.cache;
 
 
 import java.util.ArrayList;
@@ -60,7 +60,7 @@ public abstract class MitmCacheProvider implements HttpResponseSerializable {
 
 	/**
 	 * 设置缓存时间，单位秒
-	 * @param cacheTime
+	 * @param cacheTime cacheTime
 	 */
 	public void setCacheTime(int cacheTime) {
 		this.cacheTime = cacheTime;

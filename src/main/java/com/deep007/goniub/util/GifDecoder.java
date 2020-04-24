@@ -246,7 +246,7 @@ public class GifDecoder {
 
 	/**
 	 * Gets the image contents of frame n.
-	 *
+	 * @param n 帧数
 	 * @return BufferedImage representation of frame, or null if n is invalid.
 	 */
 	public BufferedImage getFrame(int n) {
@@ -259,7 +259,7 @@ public class GifDecoder {
 	
 	/**
 	 * Gets the image contents of frame n.
-	 *
+	 * @param n 帧数
 	 * @return BufferedImage representation of frame, or null if n is invalid.
 	 */
 	public byte[] getFrameAsBytes(int n) {
@@ -504,9 +504,6 @@ public class GifDecoder {
 
 	}
 
-	/**
-	 * Returns true if an error was encountered during reading/decoding
-	 */
 	protected boolean err() {
 		return status != STATUS_OK;
 	}
@@ -522,9 +519,6 @@ public class GifDecoder {
 		lct = null;
 	}
 
-	/**
-	 * Reads a single byte from the input stream.
-	 */
 	protected int read() {
 		int curByte = 0;
 		try {
@@ -774,9 +768,6 @@ public class GifDecoder {
 		} while ((blockSize > 0) && !err());
 	}
 
-	/**
-	 * Reads next 16-bit value, LSB first
-	 */
 	protected int readShort() {
 		// read 16-bit value, LSB first
 		return read() | (read() << 8);

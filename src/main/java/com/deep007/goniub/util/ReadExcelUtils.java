@@ -46,8 +46,8 @@ public class ReadExcelUtils {
 	/**
 	 * 读取Excel表格表头的内容
 	 * 
-	 * @param InputStream
-	 * @return String 表头内容的数组
+	 * @return String[] 表头内容的数组
+	 * @throws Exception Exception
 	 * @author zengwendong
 	 */
 	public String[] readExcelTitle() throws Exception {
@@ -69,9 +69,8 @@ public class ReadExcelUtils {
 
 	/**
 	 * 读取Excel数据内容
-	 * 
-	 * @param InputStream
 	 * @return Map 包含单元格数据内容的Map对象
+	 * @throws Exception Exception
 	 * @author zengwendong
 	 */
 	public Map<Integer, Map<Integer, Object>> readExcelContent() throws Exception {
@@ -104,8 +103,8 @@ public class ReadExcelUtils {
 	 * 
 	 * 根据Cell类型设置数据
 	 * 
-	 * @param cell
-	 * @return
+	 * @param cell cell
+	 * @return cell的value
 	 * @author zengwendong
 	 */
 	private Object getCellFormatValue(Cell cell) {

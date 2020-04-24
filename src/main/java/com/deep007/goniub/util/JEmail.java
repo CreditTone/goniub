@@ -55,16 +55,6 @@ public class JEmail {
 		
 	}
 
-	/**
-	 * 
-	 * @param fromMail 发件人的地址
-	 * @param user 
-	 * @param password
-	 * @param mailTitle
-	 * @param mailContent
-	 * @param toMails  收件人地址，可以是多个 
-	 * @throws Exception
-	 */
 	public void send() {
 		if (toMails == null || toMails.length() == 0) {
 			return;

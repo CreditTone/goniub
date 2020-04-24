@@ -9,8 +9,8 @@ public class BootUtil {
 
 	 /**
      * 测试本机端口是否被使用
-     * @param port
-     * @return
+     * @param port port
+     * @return true false
      */
     public static boolean isLocalPortUsing(int port){  
         boolean flag = true;  
@@ -23,9 +23,10 @@ public class BootUtil {
     }  
     /*** 
      * 测试主机Host的port端口是否被使用
-     * @param host 
-     * @param port 
-     * @throws UnknownHostException  
+     * @param host host 
+     * @param port port
+     * @throws UnknownHostException UnknownHostException
+     * @return boolen
      */ 
     public static boolean isPortUsing(String host,int port) throws UnknownHostException {  
         boolean flag = false;  
@@ -48,8 +49,7 @@ public class BootUtil {
     
     /**
      * 获取本地主机名
-     * @return
-     * @throws UnknownHostException
+     * @return localhost
      */
     public static String getLocalHostName() {
     	InetAddress addr;

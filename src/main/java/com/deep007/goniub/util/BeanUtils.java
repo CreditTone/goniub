@@ -31,9 +31,9 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	/**
 	 * 将source中不为空的字段，拷贝(覆盖)到target中
 	 * 
-	 * @param source
-	 * @param target
-	 * @throws BeansException
+	 * @param source 原对象
+	 * @param target 目标对象
+	 * @throws BeansException 异常
 	 */
 	public static void copyProperties(Object source, Object target) throws BeansException {
 		if (source == null) {
@@ -72,9 +72,9 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	/**
 	 * 将source中不为空的字段，覆盖到target
 	 * 
-	 * @param source
-	 * @param target
-	 * @throws BeansException
+	 * @param source 原对象
+	 * @param target 目标对象
+	 * @throws Exception 异常
 	 */
 	public static void copyPropertiesWithNotNull(Object source, Object target) throws Exception {
 		if (source == null) {
@@ -240,9 +240,9 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	
 	/**
 	 * Map到Obj
-	 * @param map
-	 * @param obj
-	 * @throws Exception
+	 * @param source sourceMap
+	 * @param obj 目标对象
+	 * @throws Exception 异常
 	 */
 	public static void copyMap2Properties(Map<String,Object> source, Object obj) throws Exception {
         // 获取目标类的属性信息
@@ -347,9 +347,8 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	
 	/**
 	 * Map到Map的合并
-	 * @param map
-	 * @param target
-	 * @throws Exception
+	 * @param source 数据源map
+	 * @param target 目标对象
 	 */
 	public static void copyProperties(Map<String,Object> source, Map<String,Object> target) {
         // 获取目标类的属性信息
@@ -395,9 +394,9 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	
 	/**
 	 * 移动map里面的属性到obj对象里面，原map被移动的属性将删除
-	 * @param map
-	 * @param obj
-	 * @throws Exception
+	 * @param map 数据源map
+	 * @param obj 目标对象
+	 * @throws Exception 异常
 	 */
 	public static void moveProperties(Map<String, Object> map, Object obj) throws Exception {
 		// 获取目标类的属性信息
@@ -470,9 +469,9 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 	/**
 	 * 将source中不为空的字段，target为Null的字段覆盖
 	 * 
-	 * @param source
-	 * @param target
-	 * @throws BeansException
+	 * @param source 数据源对象
+	 * @param target 目标对象
+	 * @throws BeansException 异常
 	 */
 	public static void copyPropertiesWithTargetPropertyNull(Object source, Object target,String ...exportFieldNames) {
 		if (source == null) {
@@ -516,11 +515,4 @@ public abstract class BeanUtils extends org.springframework.beans.BeanUtils {
 		}
 	}
 	
-	public static void main(String[] args) throws IllegalAccessException, InvocationTargetException {
-		Map<String,Object> dest = new HashMap();
-		Map<String,Object> src = new HashMap();
-		src.put("1", "2");
-		BeanUtils.copyProperties(dest ,src);
-		System.out.println(dest);
-	}
 }
