@@ -12,15 +12,20 @@ public class BootUtil {
      * @param port port
      * @return true false
      */
-    public static boolean isLocalPortUsing(int port){  
+    public static boolean telnet(String host, int port){  
         boolean flag = true;  
         try {
             //如果该端口还在使用则返回true,否则返回false,127.0.0.1代表本机
-            flag = isPortUsing("127.0.0.1", port);  
+            flag = isPortUsing(host, port);  
         } catch (Exception e) {  
         }  
         return flag;  
-    }  
+    } 
+    
+    public static boolean telnet(int port){  
+        return telnet("127.0.0.1", port);
+    }
+    
     /*** 
      * 测试主机Host的port端口是否被使用
      * @param host host 

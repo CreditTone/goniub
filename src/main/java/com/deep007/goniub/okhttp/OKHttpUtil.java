@@ -15,7 +15,6 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import com.deep007.goniub.Init;
 import com.deep007.goniub.request.HttpsProxy;
 
 import okhttp3.Authenticator;
@@ -78,12 +77,24 @@ public class OKHttpUtil {
 	}
 	
 	public static OkHttpClient createOkHttpClientWithRandomProxy(int connectTimeout, TimeUnit connectTimeoutUnit, int readTimeout, TimeUnit readTimeoutUnit) {
-		HttpsProxy httpsProxy = Init.getRandomProxy();
 		OkHttpClient.Builder builder = new OkHttpClient.Builder().connectTimeout(connectTimeout, connectTimeoutUnit)
 				.readTimeout(readTimeout, readTimeoutUnit).retryOnConnectionFailure(true)
-				.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxy.getServer(), httpsProxy.getPort())))
 				.cookieJar(new PersistenceCookieJar());
-		if (httpsProxy.getUsername() != null && httpsProxy.getPassword() != null) {
+		builder.sslSocketFactory(createSSLSocketFactory(), createX509TrustManager());
+		builder.hostnameVerifier(new HostnameVerifier() {
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				return true;
+			}
+		});
+		return builder.build();
+	}
+	
+	private static void setProxy(OkHttpClient.Builder builder, HttpsProxy httpsProxy) {
+		if (httpsProxy != null) {
+			builder.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxy.getServer(), httpsProxy.getPort())));
+		}
+		if (httpsProxy != null && httpsProxy.getUsername() != null && httpsProxy.getPassword() != null) {
 			builder.proxyAuthenticator(new Authenticator() {
 				@Override
 				public Request authenticate(Route route, Response response) throws IOException {
@@ -96,14 +107,6 @@ public class OKHttpUtil {
 				}
 			});
 		}
-		builder.sslSocketFactory(createSSLSocketFactory(), createX509TrustManager());
-		builder.hostnameVerifier(new HostnameVerifier() {
-			@Override
-			public boolean verify(String hostname, SSLSession session) {
-				return true;
-			}
-		});
-		return builder.build();
 	}
 	
 	/**
