@@ -6,8 +6,6 @@ import java.util.regex.Pattern;
 
 import org.apache.http.ParseException;
 import org.apache.http.util.EntityUtils;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 
 import com.deep007.goniub.request.PageRequest;
 import com.deep007.goniub.request.PageRequest.PageEncoding;
@@ -16,6 +14,8 @@ import com.deep007.goniub.request.PageRequest.PageEncoding;
  * 所有页面的抽象表示
  */
 public class Page extends HttpResponse {
+	
+	private static final Pattern TITLE_MATCHER = Pattern.compile("<title>([^<]+)</title>");
 	
 	public Page(){}
 	
@@ -42,13 +42,13 @@ public class Page extends HttpResponse {
 		return content;
 	}
 	
-	public Document getJsoupDocument() throws Exception {
-		return Jsoup.parse(content);
-	}
 
 	public void setContent(String content) {
 		if (content!= null && content.contains("<title")) {
-			title = Jsoup.parse(content).title();
+			Matcher matcher = TITLE_MATCHER.matcher(content);
+			if (matcher.find()) {
+				title = matcher.group(1);
+			}
 		}
 		this.content = content;
 	}
