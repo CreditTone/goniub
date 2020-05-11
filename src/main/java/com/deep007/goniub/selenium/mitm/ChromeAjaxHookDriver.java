@@ -12,13 +12,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 
-import com.alibaba.fastjson.JSON;
-import com.deep007.goniub.killer.LinuxJvmProcrssMonitor;
-import com.deep007.goniub.killer.LinuxKiller;
-import com.deep007.goniub.killer.LinuxProcess;
-import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.util.Boot;
-
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -28,60 +21,31 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 	
 	public static final Random random = new Random();
 	
-	private String cloudIdValue = null;
+	/**
+	 * 每个浏览器的唯一标示
+	 */
+	private String cloudId = null;
 	
-	private String chromeDriverProcessId;
-	private String chromeBrowserProcessId;
-	
-	public static final ChromeAjaxHookDriver newChromeInstance(boolean disableLoadImage,boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, MitmServer.getInstance().getLocalMitmProxy(), ChromeOptionsUtil.CHROME_USER_AGENT));
-	}
-	
-	public static final ChromeAjaxHookDriver newAndroidInstance(boolean disableLoadImage,boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, MitmServer.getInstance().getLocalMitmProxy(), ChromeOptionsUtil.ANDROID_USER_AGENT));
-	}
-	
-	public static final ChromeAjaxHookDriver newIOSInstance(boolean disableLoadImage,boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, MitmServer.getInstance().getLocalMitmProxy(), ChromeOptionsUtil.IOS_USER_AGENT));
-	}
-	
-	public static final ChromeAjaxHookDriver newNoHookInstance(boolean disableLoadImage,boolean headless,String userAgent) {
-		log.debug("你启动的是没有钩子功能的浏览器");
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, null, userAgent));
-	}
-	
-	public static final ChromeAjaxHookDriver newInstanceWithRandomProxy(boolean disableLoadImage,boolean headless,String userAgent) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, MitmServer.getInstance().getRandomMitmProxy(), userAgent));
-	}
-	
-	public static final ChromeAjaxHookDriver newInstanceWithGoogleProxy(boolean disableLoadImage,boolean headless,String userAgent) {
-		HttpsProxy googleProxy = MitmServer.getInstance().getGoogleMitmProxy();
-		log.debug("set googleProxy:"+JSON.toJSONString(googleProxy));
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, googleProxy, userAgent));
-	}
+	private MitmServer mitmServer;
 	
 	public ChromeAjaxHookDriver(ChromeOptions options) {
 		super(options);
-		cloudIdValue = (String) options.getCapability(ChromeOptionsUtil.USER_AGENTID);
+		cloudId = (String) options.getCapability(ChromeOptionsUtil.USER_AGENTID);
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
-		if (Boot.isUnixSystem()) {
-			LinuxProcess linuxProcess = LinuxKiller.getLinuxProcess(cloudIdValue);
-			if (linuxProcess == null) {
-				log.warn("获取不到进程id,cloudIdValue:" + cloudIdValue);
-				return;
-			}
-			chromeDriverProcessId = linuxProcess.getPpid();
-			chromeBrowserProcessId = linuxProcess.getPid();
-			LinuxJvmProcrssMonitor.getThisLinuxJvmProcrssMonitor().addChildPid(linuxProcess.getPpid());
-		}
 	}
 	
-	public void addAjaxHook(AjaxHook hook) {
-		if (hook != null) {
-			MitmServer.getInstance().addAjaxHook(cloudIdValue, hook);
+	public ChromeAjaxHookDriver withMitmServer(MitmServer mitmServer) {
+		this.mitmServer = mitmServer;
+		return this;
+	}
+	
+	public ChromeAjaxHookDriver addAjaxHook(AjaxHook hook) {
+		if (hook != null && mitmServer != null) {
+			mitmServer.addAjaxHook(cloudId, hook);
 		}
+		return this;
 	}
 	
 	public void hideElement(WebElement elm) {
@@ -148,20 +112,13 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 	public void quit() {
 		boolean success = false;
 		try {
-			MitmServer.getInstance().removeHooks(cloudIdValue);
+			//MitmServer.getInstance().removeHooks(cloudIdValue);
 			Thread.sleep(1000);
 			super.quit();
 			success = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			if (Boot.isUnixSystem()) {
-				LinuxJvmProcrssMonitor.getThisLinuxJvmProcrssMonitor().removeChildPid(chromeDriverProcessId);
-				LinuxJvmProcrssMonitor.getThisLinuxJvmProcrssMonitor().removeChildPid(chromeBrowserProcessId);
-				if (!success) {
-					LinuxKiller.kill(chromeBrowserProcessId, chromeDriverProcessId);
-				}
-			}
 		}
 	}
 	

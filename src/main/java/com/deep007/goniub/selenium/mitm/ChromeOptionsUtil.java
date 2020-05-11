@@ -11,6 +11,8 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
+import com.deep007.goniub.terminal.Linux;
+import com.deep007.goniub.util.Boot;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,14 +27,26 @@ public class ChromeOptionsUtil {
 
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
 
+	public static String CHROME_BINARY;
+	
+	static {
+		if (Boot.isLinuxSystem()) {
+			CHROME_BINARY = Linux.findAbsoluteVar("google-chrome");
+		}else {
+			//CHROME_BINARY = Windows.findAbsoluteVar("google-chrome");
+		}
+	}
+	
 	public static ChromeOptions createChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy proxy,
 			String userAgent) {
-		ChromeOptions options = new ChromeOptions();
-		boolean isLinux = System.getProperty("os.name").toLowerCase().indexOf("linux") >= 0;
-		if (isLinux) {
-			options.setBinary("/usr/bin/google-chrome");
+		if (CHROME_BINARY.equals("google-chrome")) {
+			throw new RuntimeException("请安装google-chrome.");
 		}
-		if (isLinux || headless) {
+		ChromeOptions options = new ChromeOptions();
+		if (Boot.isLinuxSystem()) {
+			options.setBinary(CHROME_BINARY);
+		}
+		if (Boot.isLinuxSystem() || headless) {
 			options.addArguments("--headless");// headless mode
 		}
 		options.addArguments("--header-args");

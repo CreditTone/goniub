@@ -10,15 +10,14 @@ import java.util.zip.ZipOutputStream;
 
 public class ChromeExtensionUtil {
 	
-	public static String WORK_PATH = "/data/deepsearch/";
+	public static String WORK_PATH;
 	
 	static {
-		if (System.getProperty("os.name").toLowerCase().contains("mac")) {
-			WORK_PATH = "/Users/stephen/Downloads/";
+		File workDir = new File("chrome_extension");
+		if (!workDir.exists()) {
+			workDir.mkdir();
 		}
-		if (System.getProperty("os.name").toLowerCase().contains("win")) {
-			WORK_PATH = "C:\\";
-		}
+		WORK_PATH = workDir.getAbsolutePath() + File.separator;
 	}
 	
 	public static File createProxyauthExtension(String host,int port,String username,String password) {

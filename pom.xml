@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.deep007</groupId>
 	<artifactId>goniub</artifactId>
-	<version>1.8.2</version>
-	<name>github</name>
+	<version>1.8.4</version>
+	<name>goniub</name>
 	<url>https://github.com/CreditTone/goniub</url>
-	<packaging>pom</packaging>
+	<packaging>jar</packaging>
 
 	<licenses>
 		<license>
@@ -126,6 +126,22 @@
 
 
 	<dependencies>
+		<!-- grpc -->
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-netty-shaded</artifactId>
+			<version>1.20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-protobuf</artifactId>
+			<version>1.20.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.grpc</groupId>
+			<artifactId>grpc-stub</artifactId>
+			<version>1.20.0</version>
+		</dependency>
 		<!-- phantomjsdriver 支持库，虽然selenium已经废弃。但是少数情况下，任可以完成chrome完成不了的工作 -->
 		<dependency>
 			<groupId>com.codeborne</groupId>
@@ -214,6 +230,15 @@
 		</dependency>
 	</dependencies>
 	<build>
+		<finalName>${project.name}</finalName>
+		<!-- 编译grpc时使用 -->
+		<extensions>
+			<extension>
+				<groupId>kr.motd.maven</groupId>
+				<artifactId>os-maven-plugin</artifactId>
+				<version>1.6.2</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -259,6 +284,26 @@
 				<configuration>
 					<encoding>UTF-8</encoding>
 				</configuration>
+			</plugin>
+			<!-- 编译grpc时使用 eg:mvn generate-sources -->
+			<plugin>
+				<groupId>org.xolstice.maven.plugins</groupId>
+				<artifactId>protobuf-maven-plugin</artifactId>
+				<version>0.6.1</version>
+				<configuration>
+					<protocArtifact>com.google.protobuf:protoc:3.5.1-1:exe:${os.detected.classifier}</protocArtifact>
+					<pluginId>grpc-java</pluginId>
+					<pluginArtifact>io.grpc:protoc-gen-grpc-java:1.15.0:exe:${os.detected.classifier}</pluginArtifact>
+					<protoSourceRoot>src/main/resources</protoSourceRoot>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+							<goal>compile-custom</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

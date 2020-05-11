@@ -7,7 +7,7 @@
 <dependency>
   <groupId>com.deep007</groupId>
   <artifactId>goniub</artifactId>
-  <version>1.8.2</version>
+  <version>1.8.4</version>
 </dependency>
 ```
 ### 更多依赖方式查看https://search.maven.org/artifact/com.deep007/goniub

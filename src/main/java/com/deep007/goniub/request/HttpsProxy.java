@@ -65,6 +65,10 @@ public class HttpsProxy {
 	public String getPassword() {
 		return password;
 	}
+	
+	public boolean authed() {
+		return getUsername() != null && getPassword() != null;
+	}
 
 	public void setPassword(String password) {
 		this.password = password;
