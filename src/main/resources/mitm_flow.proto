@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+option java_package = "com.deep007.goniub.selenium.mitm.monitor";
+option java_outer_classname = "MitmFlowMonitorProto";
+option java_multiple_files = true;
+
+package mitm;
+
+service MitmFlowMonitor {
+    rpc onMitmRequest(MitmRequest) returns (MitmRequest) {}
+    rpc onMitmResponse(MitmResponse) returns (MitmResponse) {}
+}
+
+message MitmRequest {
+	string mitmserverId = 1;
+	string cloudId = 2;
+	string url = 3;
+}
+
+message MitmResponse {
+	string mitmserverId = 1;
+	string cloudId = 2;
+	string url = 3;
+    bytes content = 4;
+    
+}
