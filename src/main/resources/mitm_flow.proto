@@ -22,5 +22,4 @@ message MitmResponse {
 	string cloudId = 2;
 	string url = 3;
     bytes content = 4;
-    
 }
