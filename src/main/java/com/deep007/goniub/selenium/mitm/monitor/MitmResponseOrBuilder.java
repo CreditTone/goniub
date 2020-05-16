@@ -8,37 +8,62 @@ public interface MitmResponseOrBuilder extends
     com.google.protobuf.MessageOrBuilder {
 
   /**
-   * <code>string mitmserverId = 1;</code>
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
    */
-  java.lang.String getMitmserverId();
+  boolean hasMitmBinding();
   /**
-   * <code>string mitmserverId = 1;</code>
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
    */
-  com.google.protobuf.ByteString
-      getMitmserverIdBytes();
+  com.deep007.goniub.selenium.mitm.monitor.MitmBinding getMitmBinding();
+  /**
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+   */
+  com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder getMitmBindingOrBuilder();
 
   /**
-   * <code>string cloudId = 2;</code>
+   * <code>.mitm.MitmRequest request = 2;</code>
    */
-  java.lang.String getCloudId();
+  boolean hasRequest();
   /**
-   * <code>string cloudId = 2;</code>
+   * <code>.mitm.MitmRequest request = 2;</code>
    */
-  com.google.protobuf.ByteString
-      getCloudIdBytes();
+  com.deep007.goniub.selenium.mitm.monitor.MitmRequest getRequest();
+  /**
+   * <code>.mitm.MitmRequest request = 2;</code>
+   */
+  com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder getRequestOrBuilder();
 
   /**
-   * <code>string url = 3;</code>
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
    */
-  java.lang.String getUrl();
+  java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader> 
+      getHeadersList();
   /**
-   * <code>string url = 3;</code>
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
    */
-  com.google.protobuf.ByteString
-      getUrlBytes();
+  com.deep007.goniub.selenium.mitm.monitor.MitmHeader getHeaders(int index);
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  int getHeadersCount();
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  java.util.List<? extends com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder> 
+      getHeadersOrBuilderList();
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder getHeadersOrBuilder(
+      int index);
 
   /**
-   * <code>bytes content = 4;</code>
+   * <code>bytes content = 5;</code>
    */
   com.google.protobuf.ByteString getContent();
+
+  /**
+   * <code>int32 statusCode = 6;</code>
+   */
+  int getStatusCode();
 }

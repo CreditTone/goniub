@@ -16,10 +16,9 @@ private static final long serialVersionUID = 0L;
     super(builder);
   }
   private MitmResponse() {
-    mitmserverId_ = "";
-    cloudId_ = "";
-    url_ = "";
+    headers_ = java.util.Collections.emptyList();
     content_ = com.google.protobuf.ByteString.EMPTY;
+    statusCode_ = 0;
   }
 
   @java.lang.Override
@@ -54,26 +53,48 @@ private static final long serialVersionUID = 0L;
             break;
           }
           case 10: {
-            java.lang.String s = input.readStringRequireUtf8();
+            com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder subBuilder = null;
+            if (mitmBinding_ != null) {
+              subBuilder = mitmBinding_.toBuilder();
+            }
+            mitmBinding_ = input.readMessage(com.deep007.goniub.selenium.mitm.monitor.MitmBinding.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(mitmBinding_);
+              mitmBinding_ = subBuilder.buildPartial();
+            }
 
-            mitmserverId_ = s;
             break;
           }
           case 18: {
-            java.lang.String s = input.readStringRequireUtf8();
+            com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder subBuilder = null;
+            if (request_ != null) {
+              subBuilder = request_.toBuilder();
+            }
+            request_ = input.readMessage(com.deep007.goniub.selenium.mitm.monitor.MitmRequest.parser(), extensionRegistry);
+            if (subBuilder != null) {
+              subBuilder.mergeFrom(request_);
+              request_ = subBuilder.buildPartial();
+            }
 
-            cloudId_ = s;
             break;
           }
           case 26: {
-            java.lang.String s = input.readStringRequireUtf8();
-
-            url_ = s;
+            if (!((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+              headers_ = new java.util.ArrayList<com.deep007.goniub.selenium.mitm.monitor.MitmHeader>();
+              mutable_bitField0_ |= 0x00000004;
+            }
+            headers_.add(
+                input.readMessage(com.deep007.goniub.selenium.mitm.monitor.MitmHeader.parser(), extensionRegistry));
             break;
           }
-          case 34: {
+          case 42: {
 
             content_ = input.readBytes();
+            break;
+          }
+          case 48: {
+
+            statusCode_ = input.readInt32();
             break;
           }
         }
@@ -84,6 +105,9 @@ private static final long serialVersionUID = 0L;
       throw new com.google.protobuf.InvalidProtocolBufferException(
           e).setUnfinishedMessage(this);
     } finally {
+      if (((mutable_bitField0_ & 0x00000004) == 0x00000004)) {
+        headers_ = java.util.Collections.unmodifiableList(headers_);
+      }
       this.unknownFields = unknownFields.build();
       makeExtensionsImmutable();
     }
@@ -100,115 +124,100 @@ private static final long serialVersionUID = 0L;
             com.deep007.goniub.selenium.mitm.monitor.MitmResponse.class, com.deep007.goniub.selenium.mitm.monitor.MitmResponse.Builder.class);
   }
 
-  public static final int MITMSERVERID_FIELD_NUMBER = 1;
-  private volatile java.lang.Object mitmserverId_;
+  private int bitField0_;
+  public static final int MITMBINDING_FIELD_NUMBER = 1;
+  private com.deep007.goniub.selenium.mitm.monitor.MitmBinding mitmBinding_;
   /**
-   * <code>string mitmserverId = 1;</code>
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
    */
-  public java.lang.String getMitmserverId() {
-    java.lang.Object ref = mitmserverId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      mitmserverId_ = s;
-      return s;
-    }
+  public boolean hasMitmBinding() {
+    return mitmBinding_ != null;
   }
   /**
-   * <code>string mitmserverId = 1;</code>
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
    */
-  public com.google.protobuf.ByteString
-      getMitmserverIdBytes() {
-    java.lang.Object ref = mitmserverId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      mitmserverId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.deep007.goniub.selenium.mitm.monitor.MitmBinding getMitmBinding() {
+    return mitmBinding_ == null ? com.deep007.goniub.selenium.mitm.monitor.MitmBinding.getDefaultInstance() : mitmBinding_;
+  }
+  /**
+   * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+   */
+  public com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder getMitmBindingOrBuilder() {
+    return getMitmBinding();
   }
 
-  public static final int CLOUDID_FIELD_NUMBER = 2;
-  private volatile java.lang.Object cloudId_;
+  public static final int REQUEST_FIELD_NUMBER = 2;
+  private com.deep007.goniub.selenium.mitm.monitor.MitmRequest request_;
   /**
-   * <code>string cloudId = 2;</code>
+   * <code>.mitm.MitmRequest request = 2;</code>
    */
-  public java.lang.String getCloudId() {
-    java.lang.Object ref = cloudId_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      cloudId_ = s;
-      return s;
-    }
+  public boolean hasRequest() {
+    return request_ != null;
   }
   /**
-   * <code>string cloudId = 2;</code>
+   * <code>.mitm.MitmRequest request = 2;</code>
    */
-  public com.google.protobuf.ByteString
-      getCloudIdBytes() {
-    java.lang.Object ref = cloudId_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      cloudId_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public com.deep007.goniub.selenium.mitm.monitor.MitmRequest getRequest() {
+    return request_ == null ? com.deep007.goniub.selenium.mitm.monitor.MitmRequest.getDefaultInstance() : request_;
+  }
+  /**
+   * <code>.mitm.MitmRequest request = 2;</code>
+   */
+  public com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder getRequestOrBuilder() {
+    return getRequest();
   }
 
-  public static final int URL_FIELD_NUMBER = 3;
-  private volatile java.lang.Object url_;
+  public static final int HEADERS_FIELD_NUMBER = 3;
+  private java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader> headers_;
   /**
-   * <code>string url = 3;</code>
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
    */
-  public java.lang.String getUrl() {
-    java.lang.Object ref = url_;
-    if (ref instanceof java.lang.String) {
-      return (java.lang.String) ref;
-    } else {
-      com.google.protobuf.ByteString bs = 
-          (com.google.protobuf.ByteString) ref;
-      java.lang.String s = bs.toStringUtf8();
-      url_ = s;
-      return s;
-    }
+  public java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader> getHeadersList() {
+    return headers_;
   }
   /**
-   * <code>string url = 3;</code>
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
    */
-  public com.google.protobuf.ByteString
-      getUrlBytes() {
-    java.lang.Object ref = url_;
-    if (ref instanceof java.lang.String) {
-      com.google.protobuf.ByteString b = 
-          com.google.protobuf.ByteString.copyFromUtf8(
-              (java.lang.String) ref);
-      url_ = b;
-      return b;
-    } else {
-      return (com.google.protobuf.ByteString) ref;
-    }
+  public java.util.List<? extends com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder> 
+      getHeadersOrBuilderList() {
+    return headers_;
+  }
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  public int getHeadersCount() {
+    return headers_.size();
+  }
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  public com.deep007.goniub.selenium.mitm.monitor.MitmHeader getHeaders(int index) {
+    return headers_.get(index);
+  }
+  /**
+   * <code>repeated .mitm.MitmHeader headers = 3;</code>
+   */
+  public com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder getHeadersOrBuilder(
+      int index) {
+    return headers_.get(index);
   }
 
-  public static final int CONTENT_FIELD_NUMBER = 4;
+  public static final int CONTENT_FIELD_NUMBER = 5;
   private com.google.protobuf.ByteString content_;
   /**
-   * <code>bytes content = 4;</code>
+   * <code>bytes content = 5;</code>
    */
   public com.google.protobuf.ByteString getContent() {
     return content_;
+  }
+
+  public static final int STATUSCODE_FIELD_NUMBER = 6;
+  private int statusCode_;
+  /**
+   * <code>int32 statusCode = 6;</code>
+   */
+  public int getStatusCode() {
+    return statusCode_;
   }
 
   private byte memoizedIsInitialized = -1;
@@ -223,17 +232,20 @@ private static final long serialVersionUID = 0L;
 
   public void writeTo(com.google.protobuf.CodedOutputStream output)
                       throws java.io.IOException {
-    if (!getMitmserverIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 1, mitmserverId_);
+    if (mitmBinding_ != null) {
+      output.writeMessage(1, getMitmBinding());
     }
-    if (!getCloudIdBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 2, cloudId_);
+    if (request_ != null) {
+      output.writeMessage(2, getRequest());
     }
-    if (!getUrlBytes().isEmpty()) {
-      com.google.protobuf.GeneratedMessageV3.writeString(output, 3, url_);
+    for (int i = 0; i < headers_.size(); i++) {
+      output.writeMessage(3, headers_.get(i));
     }
     if (!content_.isEmpty()) {
-      output.writeBytes(4, content_);
+      output.writeBytes(5, content_);
+    }
+    if (statusCode_ != 0) {
+      output.writeInt32(6, statusCode_);
     }
     unknownFields.writeTo(output);
   }
@@ -243,18 +255,25 @@ private static final long serialVersionUID = 0L;
     if (size != -1) return size;
 
     size = 0;
-    if (!getMitmserverIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, mitmserverId_);
+    if (mitmBinding_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(1, getMitmBinding());
     }
-    if (!getCloudIdBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, cloudId_);
+    if (request_ != null) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(2, getRequest());
     }
-    if (!getUrlBytes().isEmpty()) {
-      size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, url_);
+    for (int i = 0; i < headers_.size(); i++) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeMessageSize(3, headers_.get(i));
     }
     if (!content_.isEmpty()) {
       size += com.google.protobuf.CodedOutputStream
-        .computeBytesSize(4, content_);
+        .computeBytesSize(5, content_);
+    }
+    if (statusCode_ != 0) {
+      size += com.google.protobuf.CodedOutputStream
+        .computeInt32Size(6, statusCode_);
     }
     size += unknownFields.getSerializedSize();
     memoizedSize = size;
@@ -272,14 +291,22 @@ private static final long serialVersionUID = 0L;
     com.deep007.goniub.selenium.mitm.monitor.MitmResponse other = (com.deep007.goniub.selenium.mitm.monitor.MitmResponse) obj;
 
     boolean result = true;
-    result = result && getMitmserverId()
-        .equals(other.getMitmserverId());
-    result = result && getCloudId()
-        .equals(other.getCloudId());
-    result = result && getUrl()
-        .equals(other.getUrl());
+    result = result && (hasMitmBinding() == other.hasMitmBinding());
+    if (hasMitmBinding()) {
+      result = result && getMitmBinding()
+          .equals(other.getMitmBinding());
+    }
+    result = result && (hasRequest() == other.hasRequest());
+    if (hasRequest()) {
+      result = result && getRequest()
+          .equals(other.getRequest());
+    }
+    result = result && getHeadersList()
+        .equals(other.getHeadersList());
     result = result && getContent()
         .equals(other.getContent());
+    result = result && (getStatusCode()
+        == other.getStatusCode());
     result = result && unknownFields.equals(other.unknownFields);
     return result;
   }
@@ -291,14 +318,22 @@ private static final long serialVersionUID = 0L;
     }
     int hash = 41;
     hash = (19 * hash) + getDescriptor().hashCode();
-    hash = (37 * hash) + MITMSERVERID_FIELD_NUMBER;
-    hash = (53 * hash) + getMitmserverId().hashCode();
-    hash = (37 * hash) + CLOUDID_FIELD_NUMBER;
-    hash = (53 * hash) + getCloudId().hashCode();
-    hash = (37 * hash) + URL_FIELD_NUMBER;
-    hash = (53 * hash) + getUrl().hashCode();
+    if (hasMitmBinding()) {
+      hash = (37 * hash) + MITMBINDING_FIELD_NUMBER;
+      hash = (53 * hash) + getMitmBinding().hashCode();
+    }
+    if (hasRequest()) {
+      hash = (37 * hash) + REQUEST_FIELD_NUMBER;
+      hash = (53 * hash) + getRequest().hashCode();
+    }
+    if (getHeadersCount() > 0) {
+      hash = (37 * hash) + HEADERS_FIELD_NUMBER;
+      hash = (53 * hash) + getHeadersList().hashCode();
+    }
     hash = (37 * hash) + CONTENT_FIELD_NUMBER;
     hash = (53 * hash) + getContent().hashCode();
+    hash = (37 * hash) + STATUSCODE_FIELD_NUMBER;
+    hash = (53 * hash) + getStatusCode();
     hash = (29 * hash) + unknownFields.hashCode();
     memoizedHashCode = hash;
     return hash;
@@ -424,17 +459,32 @@ private static final long serialVersionUID = 0L;
     private void maybeForceBuilderInitialization() {
       if (com.google.protobuf.GeneratedMessageV3
               .alwaysUseFieldBuilders) {
+        getHeadersFieldBuilder();
       }
     }
     public Builder clear() {
       super.clear();
-      mitmserverId_ = "";
-
-      cloudId_ = "";
-
-      url_ = "";
-
+      if (mitmBindingBuilder_ == null) {
+        mitmBinding_ = null;
+      } else {
+        mitmBinding_ = null;
+        mitmBindingBuilder_ = null;
+      }
+      if (requestBuilder_ == null) {
+        request_ = null;
+      } else {
+        request_ = null;
+        requestBuilder_ = null;
+      }
+      if (headersBuilder_ == null) {
+        headers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+      } else {
+        headersBuilder_.clear();
+      }
       content_ = com.google.protobuf.ByteString.EMPTY;
+
+      statusCode_ = 0;
 
       return this;
     }
@@ -458,10 +508,30 @@ private static final long serialVersionUID = 0L;
 
     public com.deep007.goniub.selenium.mitm.monitor.MitmResponse buildPartial() {
       com.deep007.goniub.selenium.mitm.monitor.MitmResponse result = new com.deep007.goniub.selenium.mitm.monitor.MitmResponse(this);
-      result.mitmserverId_ = mitmserverId_;
-      result.cloudId_ = cloudId_;
-      result.url_ = url_;
+      int from_bitField0_ = bitField0_;
+      int to_bitField0_ = 0;
+      if (mitmBindingBuilder_ == null) {
+        result.mitmBinding_ = mitmBinding_;
+      } else {
+        result.mitmBinding_ = mitmBindingBuilder_.build();
+      }
+      if (requestBuilder_ == null) {
+        result.request_ = request_;
+      } else {
+        result.request_ = requestBuilder_.build();
+      }
+      if (headersBuilder_ == null) {
+        if (((bitField0_ & 0x00000004) == 0x00000004)) {
+          headers_ = java.util.Collections.unmodifiableList(headers_);
+          bitField0_ = (bitField0_ & ~0x00000004);
+        }
+        result.headers_ = headers_;
+      } else {
+        result.headers_ = headersBuilder_.build();
+      }
       result.content_ = content_;
+      result.statusCode_ = statusCode_;
+      result.bitField0_ = to_bitField0_;
       onBuilt();
       return result;
     }
@@ -503,20 +573,43 @@ private static final long serialVersionUID = 0L;
 
     public Builder mergeFrom(com.deep007.goniub.selenium.mitm.monitor.MitmResponse other) {
       if (other == com.deep007.goniub.selenium.mitm.monitor.MitmResponse.getDefaultInstance()) return this;
-      if (!other.getMitmserverId().isEmpty()) {
-        mitmserverId_ = other.mitmserverId_;
-        onChanged();
+      if (other.hasMitmBinding()) {
+        mergeMitmBinding(other.getMitmBinding());
       }
-      if (!other.getCloudId().isEmpty()) {
-        cloudId_ = other.cloudId_;
-        onChanged();
+      if (other.hasRequest()) {
+        mergeRequest(other.getRequest());
       }
-      if (!other.getUrl().isEmpty()) {
-        url_ = other.url_;
-        onChanged();
+      if (headersBuilder_ == null) {
+        if (!other.headers_.isEmpty()) {
+          if (headers_.isEmpty()) {
+            headers_ = other.headers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+          } else {
+            ensureHeadersIsMutable();
+            headers_.addAll(other.headers_);
+          }
+          onChanged();
+        }
+      } else {
+        if (!other.headers_.isEmpty()) {
+          if (headersBuilder_.isEmpty()) {
+            headersBuilder_.dispose();
+            headersBuilder_ = null;
+            headers_ = other.headers_;
+            bitField0_ = (bitField0_ & ~0x00000004);
+            headersBuilder_ = 
+              com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                 getHeadersFieldBuilder() : null;
+          } else {
+            headersBuilder_.addAllMessages(other.headers_);
+          }
+        }
       }
       if (other.getContent() != com.google.protobuf.ByteString.EMPTY) {
         setContent(other.getContent());
+      }
+      if (other.getStatusCode() != 0) {
+        setStatusCode(other.getStatusCode());
       }
       this.mergeUnknownFields(other.unknownFields);
       onChanged();
@@ -544,223 +637,491 @@ private static final long serialVersionUID = 0L;
       }
       return this;
     }
+    private int bitField0_;
 
-    private java.lang.Object mitmserverId_ = "";
+    private com.deep007.goniub.selenium.mitm.monitor.MitmBinding mitmBinding_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmBinding, com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder> mitmBindingBuilder_;
     /**
-     * <code>string mitmserverId = 1;</code>
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
      */
-    public java.lang.String getMitmserverId() {
-      java.lang.Object ref = mitmserverId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        mitmserverId_ = s;
-        return s;
+    public boolean hasMitmBinding() {
+      return mitmBindingBuilder_ != null || mitmBinding_ != null;
+    }
+    /**
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmBinding getMitmBinding() {
+      if (mitmBindingBuilder_ == null) {
+        return mitmBinding_ == null ? com.deep007.goniub.selenium.mitm.monitor.MitmBinding.getDefaultInstance() : mitmBinding_;
       } else {
-        return (java.lang.String) ref;
+        return mitmBindingBuilder_.getMessage();
       }
     }
     /**
-     * <code>string mitmserverId = 1;</code>
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getMitmserverIdBytes() {
-      java.lang.Object ref = mitmserverId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        mitmserverId_ = b;
-        return b;
+    public Builder setMitmBinding(com.deep007.goniub.selenium.mitm.monitor.MitmBinding value) {
+      if (mitmBindingBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        mitmBinding_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        mitmBindingBuilder_.setMessage(value);
       }
-    }
-    /**
-     * <code>string mitmserverId = 1;</code>
-     */
-    public Builder setMitmserverId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      mitmserverId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string mitmserverId = 1;</code>
-     */
-    public Builder clearMitmserverId() {
-      
-      mitmserverId_ = getDefaultInstance().getMitmserverId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string mitmserverId = 1;</code>
-     */
-    public Builder setMitmserverIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      mitmserverId_ = value;
-      onChanged();
-      return this;
-    }
 
-    private java.lang.Object cloudId_ = "";
+      return this;
+    }
     /**
-     * <code>string cloudId = 2;</code>
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
      */
-    public java.lang.String getCloudId() {
-      java.lang.Object ref = cloudId_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        cloudId_ = s;
-        return s;
+    public Builder setMitmBinding(
+        com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder builderForValue) {
+      if (mitmBindingBuilder_ == null) {
+        mitmBinding_ = builderForValue.build();
+        onChanged();
       } else {
-        return (java.lang.String) ref;
+        mitmBindingBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+     */
+    public Builder mergeMitmBinding(com.deep007.goniub.selenium.mitm.monitor.MitmBinding value) {
+      if (mitmBindingBuilder_ == null) {
+        if (mitmBinding_ != null) {
+          mitmBinding_ =
+            com.deep007.goniub.selenium.mitm.monitor.MitmBinding.newBuilder(mitmBinding_).mergeFrom(value).buildPartial();
+        } else {
+          mitmBinding_ = value;
+        }
+        onChanged();
+      } else {
+        mitmBindingBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+     */
+    public Builder clearMitmBinding() {
+      if (mitmBindingBuilder_ == null) {
+        mitmBinding_ = null;
+        onChanged();
+      } else {
+        mitmBinding_ = null;
+        mitmBindingBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder getMitmBindingBuilder() {
+      
+      onChanged();
+      return getMitmBindingFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder getMitmBindingOrBuilder() {
+      if (mitmBindingBuilder_ != null) {
+        return mitmBindingBuilder_.getMessageOrBuilder();
+      } else {
+        return mitmBinding_ == null ?
+            com.deep007.goniub.selenium.mitm.monitor.MitmBinding.getDefaultInstance() : mitmBinding_;
       }
     }
     /**
-     * <code>string cloudId = 2;</code>
+     * <code>.mitm.MitmBinding mitmBinding = 1;</code>
      */
-    public com.google.protobuf.ByteString
-        getCloudIdBytes() {
-      java.lang.Object ref = cloudId_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        cloudId_ = b;
-        return b;
-      } else {
-        return (com.google.protobuf.ByteString) ref;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmBinding, com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder> 
+        getMitmBindingFieldBuilder() {
+      if (mitmBindingBuilder_ == null) {
+        mitmBindingBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.deep007.goniub.selenium.mitm.monitor.MitmBinding, com.deep007.goniub.selenium.mitm.monitor.MitmBinding.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmBindingOrBuilder>(
+                getMitmBinding(),
+                getParentForChildren(),
+                isClean());
+        mitmBinding_ = null;
       }
-    }
-    /**
-     * <code>string cloudId = 2;</code>
-     */
-    public Builder setCloudId(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      cloudId_ = value;
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cloudId = 2;</code>
-     */
-    public Builder clearCloudId() {
-      
-      cloudId_ = getDefaultInstance().getCloudId();
-      onChanged();
-      return this;
-    }
-    /**
-     * <code>string cloudId = 2;</code>
-     */
-    public Builder setCloudIdBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      cloudId_ = value;
-      onChanged();
-      return this;
+      return mitmBindingBuilder_;
     }
 
-    private java.lang.Object url_ = "";
+    private com.deep007.goniub.selenium.mitm.monitor.MitmRequest request_ = null;
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmRequest, com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder> requestBuilder_;
     /**
-     * <code>string url = 3;</code>
+     * <code>.mitm.MitmRequest request = 2;</code>
      */
-    public java.lang.String getUrl() {
-      java.lang.Object ref = url_;
-      if (!(ref instanceof java.lang.String)) {
-        com.google.protobuf.ByteString bs =
-            (com.google.protobuf.ByteString) ref;
-        java.lang.String s = bs.toStringUtf8();
-        url_ = s;
-        return s;
+    public boolean hasRequest() {
+      return requestBuilder_ != null || request_ != null;
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmRequest getRequest() {
+      if (requestBuilder_ == null) {
+        return request_ == null ? com.deep007.goniub.selenium.mitm.monitor.MitmRequest.getDefaultInstance() : request_;
       } else {
-        return (java.lang.String) ref;
+        return requestBuilder_.getMessage();
       }
     }
     /**
-     * <code>string url = 3;</code>
+     * <code>.mitm.MitmRequest request = 2;</code>
      */
-    public com.google.protobuf.ByteString
-        getUrlBytes() {
-      java.lang.Object ref = url_;
-      if (ref instanceof String) {
-        com.google.protobuf.ByteString b = 
-            com.google.protobuf.ByteString.copyFromUtf8(
-                (java.lang.String) ref);
-        url_ = b;
-        return b;
+    public Builder setRequest(com.deep007.goniub.selenium.mitm.monitor.MitmRequest value) {
+      if (requestBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        request_ = value;
+        onChanged();
       } else {
-        return (com.google.protobuf.ByteString) ref;
+        requestBuilder_.setMessage(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public Builder setRequest(
+        com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder builderForValue) {
+      if (requestBuilder_ == null) {
+        request_ = builderForValue.build();
+        onChanged();
+      } else {
+        requestBuilder_.setMessage(builderForValue.build());
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public Builder mergeRequest(com.deep007.goniub.selenium.mitm.monitor.MitmRequest value) {
+      if (requestBuilder_ == null) {
+        if (request_ != null) {
+          request_ =
+            com.deep007.goniub.selenium.mitm.monitor.MitmRequest.newBuilder(request_).mergeFrom(value).buildPartial();
+        } else {
+          request_ = value;
+        }
+        onChanged();
+      } else {
+        requestBuilder_.mergeFrom(value);
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public Builder clearRequest() {
+      if (requestBuilder_ == null) {
+        request_ = null;
+        onChanged();
+      } else {
+        request_ = null;
+        requestBuilder_ = null;
+      }
+
+      return this;
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder getRequestBuilder() {
+      
+      onChanged();
+      return getRequestFieldBuilder().getBuilder();
+    }
+    /**
+     * <code>.mitm.MitmRequest request = 2;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder getRequestOrBuilder() {
+      if (requestBuilder_ != null) {
+        return requestBuilder_.getMessageOrBuilder();
+      } else {
+        return request_ == null ?
+            com.deep007.goniub.selenium.mitm.monitor.MitmRequest.getDefaultInstance() : request_;
       }
     }
     /**
-     * <code>string url = 3;</code>
+     * <code>.mitm.MitmRequest request = 2;</code>
      */
-    public Builder setUrl(
-        java.lang.String value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  
-      url_ = value;
-      onChanged();
+    private com.google.protobuf.SingleFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmRequest, com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder> 
+        getRequestFieldBuilder() {
+      if (requestBuilder_ == null) {
+        requestBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+            com.deep007.goniub.selenium.mitm.monitor.MitmRequest, com.deep007.goniub.selenium.mitm.monitor.MitmRequest.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmRequestOrBuilder>(
+                getRequest(),
+                getParentForChildren(),
+                isClean());
+        request_ = null;
+      }
+      return requestBuilder_;
+    }
+
+    private java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader> headers_ =
+      java.util.Collections.emptyList();
+    private void ensureHeadersIsMutable() {
+      if (!((bitField0_ & 0x00000004) == 0x00000004)) {
+        headers_ = new java.util.ArrayList<com.deep007.goniub.selenium.mitm.monitor.MitmHeader>(headers_);
+        bitField0_ |= 0x00000004;
+       }
+    }
+
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmHeader, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder> headersBuilder_;
+
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader> getHeadersList() {
+      if (headersBuilder_ == null) {
+        return java.util.Collections.unmodifiableList(headers_);
+      } else {
+        return headersBuilder_.getMessageList();
+      }
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public int getHeadersCount() {
+      if (headersBuilder_ == null) {
+        return headers_.size();
+      } else {
+        return headersBuilder_.getCount();
+      }
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmHeader getHeaders(int index) {
+      if (headersBuilder_ == null) {
+        return headers_.get(index);
+      } else {
+        return headersBuilder_.getMessage(index);
+      }
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder setHeaders(
+        int index, com.deep007.goniub.selenium.mitm.monitor.MitmHeader value) {
+      if (headersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHeadersIsMutable();
+        headers_.set(index, value);
+        onChanged();
+      } else {
+        headersBuilder_.setMessage(index, value);
+      }
       return this;
     }
     /**
-     * <code>string url = 3;</code>
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
      */
-    public Builder clearUrl() {
-      
-      url_ = getDefaultInstance().getUrl();
-      onChanged();
+    public Builder setHeaders(
+        int index, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder builderForValue) {
+      if (headersBuilder_ == null) {
+        ensureHeadersIsMutable();
+        headers_.set(index, builderForValue.build());
+        onChanged();
+      } else {
+        headersBuilder_.setMessage(index, builderForValue.build());
+      }
       return this;
     }
     /**
-     * <code>string url = 3;</code>
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
      */
-    public Builder setUrlBytes(
-        com.google.protobuf.ByteString value) {
-      if (value == null) {
-    throw new NullPointerException();
-  }
-  checkByteStringIsUtf8(value);
-      
-      url_ = value;
-      onChanged();
+    public Builder addHeaders(com.deep007.goniub.selenium.mitm.monitor.MitmHeader value) {
+      if (headersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHeadersIsMutable();
+        headers_.add(value);
+        onChanged();
+      } else {
+        headersBuilder_.addMessage(value);
+      }
       return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder addHeaders(
+        int index, com.deep007.goniub.selenium.mitm.monitor.MitmHeader value) {
+      if (headersBuilder_ == null) {
+        if (value == null) {
+          throw new NullPointerException();
+        }
+        ensureHeadersIsMutable();
+        headers_.add(index, value);
+        onChanged();
+      } else {
+        headersBuilder_.addMessage(index, value);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder addHeaders(
+        com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder builderForValue) {
+      if (headersBuilder_ == null) {
+        ensureHeadersIsMutable();
+        headers_.add(builderForValue.build());
+        onChanged();
+      } else {
+        headersBuilder_.addMessage(builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder addHeaders(
+        int index, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder builderForValue) {
+      if (headersBuilder_ == null) {
+        ensureHeadersIsMutable();
+        headers_.add(index, builderForValue.build());
+        onChanged();
+      } else {
+        headersBuilder_.addMessage(index, builderForValue.build());
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder addAllHeaders(
+        java.lang.Iterable<? extends com.deep007.goniub.selenium.mitm.monitor.MitmHeader> values) {
+      if (headersBuilder_ == null) {
+        ensureHeadersIsMutable();
+        com.google.protobuf.AbstractMessageLite.Builder.addAll(
+            values, headers_);
+        onChanged();
+      } else {
+        headersBuilder_.addAllMessages(values);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder clearHeaders() {
+      if (headersBuilder_ == null) {
+        headers_ = java.util.Collections.emptyList();
+        bitField0_ = (bitField0_ & ~0x00000004);
+        onChanged();
+      } else {
+        headersBuilder_.clear();
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public Builder removeHeaders(int index) {
+      if (headersBuilder_ == null) {
+        ensureHeadersIsMutable();
+        headers_.remove(index);
+        onChanged();
+      } else {
+        headersBuilder_.remove(index);
+      }
+      return this;
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder getHeadersBuilder(
+        int index) {
+      return getHeadersFieldBuilder().getBuilder(index);
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder getHeadersOrBuilder(
+        int index) {
+      if (headersBuilder_ == null) {
+        return headers_.get(index);  } else {
+        return headersBuilder_.getMessageOrBuilder(index);
+      }
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public java.util.List<? extends com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder> 
+         getHeadersOrBuilderList() {
+      if (headersBuilder_ != null) {
+        return headersBuilder_.getMessageOrBuilderList();
+      } else {
+        return java.util.Collections.unmodifiableList(headers_);
+      }
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder addHeadersBuilder() {
+      return getHeadersFieldBuilder().addBuilder(
+          com.deep007.goniub.selenium.mitm.monitor.MitmHeader.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder addHeadersBuilder(
+        int index) {
+      return getHeadersFieldBuilder().addBuilder(
+          index, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.getDefaultInstance());
+    }
+    /**
+     * <code>repeated .mitm.MitmHeader headers = 3;</code>
+     */
+    public java.util.List<com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder> 
+         getHeadersBuilderList() {
+      return getHeadersFieldBuilder().getBuilderList();
+    }
+    private com.google.protobuf.RepeatedFieldBuilderV3<
+        com.deep007.goniub.selenium.mitm.monitor.MitmHeader, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder> 
+        getHeadersFieldBuilder() {
+      if (headersBuilder_ == null) {
+        headersBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+            com.deep007.goniub.selenium.mitm.monitor.MitmHeader, com.deep007.goniub.selenium.mitm.monitor.MitmHeader.Builder, com.deep007.goniub.selenium.mitm.monitor.MitmHeaderOrBuilder>(
+                headers_,
+                ((bitField0_ & 0x00000004) == 0x00000004),
+                getParentForChildren(),
+                isClean());
+        headers_ = null;
+      }
+      return headersBuilder_;
     }
 
     private com.google.protobuf.ByteString content_ = com.google.protobuf.ByteString.EMPTY;
     /**
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 5;</code>
      */
     public com.google.protobuf.ByteString getContent() {
       return content_;
     }
     /**
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 5;</code>
      */
     public Builder setContent(com.google.protobuf.ByteString value) {
       if (value == null) {
@@ -772,11 +1133,37 @@ private static final long serialVersionUID = 0L;
       return this;
     }
     /**
-     * <code>bytes content = 4;</code>
+     * <code>bytes content = 5;</code>
      */
     public Builder clearContent() {
       
       content_ = getDefaultInstance().getContent();
+      onChanged();
+      return this;
+    }
+
+    private int statusCode_ ;
+    /**
+     * <code>int32 statusCode = 6;</code>
+     */
+    public int getStatusCode() {
+      return statusCode_;
+    }
+    /**
+     * <code>int32 statusCode = 6;</code>
+     */
+    public Builder setStatusCode(int value) {
+      
+      statusCode_ = value;
+      onChanged();
+      return this;
+    }
+    /**
+     * <code>int32 statusCode = 6;</code>
+     */
+    public Builder clearStatusCode() {
+      
+      statusCode_ = 0;
       onChanged();
       return this;
     }

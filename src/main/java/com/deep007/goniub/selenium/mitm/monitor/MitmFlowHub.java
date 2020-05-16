@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.deep007.goniub.selenium.mitm.monitor.grpc.MitmFlowMonitorGrpc;
+
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
@@ -11,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class MitmFlowHub {
-	
-	private final static Object lock = new Object();
 	
 	private static final int MONITOR_GRPC_SERVER_PORT = 8013;
 
@@ -45,7 +45,7 @@ public class MitmFlowHub {
 			MitmRequest reply = MitmRequest.newBuilder()
 					.setUrl(request.getUrl())
 					.build();
-			MitmFlowFilter filter = mitmFlowFilters.get(request.getMitmserverId());
+			MitmFlowFilter filter = mitmFlowFilters.get(request.getMitmBinding().getMitmserverId());
 			if (filter != null) {
 				filter.filterRequest(reply);
 			}
@@ -56,10 +56,9 @@ public class MitmFlowHub {
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
 			MitmResponse reply = MitmResponse.newBuilder()
-					.setUrl(response.getUrl())
 					.setContent(response.getContent())
 					.build();
-			MitmFlowFilter filter = mitmFlowFilters.get(response.getMitmserverId());
+			MitmFlowFilter filter = mitmFlowFilters.get(response.getMitmBinding().getMitmserverId());
 			if (filter != null) {
 				filter.filterResponse(reply);
 			}
@@ -72,7 +71,7 @@ public class MitmFlowHub {
 	private static MitmFlowHub instance;
 	
 	static {
-		synchronized (lock) {
+		synchronized (MitmFlowHub.class) {
 			if (instance == null) {
 				instance = new MitmFlowHub();
 				new Thread() {

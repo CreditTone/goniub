@@ -11,15 +11,28 @@ service MitmFlowMonitor {
     rpc onMitmResponse(MitmResponse) returns (MitmResponse) {}
 }
 
-message MitmRequest {
+message MitmHeader {
+	string name = 1;
+	string value = 2;
+}
+
+message MitmBinding {
 	string mitmserverId = 1;
-	string cloudId = 2;
-	string url = 3;
+	string browserId = 2;
+}
+
+message MitmRequest {
+	MitmBinding mitmBinding = 1;
+	string url = 2;
+	string method = 3;
+	repeated MitmHeader headers = 4;
+	bytes content = 5;
 }
 
 message MitmResponse {
-	string mitmserverId = 1;
-	string cloudId = 2;
-	string url = 3;
-    bytes content = 4;
+	MitmBinding mitmBinding = 1;
+	MitmRequest request = 2;
+	repeated MitmHeader headers = 3;
+    bytes content = 5;
+    int32 statusCode = 6;
 }

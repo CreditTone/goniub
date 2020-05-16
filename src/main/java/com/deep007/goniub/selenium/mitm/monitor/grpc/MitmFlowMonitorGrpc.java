@@ -1,4 +1,4 @@
-package com.deep007.goniub.selenium.mitm.monitor;
+package com.deep007.goniub.selenium.mitm.monitor.grpc;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
 import static io.grpc.stub.ClientCalls.asyncBidiStreamingCall;

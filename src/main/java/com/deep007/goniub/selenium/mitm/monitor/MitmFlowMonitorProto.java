@@ -15,6 +15,16 @@ public final class MitmFlowMonitorProto {
         (com.google.protobuf.ExtensionRegistryLite) registry);
   }
   static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_mitm_MitmHeader_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_mitm_MitmHeader_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_mitm_MitmBinding_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_mitm_MitmBinding_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
     internal_static_mitm_MitmRequest_descriptor;
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
@@ -33,16 +43,22 @@ public final class MitmFlowMonitorProto {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\017mitm_flow.proto\022\004mitm\"A\n\013MitmRequest\022\024" +
-      "\n\014mitmserverId\030\001 \001(\t\022\017\n\007cloudId\030\002 \001(\t\022\013\n" +
-      "\003url\030\003 \001(\t\"S\n\014MitmResponse\022\024\n\014mitmserver" +
-      "Id\030\001 \001(\t\022\017\n\007cloudId\030\002 \001(\t\022\013\n\003url\030\003 \001(\t\022\017" +
-      "\n\007content\030\004 \001(\0142\206\001\n\017MitmFlowMonitor\0227\n\ro" +
-      "nMitmRequest\022\021.mitm.MitmRequest\032\021.mitm.M" +
-      "itmRequest\"\000\022:\n\016onMitmResponse\022\022.mitm.Mi" +
-      "tmResponse\032\022.mitm.MitmResponse\"\000BB\n(com." +
-      "deep007.goniub.selenium.mitm.monitorB\024Mi" +
-      "tmFlowMonitorProtoP\001b\006proto3"
+      "\n\017mitm_flow.proto\022\004mitm\")\n\nMitmHeader\022\014\n" +
+      "\004name\030\001 \001(\t\022\r\n\005value\030\002 \001(\t\"6\n\013MitmBindin" +
+      "g\022\024\n\014mitmserverId\030\001 \001(\t\022\021\n\tbrowserId\030\002 \001" +
+      "(\t\"\206\001\n\013MitmRequest\022&\n\013mitmBinding\030\001 \001(\0132" +
+      "\021.mitm.MitmBinding\022\013\n\003url\030\002 \001(\t\022\016\n\006metho" +
+      "d\030\003 \001(\t\022!\n\007headers\030\004 \003(\0132\020.mitm.MitmHead" +
+      "er\022\017\n\007content\030\005 \001(\014\"\242\001\n\014MitmResponse\022&\n\013" +
+      "mitmBinding\030\001 \001(\0132\021.mitm.MitmBinding\022\"\n\007" +
+      "request\030\002 \001(\0132\021.mitm.MitmRequest\022!\n\007head" +
+      "ers\030\003 \003(\0132\020.mitm.MitmHeader\022\017\n\007content\030\005" +
+      " \001(\014\022\022\n\nstatusCode\030\006 \001(\0052\206\001\n\017MitmFlowMon" +
+      "itor\0227\n\ronMitmRequest\022\021.mitm.MitmRequest" +
+      "\032\021.mitm.MitmRequest\"\000\022:\n\016onMitmResponse\022" +
+      "\022.mitm.MitmResponse\032\022.mitm.MitmResponse\"" +
+      "\000BB\n(com.deep007.goniub.selenium.mitm.mo" +
+      "nitorB\024MitmFlowMonitorProtoP\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -56,18 +72,30 @@ public final class MitmFlowMonitorProto {
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_mitm_MitmRequest_descriptor =
+    internal_static_mitm_MitmHeader_descriptor =
       getDescriptor().getMessageTypes().get(0);
+    internal_static_mitm_MitmHeader_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_mitm_MitmHeader_descriptor,
+        new java.lang.String[] { "Name", "Value", });
+    internal_static_mitm_MitmBinding_descriptor =
+      getDescriptor().getMessageTypes().get(1);
+    internal_static_mitm_MitmBinding_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_mitm_MitmBinding_descriptor,
+        new java.lang.String[] { "MitmserverId", "BrowserId", });
+    internal_static_mitm_MitmRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
     internal_static_mitm_MitmRequest_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_mitm_MitmRequest_descriptor,
-        new java.lang.String[] { "MitmserverId", "CloudId", "Url", });
+        new java.lang.String[] { "MitmBinding", "Url", "Method", "Headers", "Content", });
     internal_static_mitm_MitmResponse_descriptor =
-      getDescriptor().getMessageTypes().get(1);
+      getDescriptor().getMessageTypes().get(3);
     internal_static_mitm_MitmResponse_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_mitm_MitmResponse_descriptor,
-        new java.lang.String[] { "MitmserverId", "CloudId", "Url", "Content", });
+        new java.lang.String[] { "MitmBinding", "Request", "Headers", "Content", "StatusCode", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

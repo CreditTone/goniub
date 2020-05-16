@@ -87,8 +87,7 @@ public class MitmServer implements MitmFlowFilter {
 
 	@Override
 	public void filterRequest(MitmRequest request) {
-		String cloudId = request.getCloudId();
-		List<AjaxHook> results = getHookers(cloudId);
+		List<AjaxHook> results = getHookers(request.getMitmBinding().getBrowserId());
 		if (results != null) {
 			for (AjaxHook ajaxHook : results) {
 				ajaxHook.filterRequest(request);
@@ -98,8 +97,7 @@ public class MitmServer implements MitmFlowFilter {
 
 	@Override
 	public void filterResponse(MitmResponse response) {
-		String cloudId = response.getCloudId();
-		List<AjaxHook> results = getHookers(cloudId);
+		List<AjaxHook> results = getHookers(response.getMitmBinding().getBrowserId());
 		if (results != null) {
 			for (AjaxHook ajaxHook : results) {
 				ajaxHook.filterResponse(response);
