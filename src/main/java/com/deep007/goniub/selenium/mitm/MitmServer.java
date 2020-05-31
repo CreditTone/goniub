@@ -11,6 +11,8 @@ import com.deep007.goniub.selenium.mitm.monitor.MitmFlowFilter;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHub;
 import com.deep007.goniub.selenium.mitm.monitor.MitmRequest;
 import com.deep007.goniub.selenium.mitm.monitor.MitmResponse;
+import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
+import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 import com.deep007.goniub.terminal.Linux;
 
 import lombok.extern.slf4j.Slf4j;
@@ -86,8 +88,8 @@ public class MitmServer implements MitmFlowFilter {
 	}
 
 	@Override
-	public void filterRequest(MitmRequest request) {
-		List<AjaxHook> results = getHookers(request.getMitmBinding().getBrowserId());
+	public void filterRequest(LRequest request) {
+		List<AjaxHook> results = getHookers(request.getBinding().getBrowserId());
 		if (results != null) {
 			for (AjaxHook ajaxHook : results) {
 				ajaxHook.filterRequest(request);
@@ -96,8 +98,8 @@ public class MitmServer implements MitmFlowFilter {
 	}
 
 	@Override
-	public void filterResponse(MitmResponse response) {
-		List<AjaxHook> results = getHookers(response.getMitmBinding().getBrowserId());
+	public void filterResponse(LResponse response) {
+		List<AjaxHook> results = getHookers(response.getBinding().getBrowserId());
 		if (results != null) {
 			for (AjaxHook ajaxHook : results) {
 				ajaxHook.filterResponse(response);

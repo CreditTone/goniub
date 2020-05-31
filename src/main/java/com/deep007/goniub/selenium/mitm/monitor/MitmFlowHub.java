@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.deep007.goniub.selenium.mitm.monitor.grpc.MitmFlowMonitorGrpc;
+import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -55,14 +56,15 @@ public class MitmFlowHub {
 		
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
-			MitmResponse reply = MitmResponse.newBuilder()
-					.setContent(response.getContent())
-					.build();
+			MitmResponse.Builder builder = MitmResponse.newBuilder();
 			MitmFlowFilter filter = mitmFlowFilters.get(response.getMitmBinding().getMitmserverId());
 			if (filter != null) {
-				filter.filterResponse(reply);
+				LResponse lResponse = LResponse.create(response);
+				filter.filterResponse(lResponse);
+				
+			}else {
+				responseObserver.onNext(response);
 			}
-			responseObserver.onNext(reply);
 			responseObserver.onCompleted();
 		}
 		

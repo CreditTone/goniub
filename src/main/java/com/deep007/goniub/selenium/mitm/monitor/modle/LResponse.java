@@ -1,12 +1,41 @@
 package com.deep007.goniub.selenium.mitm.monitor.modle;
 
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Map;
 
+import com.deep007.goniub.selenium.mitm.monitor.MitmHeader;
+import com.deep007.goniub.selenium.mitm.monitor.MitmResponse;
+import com.google.protobuf.ByteString;
+
 public final class LResponse {
+	
+	public final static LResponse create(MitmResponse response) {
+		LBinding binding = LBinding.create(response.getMitmBinding());
+		Map<String, String> headers = new HashMap<String, String>();
+		for (int i = 0; i < response.getHeadersCount(); i++) {
+			MitmHeader header = response.getHeaders(i);
+			headers.put(header.getName(), header.getValue());
+		}
+		byte[] content = null;
+		if (response.getContent() != null) {
+			content = response.getContent().toByteArray();
+		}
+		LRequest request = LRequest.create(response.getRequest());
+		return new LResponse(binding, request, headers, content, response.getStatusCode());
+	}
+	
+	public final MitmResponse createMitmResponse() {
+		MitmResponse.Builder builder = MitmResponse.newBuilder()
+		.setStatusCode(statusCode)
+		.setContent(ByteString.copyFrom(content));
+		dsa
+		return builder.build();
+	}
+	
 	private final LBinding binding;
 	private final LRequest request;
-	private final Map<String, String> headers;
+	private final LHeaders headers;
 	private byte[] content;
 	private int statusCode;
 
