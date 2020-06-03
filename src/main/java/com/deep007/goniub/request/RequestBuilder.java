@@ -9,9 +9,9 @@ import java.util.UUID;
 
 import org.apache.http.NameValuePair;
 
-import com.deep007.goniub.URLEncodedUtils;
 import com.deep007.goniub.request.HttpRequest.Method;
 import com.deep007.goniub.request.PageRequest.PageEncoding;
+import com.deep007.goniub.util.URLEncodedUtils;
 
 @Deprecated
 public final class RequestBuilder {

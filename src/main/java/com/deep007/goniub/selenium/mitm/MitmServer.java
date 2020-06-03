@@ -1,5 +1,6 @@
 package com.deep007.goniub.selenium.mitm;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowFilter;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHub;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowServer;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 import com.deep007.goniub.terminal.LinuxTerminal;
@@ -26,24 +27,39 @@ public class MitmServer implements MitmFlowFilter {
 	/**
 	 * 中间人攻击启动端口
 	 */
-	private int mitmPort = 8120;
+	private final int mitmproxyPort;
+	
+	/**
+	 * mitmproxy grpc通信端口
+	 */
+	private final int mitmproxyFlowGrpcServerPort;
 
 	/**
 	 * 上游的代理，不设置默认走本地
 	 */
 	private HttpsProxy upstreamProxy;
+	
+	private MitmFlowServer mitmFlowServer;
 
 	private Pattern cloudIdPattern = Pattern.compile("\\s+Cloud/([a-z0-9]+)");
 
 	private Map<String, List<AjaxHook>> hookers = new ConcurrentHashMap<>();
-
-	private MitmServer(int mitmPort) {
-		this.mitmPort = mitmPort;
-		start();
+	
+	public MitmServer() {
+		this(8120, MitmFlowServer.MONITOR_GRPC_SERVER_PORT);
 	}
 
-	private synchronized void start() {
-		String cmd = "mitmdump -p " + mitmPort;
+	public MitmServer(int mitmproxyPort, int mitmproxyFlowGrpcServerPort) {
+		this.mitmproxyPort = mitmproxyPort;
+		this.mitmproxyFlowGrpcServerPort = mitmproxyFlowGrpcServerPort;
+		this.mitmFlowServer = new MitmFlowServer(mitmproxyFlowGrpcServerPort);
+		this.mitmFlowServer.setMitmFlowFilter(this);
+	}
+
+	public synchronized void start() throws IOException {
+		mitmFlowServer.start();
+		MitmdumpScript.init();
+		String cmd = "mitmdump -p " + mitmproxyPort;
 		if (upstreamProxy != null) {
 			cmd += " --mode upstream:http://" + upstreamProxy.getServer() + ":" + upstreamProxy.getPort();
 			if (upstreamProxy.authed()) {
@@ -54,16 +70,13 @@ public class MitmServer implements MitmFlowFilter {
 			Terminal terminal = null;
 			if (Boot.isUnixSystem()) {
 				terminal = new LinuxTerminal() {
-
 					@Override
 					public void onOutputLog(String log) {
 						MitmServer.this.log.info(log);
 					}
-					
 				};
 			}else if (Boot.isWindowsSystem()) {
 				terminal = new WindowsTerminal() {
-					
 					@Override
 					public void onOutputLog(String log) {
 						MitmServer.this.log.info(log);
@@ -71,8 +84,7 @@ public class MitmServer implements MitmFlowFilter {
 				};
 			}
 			terminal.execute(cmd);
-			MitmFlowHub.addMitmFlowFilter(id, this);
-			log.info("mitmserver启动成功.*:" + mitmPort);
+			log.info("mitmserver启动成功.*:" + mitmproxyPort);
 		} catch (Exception e) {
 			log.warn("mitmserver启动失败", e);
 		}
@@ -127,7 +139,7 @@ public class MitmServer implements MitmFlowFilter {
 	}
 	
 	public HttpsProxy getSelfProxyService() {
-		return new HttpsProxy("127.0.0.1", mitmPort);
+		return new HttpsProxy("127.0.0.1", mitmproxyPort);
 	}
 	
 

@@ -11,9 +11,9 @@ import org.apache.http.NameValuePair;
 import org.apache.http.entity.StringEntity;
 
 import com.alibaba.fastjson.JSON;
-import com.deep007.goniub.URLEncodedUtils;
 import com.deep007.goniub.request.HttpRequest.Method;
 import com.deep007.goniub.request.PageRequest.PageEncoding;
+import com.deep007.goniub.util.URLEncodedUtils;
 
 public final class PageRequestBuilder {
 

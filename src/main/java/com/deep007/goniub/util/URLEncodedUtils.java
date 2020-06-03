@@ -1,4 +1,4 @@
-package com.deep007.goniub;
+package com.deep007.goniub.util;
 
 import java.util.ArrayList;
 import java.util.List;
