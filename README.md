@@ -10,6 +10,6 @@
   <version>1.8.4</version>
 </dependency>
 ```
-### 更多依赖方式查看https://search.maven.org/artifact/com.deep007/goniub
+### 源码级依赖请安装lombok https://blog.csdn.net/lizhiyuan_eagle/article/details/91790299
 
 

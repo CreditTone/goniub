@@ -11,7 +11,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.terminal.Linux;
+import com.deep007.goniub.terminal.LinuxTerminal;
 import com.deep007.goniub.util.Boot;
 
 import lombok.extern.slf4j.Slf4j;
@@ -27,19 +27,10 @@ public class ChromeOptionsUtil {
 
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
 
-	public static String CHROME_BINARY;
-	
-	static {
-		if (Boot.isLinuxSystem()) {
-			CHROME_BINARY = Linux.findAbsoluteVar("google-chrome");
-		}else {
-			//CHROME_BINARY = Windows.findAbsoluteVar("google-chrome");
-		}
-	}
-	
 	public static ChromeOptions createChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy proxy,
 			String userAgent) {
-		if (CHROME_BINARY.equals("google-chrome")) {
+		String CHROME_BINARY = LinuxTerminal.findAbsoluteVar("google-chrome");
+		if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {
 			throw new RuntimeException("请安装google-chrome.");
 		}
 		ChromeOptions options = new ChromeOptions();

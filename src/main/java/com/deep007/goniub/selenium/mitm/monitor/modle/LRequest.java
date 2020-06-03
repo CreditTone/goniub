@@ -1,36 +1,32 @@
 package com.deep007.goniub.selenium.mitm.monitor.modle;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.deep007.goniub.selenium.mitm.monitor.MitmBinding;
-import com.deep007.goniub.selenium.mitm.monitor.MitmHeader;
 import com.deep007.goniub.selenium.mitm.monitor.MitmRequest;
+import com.google.protobuf.ByteString;
 
 public final class LRequest {
 	
 	
 	public static LRequest create(MitmRequest request) {
 		LBinding binding = LBinding.create(request.getMitmBinding());
-		Map<String, String> headers = new HashMap<String, String>();
-		for (int i = 0; i < request.getHeadersCount(); i++) {
-			MitmHeader header = request.getHeaders(i);
-			headers.put(header.getName(), header.getValue());
-		}
 		byte[] content = null;
 		if (request.getContent() != null) {
 			content = request.getContent().toByteArray();
 		}
-		return new LRequest(binding, request.getUrl(), request.getMethod(), headers, content);
+		return new LRequest(binding, request.getUrl(), request.getMethod(), new LHeaders(request.getHeadersList()), content);
 	}
 	
-	public final MitmRequest createMitmRequest() {
+	public final MitmRequest getMitmRequest() {
 		MitmRequest.Builder builder = MitmRequest.newBuilder()
 		.setUrl(url)
 		.setMethod(method)
-		.setMitmBinding(binding.createMitmBinding());
-		dsad
+		.addAllHeaders(headers.getMitmHeaders())
+		.setMitmBinding(binding.getMitmBinding());
+		if (content != null) {
+			builder.setContent(ByteString.copyFrom(content));
+		}
 		return builder.build();
 	}
 
@@ -40,7 +36,7 @@ public final class LRequest {
 	private final LHeaders headers;
 	private byte[] content;
 
-	public LRequest(LBinding binding, String url, String method, Map<String, String> headers, byte[] content) {
+	public LRequest(LBinding binding, String url, String method, LHeaders headers, byte[] content) {
 		this.binding = binding;
 		this.url = url;
 		this.method = method;

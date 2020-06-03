@@ -20,7 +20,7 @@ import okhttp3.MediaType;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
-public class CURL {
+public class CURLUtils {
 	
 	private static final Set<Pattern> headerPatterns = Sets.newHashSet(
 			Pattern.compile("\\-H\\s+[']{1}([^:]+):\\s+([^']+)[']{1}")
@@ -42,8 +42,8 @@ public class CURL {
 	
 	private String dataType;
 	
-	public CURL(String command) {
-		this.command = command;
+	public CURLUtils(String command) {
+		this.command = command.replaceAll("\\s+\"", " '").replaceAll("\"\\s+", "' ");
 		init();
 	}
 	

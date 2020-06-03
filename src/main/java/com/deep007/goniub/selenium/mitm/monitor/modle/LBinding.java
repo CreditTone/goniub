@@ -8,7 +8,7 @@ public final class LBinding {
 		return new LBinding(mitmBinding.getMitmserverId(), mitmBinding.getBrowserId());
 	}
 	
-	public final MitmBinding createMitmBinding() {
+	public final MitmBinding getMitmBinding() {
 		MitmBinding.Builder builder = MitmBinding.newBuilder()
 		.setMitmserverId(mitmserverId)
 		.setBrowserId(browserId);
@@ -16,7 +16,9 @@ public final class LBinding {
 	}
 
 	private final String mitmserverId;
+	
 	private final String browserId;
+	
 	public LBinding(String mitmserverId, String browserId) {
 		this.mitmserverId = mitmserverId;
 		this.browserId = browserId;

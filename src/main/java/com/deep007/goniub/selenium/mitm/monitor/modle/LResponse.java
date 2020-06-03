@@ -12,11 +12,7 @@ public final class LResponse {
 	
 	public final static LResponse create(MitmResponse response) {
 		LBinding binding = LBinding.create(response.getMitmBinding());
-		Map<String, String> headers = new HashMap<String, String>();
-		for (int i = 0; i < response.getHeadersCount(); i++) {
-			MitmHeader header = response.getHeaders(i);
-			headers.put(header.getName(), header.getValue());
-		}
+		LHeaders headers = new LHeaders(response.getHeadersList());
 		byte[] content = null;
 		if (response.getContent() != null) {
 			content = response.getContent().toByteArray();
@@ -25,11 +21,15 @@ public final class LResponse {
 		return new LResponse(binding, request, headers, content, response.getStatusCode());
 	}
 	
-	public final MitmResponse createMitmResponse() {
+	public final MitmResponse getMitmResponse() {
 		MitmResponse.Builder builder = MitmResponse.newBuilder()
 		.setStatusCode(statusCode)
-		.setContent(ByteString.copyFrom(content));
-		dsa
+		.setMitmBinding(binding.getMitmBinding())
+		.addAllHeaders(headers.getMitmHeaders())
+		.setRequest(request.getMitmRequest());
+		if (content != null) {
+			builder.setContent(ByteString.copyFrom(content));
+		}
 		return builder.build();
 	}
 	
@@ -39,7 +39,7 @@ public final class LResponse {
 	private byte[] content;
 	private int statusCode;
 
-	public LResponse(LBinding binding, LRequest request, Map<String, String> headers, byte[] content, int statusCode) {
+	public LResponse(LBinding binding, LRequest request, LHeaders headers, byte[] content, int statusCode) {
 		super();
 		this.binding = binding;
 		this.request = request;

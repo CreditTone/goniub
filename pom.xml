@@ -166,23 +166,17 @@
 			<artifactId>spring-beans</artifactId>
 			<version>5.0.7.RELEASE</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/cglib/cglib -->
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib</artifactId>
-			<version>3.2.12</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
 			<artifactId>jedis</artifactId>
 			<version>3.1.0</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/javax.mail/mail -->
+		<!-- https://mvnrepository.com/artifact/cglib/cglib -->
 		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.7</version>
+			<groupId>cglib</groupId>
+			<artifactId>cglib</artifactId>
+			<version>3.2.12</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.guava</groupId>
@@ -286,7 +280,7 @@
 				</configuration>
 			</plugin>
 			<!-- 编译grpc时使用 eg:mvn generate-sources -->
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.xolstice.maven.plugins</groupId>
 				<artifactId>protobuf-maven-plugin</artifactId>
 				<version>0.6.1</version>
@@ -304,7 +298,7 @@
 						</goals>
 					</execution>
 				</executions>
-			</plugin>
+			</plugin> -->
 		</plugins>
 	</build>
 </project>

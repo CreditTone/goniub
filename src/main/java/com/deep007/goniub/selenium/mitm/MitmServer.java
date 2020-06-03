@@ -9,11 +9,12 @@ import java.util.regex.Pattern;
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowFilter;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHub;
-import com.deep007.goniub.selenium.mitm.monitor.MitmRequest;
-import com.deep007.goniub.selenium.mitm.monitor.MitmResponse;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
-import com.deep007.goniub.terminal.Linux;
+import com.deep007.goniub.terminal.LinuxTerminal;
+import com.deep007.goniub.terminal.Terminal;
+import com.deep007.goniub.terminal.WindowsTerminal;
+import com.deep007.goniub.util.Boot;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,12 +51,30 @@ public class MitmServer implements MitmFlowFilter {
 			}
 		}
 		try {
-			Linux.execute(cmd);
+			Terminal terminal = null;
+			if (Boot.isUnixSystem()) {
+				terminal = new LinuxTerminal() {
+
+					@Override
+					public void onOutputLog(String log) {
+						MitmServer.this.log.info(log);
+					}
+					
+				};
+			}else if (Boot.isWindowsSystem()) {
+				terminal = new WindowsTerminal() {
+					
+					@Override
+					public void onOutputLog(String log) {
+						MitmServer.this.log.info(log);
+					}
+				};
+			}
+			terminal.execute(cmd);
 			MitmFlowHub.addMitmFlowFilter(id, this);
 			log.info("mitmserver启动成功.*:" + mitmPort);
 		} catch (Exception e) {
-			log.warn("mitmserver启动失败");
-			e.printStackTrace();
+			log.warn("mitmserver启动失败", e);
 		}
 	}
 

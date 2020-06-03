@@ -16,10 +16,10 @@ import com.deep007.goniub.util.Boot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Linux {
+public abstract class LinuxTerminal implements Terminal {
 
-	private final static Set<File> PATH_DIRS = new HashSet<File>();
-	private final static Set<File> PATH_VARS = new HashSet<File>();
+	private static Set<File> PATH_DIRS = new HashSet<File>();
+	private static Set<File> PATH_VARS = new HashSet<File>();
 	
 	private static final File getBashProfile() {
 		if (Boot.isLinuxSystem()) {
@@ -102,7 +102,8 @@ public class Linux {
 	}
 	
 	
-	public static void execute(String cmd) throws Exception {
+	@Override
+	public void execute(String cmd) throws Exception {
 		if (!Boot.isLinuxSystem()) {
 			throw new Exception("It's not linux system.");
 		}
@@ -114,7 +115,7 @@ public class Linux {
 			BufferedReader buf = new BufferedReader(new InputStreamReader(input));
 			String line = null;
 			while ((line = buf.readLine()) != null) {
-				log.info(line);
+				onOutputLog(line);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
