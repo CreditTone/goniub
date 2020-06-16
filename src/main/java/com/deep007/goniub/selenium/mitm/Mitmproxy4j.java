@@ -20,7 +20,7 @@ import com.deep007.goniub.util.Boot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MitmServer implements MitmFlowFilter {
+public class Mitmproxy4j implements MitmFlowFilter {
 
 	public final String id = UUID.randomUUID().toString();
 
@@ -45,11 +45,11 @@ public class MitmServer implements MitmFlowFilter {
 
 	private Map<String, List<AjaxHook>> hookers = new ConcurrentHashMap<>();
 	
-	public MitmServer() {
+	public Mitmproxy4j() {
 		this(8120, MitmFlowServer.MONITOR_GRPC_SERVER_PORT);
 	}
 
-	public MitmServer(int mitmproxyPort, int mitmproxyFlowGrpcServerPort) {
+	public Mitmproxy4j(int mitmproxyPort, int mitmproxyFlowGrpcServerPort) {
 		this.mitmproxyPort = mitmproxyPort;
 		this.mitmproxyFlowGrpcServerPort = mitmproxyFlowGrpcServerPort;
 		this.mitmFlowServer = new MitmFlowServer(mitmproxyFlowGrpcServerPort);
@@ -72,14 +72,14 @@ public class MitmServer implements MitmFlowFilter {
 				terminal = new LinuxTerminal() {
 					@Override
 					public void onOutputLog(String log) {
-						MitmServer.this.log.info(log);
+						Mitmproxy4j.this.log.info(log);
 					}
 				};
 			}else if (Boot.isWindowsSystem()) {
 				terminal = new WindowsTerminal() {
 					@Override
 					public void onOutputLog(String log) {
-						MitmServer.this.log.info(log);
+						Mitmproxy4j.this.log.info(log);
 					}
 				};
 			}

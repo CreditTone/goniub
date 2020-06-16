@@ -2,11 +2,11 @@ package com.deep007.goniub;
 
 import java.io.IOException;
 
-import com.deep007.goniub.selenium.mitm.MitmServer;
+import com.deep007.goniub.selenium.mitm.Mitmproxy4j;
 
 public class ServiceManager {
 
-	private MitmServer mitmServer = new MitmServer();
+	private Mitmproxy4j mitmproxy4j = new Mitmproxy4j();
 	
 	private static ServiceManager instance;
 	
@@ -15,7 +15,7 @@ public class ServiceManager {
 			if (instance == null) {
 				try {
 					instance = new ServiceManager();
-					instance.mitmServer.start();
+					instance.mitmproxy4j.start();
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}

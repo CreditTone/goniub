@@ -26,7 +26,7 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 	 */
 	private String cloudId = null;
 	
-	private MitmServer mitmServer;
+	private Mitmproxy4j mitmServer;
 	
 	public ChromeAjaxHookDriver(ChromeOptions options) {
 		super(options);
@@ -36,7 +36,7 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
 	}
 	
-	public ChromeAjaxHookDriver withMitmServer(MitmServer mitmServer) {
+	public ChromeAjaxHookDriver withMitmServer(Mitmproxy4j mitmServer) {
 		this.mitmServer = mitmServer;
 		return this;
 	}
