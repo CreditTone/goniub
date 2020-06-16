@@ -9,7 +9,6 @@ import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 
 import lombok.Data;
@@ -26,24 +25,20 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 	 */
 	private String cloudId = null;
 	
-	private Mitmproxy4j mitmServer;
+	private MyMitmFlowFilter mitmFlowFilter;
 	
-	public ChromeAjaxHookDriver(ChromeOptions options) {
+	public ChromeAjaxHookDriver(MyChromeOptions options) {
 		super(options);
-		cloudId = (String) options.getCapability(ChromeOptionsUtil.USER_AGENTID);
+		cloudId = (String) options.getCapability(MyChromeOptions.USER_AGENTID);
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
-	}
-	
-	public ChromeAjaxHookDriver withMitmServer(Mitmproxy4j mitmServer) {
-		this.mitmServer = mitmServer;
-		return this;
+		mitmFlowFilter = options.getWithMitmproxy4j();
 	}
 	
 	public ChromeAjaxHookDriver addAjaxHook(AjaxHook hook) {
-		if (hook != null && mitmServer != null) {
-			mitmServer.addAjaxHook(cloudId, hook);
+		if (hook != null && mitmFlowFilter != null) {
+			mitmFlowFilter.addAjaxHook(cloudId, hook);
 		}
 		return this;
 	}

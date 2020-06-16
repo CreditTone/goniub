@@ -7,9 +7,12 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
+
+import org.openqa.selenium.chrome.ChromeOptions;
+
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowFilter;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowServer;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowGRPCServer;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 import com.deep007.goniub.terminal.LinuxTerminal;
@@ -20,7 +23,7 @@ import com.deep007.goniub.util.Boot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class Mitmproxy4j implements MitmFlowFilter {
+public class Mitmproxy4j extends MyMitmFlowFilter {
 
 	public final String id = UUID.randomUUID().toString();
 
@@ -39,20 +42,17 @@ public class Mitmproxy4j implements MitmFlowFilter {
 	 */
 	private HttpsProxy upstreamProxy;
 	
-	private MitmFlowServer mitmFlowServer;
 
 	private Pattern cloudIdPattern = Pattern.compile("\\s+Cloud/([a-z0-9]+)");
 
-	private Map<String, List<AjaxHook>> hookers = new ConcurrentHashMap<>();
-	
 	public Mitmproxy4j() {
-		this(8120, MitmFlowServer.MONITOR_GRPC_SERVER_PORT);
+		this(8120, MitmFlowGRPCServer.MONITOR_GRPC_SERVER_PORT);
 	}
 
 	public Mitmproxy4j(int mitmproxyPort, int mitmproxyFlowGrpcServerPort) {
 		this.mitmproxyPort = mitmproxyPort;
 		this.mitmproxyFlowGrpcServerPort = mitmproxyFlowGrpcServerPort;
-		this.mitmFlowServer = new MitmFlowServer(mitmproxyFlowGrpcServerPort);
+		
 		this.mitmFlowServer.setMitmFlowFilter(this);
 	}
 
@@ -90,77 +90,31 @@ public class Mitmproxy4j implements MitmFlowFilter {
 		}
 	}
 
-	public void addAjaxHook(String hookIdValue, AjaxHook hooker) {
-		List<AjaxHook> results = hookers.get(hookIdValue);
-		if (results == null) {
-			results = new ArrayList<>();
-			hookers.put(hookIdValue, results);
-		}
-		results.add(hooker);
-	}
-
-	public void removeHooks(String hookIdValue) {
-		if (hookIdValue != null && hookers.containsKey(hookIdValue)) {
-			hookers.remove(hookIdValue);
-		}
-	}
-
-	private List<AjaxHook> getHookers(String hookIdValue) {
-		List<AjaxHook> results = hookers.get(hookIdValue);
-		return results;
-	}
-
-	public HttpsProxy getUpstreamProxy() {
-		return upstreamProxy;
-	}
-
 	public void setUpstreamProxy(HttpsProxy upstreamProxy) {
 		this.upstreamProxy = upstreamProxy;
 	}
 
-	@Override
-	public void filterRequest(LRequest request) {
-		List<AjaxHook> results = getHookers(request.getBinding().getBrowserId());
-		if (results != null) {
-			for (AjaxHook ajaxHook : results) {
-				ajaxHook.filterRequest(request);
-			}
-		}
-	}
-
-	@Override
-	public void filterResponse(LResponse response) {
-		List<AjaxHook> results = getHookers(response.getBinding().getBrowserId());
-		if (results != null) {
-			for (AjaxHook ajaxHook : results) {
-				ajaxHook.filterResponse(response);
-			}
-		}
-	}
-	
 	public HttpsProxy getSelfProxyService() {
 		return new HttpsProxy("127.0.0.1", mitmproxyPort);
 	}
 	
-
 	public ChromeAjaxHookDriver newChromeInstance(boolean disableLoadImage, boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless,
-				getSelfProxyService(), ChromeOptionsUtil.CHROME_USER_AGENT)).withMitmServer(this);
+		return new ChromeAjaxHookDriver(new MyChromeOptions(disableLoadImage, headless,
+				this, MyChromeOptions.CHROME_USER_AGENT));
 	}
 
 	public ChromeAjaxHookDriver newAndroidInstance(boolean disableLoadImage, boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless,
-				getSelfProxyService(), ChromeOptionsUtil.ANDROID_USER_AGENT)).withMitmServer(this);
+		return new ChromeAjaxHookDriver(new MyChromeOptions(disableLoadImage, headless, this, MyChromeOptions.ANDROID_USER_AGENT));
 	}
 
 	public ChromeAjaxHookDriver newIOSInstance(boolean disableLoadImage, boolean headless) {
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless,
-				getSelfProxyService(), ChromeOptionsUtil.IOS_USER_AGENT)).withMitmServer(this);
+		return new ChromeAjaxHookDriver(new MyChromeOptions(disableLoadImage, headless,
+				this, MyChromeOptions.IOS_USER_AGENT));
 	}
 	
 	public static final ChromeAjaxHookDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless,String userAgent) {
-		log.debug("你启动的是没有钩子功能的浏览器");
-		return new ChromeAjaxHookDriver(ChromeOptionsUtil.createChromeOptions(disableLoadImage, headless, null, userAgent));
+		//log.debug("你启动的是没有钩子功能的浏览器");
+		return new ChromeAjaxHookDriver(new MyChromeOptions(disableLoadImage, headless, null, userAgent));
 	}
 	
 	public static final ChromeAjaxHookDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless) {

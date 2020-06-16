@@ -1,8 +1,8 @@
 package com.deep007.goniub.selenium.mitm.monitor;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.deep007.goniub.selenium.mitm.monitor.grpc.MitmFlowMonitorGrpc;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
@@ -14,7 +14,7 @@ import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MitmFlowServer {
+public class MitmFlowGRPCServer {
 	
 	public static final int MONITOR_GRPC_SERVER_PORT = 8013;
 
@@ -24,12 +24,12 @@ public class MitmFlowServer {
 	
 	private boolean isStarted = false;
 	
-	public MitmFlowServer(int port) {
+	public MitmFlowGRPCServer(int port) {
 		this.port = port;
 		this.server = ServerBuilder.forPort(port).addService(new MonitorServerImpl()).build();
 	}
 	
-	public MitmFlowServer() {
+	public MitmFlowGRPCServer() {
 		this(MONITOR_GRPC_SERVER_PORT);
 	}
 	
@@ -43,7 +43,7 @@ public class MitmFlowServer {
 				@Override
 				public void run() {
 					log.info("*** MitmFlowHub shutting down gRPC server since JVM is shutting down");
-					MitmFlowServer.this.stop();
+					MitmFlowGRPCServer.this.stop();
 					log.info("*** MitmFlowHub server shut down");
 				}
 			});
@@ -76,6 +76,9 @@ public class MitmFlowServer {
 		
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
+			for (MitmFlowFilter mitmFlowFilters) {
+				
+			}
 			MitmFlowFilter filter = mitmFlowFilter;
 			if (filter != null) {
 				LResponse lResponse = LResponse.create(response);
@@ -89,10 +92,14 @@ public class MitmFlowServer {
 		
 	}
 	
-	private MitmFlowFilter mitmFlowFilter;
+	private List<MitmFlowFilter> mitmFlowFilters = new ArrayList<>();
 	
-	public void setMitmFlowFilter(MitmFlowFilter mitmFlowFilter) {
-		this.mitmFlowFilter = mitmFlowFilter;
+	public void addMitmFlowFilter(MitmFlowFilter mitmFlowFilter) {
+		mitmFlowFilters.add(mitmFlowFilter);
+	}
+	
+	public void removeMitmFlowFilter(MitmFlowFilter mitmFlowFilter) {
+		mitmFlowFilters.remove(mitmFlowFilter);
 	}
 	
 }

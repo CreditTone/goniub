@@ -1,7 +1,6 @@
 package com.deep007.goniub.selenium.mitm;
 
 import java.io.File;
-import java.security.MessageDigest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,7 +16,7 @@ import com.deep007.goniub.util.Boot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class ChromeOptionsUtil {
+public class MyChromeOptions extends ChromeOptions {
 
 	public static final String USER_AGENTID = "cloudId";
 
@@ -26,14 +25,17 @@ public class ChromeOptionsUtil {
 	public static final String IOS_USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_1 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A402 Safari/604.1";
 
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
-
-	public static ChromeOptions createChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy proxy,
+	
+	private Mitmproxy4j withMitmproxy4j;
+	
+	public MyChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
 			String userAgent) {
 		String CHROME_BINARY = LinuxTerminal.findAbsoluteVar("google-chrome");
 		if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {
 			throw new RuntimeException("请安装google-chrome.");
 		}
-		ChromeOptions options = new ChromeOptions();
+		this.withMitmproxy4j = withMitmproxy4j;
+		ChromeOptions options = this;
 		if (Boot.isLinuxSystem()) {
 			options.setBinary(CHROME_BINARY);
 		}
@@ -50,14 +52,15 @@ public class ChromeOptionsUtil {
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
-		String cloudIdValue = getMD5(UUID.randomUUID().toString());
+		String cloudIdValue = UUID.randomUUID().toString().substring(0, 6);
 		userAgent += " Cloud/" + cloudIdValue;
 		options.addArguments("--user-agent='" + userAgent + "'");
 		options.setCapability(USER_AGENTID, cloudIdValue);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
 		options.setCapability("acceptInsecureCerts", true);
-		if (proxy != null) {
+		if (withMitmproxy4j != null) {
+			HttpsProxy proxy = withMitmproxy4j.getSelfProxyService();
 			if (proxy.getUsername() != null && proxy.getPassword() != null) {
 				options.addArguments("--start-maximized");
 				File extension = ChromeExtensionUtil.createProxyauthExtension(proxy.getServer(), proxy.getPort(),
@@ -79,27 +82,10 @@ public class ChromeOptionsUtil {
 			prefs.put("profile.managed_default_content_settings.images", 2); // 禁止下载加载图片
 		}
 		options.setExperimentalOption("prefs", prefs);
-		return options;
 	}
 
-	private static String getMD5(String inStr) {
-		MessageDigest md5 = null;
-		try {
-			md5 = MessageDigest.getInstance("MD5");
-			byte[] bs = md5.digest(inStr.getBytes());
-			StringBuilder sb = new StringBuilder(40);
-			for (byte x : bs) {
-				if ((x & 0xff) >> 4 == 0) {
-					sb.append("0").append(Integer.toHexString(x & 0xff));
-				} else {
-					sb.append(Integer.toHexString(x & 0xff));
-				}
-			}
-			return sb.toString();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return inStr;
-		}
+	public Mitmproxy4j getWithMitmproxy4j() {
+		return withMitmproxy4j;
 	}
 
 }
