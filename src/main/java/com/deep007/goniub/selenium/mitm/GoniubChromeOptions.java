@@ -16,7 +16,7 @@ import com.deep007.goniub.util.Boot;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MyChromeOptions extends ChromeOptions {
+public class GoniubChromeOptions extends ChromeOptions {
 
 	public static final String USER_AGENTID = "cloudId";
 
@@ -28,7 +28,7 @@ public class MyChromeOptions extends ChromeOptions {
 	
 	private Mitmproxy4j withMitmproxy4j;
 	
-	public MyChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
+	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
 			String userAgent) {
 		String CHROME_BINARY = LinuxTerminal.findAbsoluteVar("google-chrome");
 		if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {

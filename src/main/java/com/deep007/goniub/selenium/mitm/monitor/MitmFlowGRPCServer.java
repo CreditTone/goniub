@@ -1,9 +1,9 @@
 package com.deep007.goniub.selenium.mitm.monitor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
+import com.deep007.goniub.ServiceManager;
+import com.deep007.goniub.selenium.mitm.GoniubChromeDriver;
 import com.deep007.goniub.selenium.mitm.monitor.grpc.MitmFlowMonitorGrpc;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
@@ -63,43 +63,59 @@ public class MitmFlowGRPCServer {
 		
 		@Override
 		public void onMitmRequest(MitmRequest request, StreamObserver<MitmRequest> responseObserver) {
-			MitmFlowFilter filter = mitmFlowFilter;
-			if (filter != null) {
-				LRequest lRequest = LRequest.create(request);
-				filter.filterRequest(lRequest);
-				responseObserver.onNext(lRequest.getMitmRequest());
-			}else {
+			GoniubChromeDriver goniubChromeDriver = ServiceManager
+					.getRunningChromeDriver(request.getMitmBinding().getBrowserId());
+			if (goniubChromeDriver == null) {
 				responseObserver.onNext(request);
+				responseObserver.onCompleted();
+				return;
 			}
+			MitmFlowHookGetter mitmFlowHookGetter = goniubChromeDriver.getMitmFlowHookGetter();
+			if (mitmFlowHookGetter == null) {
+				responseObserver.onNext(request);
+				responseObserver.onCompleted();
+				return;
+			}
+			MitmRequestHook mitmRequestHook = mitmFlowHookGetter.getRequestHook(request);
+			if (mitmRequestHook == null) {
+				responseObserver.onNext(request);
+				responseObserver.onCompleted();
+				return;
+			}
+			LRequest lRequest = LRequest.create(request);
+			mitmRequestHook.filterRequest(lRequest);
+			responseObserver.onNext(lRequest.getMitmRequest());
 			responseObserver.onCompleted();
 		}
 		
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
-			for (MitmFlowFilter mitmFlowFilters) {
-				
-			}
-			MitmFlowFilter filter = mitmFlowFilter;
-			if (filter != null) {
-				LResponse lResponse = LResponse.create(response);
-				filter.filterResponse(lResponse);
-				responseObserver.onNext(lResponse.getMitmResponse());
-			}else {
+			GoniubChromeDriver goniubChromeDriver = ServiceManager
+					.getRunningChromeDriver(response.getMitmBinding().getBrowserId());
+			if (goniubChromeDriver == null) {
 				responseObserver.onNext(response);
+				responseObserver.onCompleted();
+				return;
 			}
+			MitmFlowHookGetter mitmFlowHookGetter = goniubChromeDriver.getMitmFlowHookGetter();
+			if (mitmFlowHookGetter == null) {
+				responseObserver.onNext(response);
+				responseObserver.onCompleted();
+				return;
+			}
+			MitmResponseHook mitmResponseHook = mitmFlowHookGetter.getResponseHook(response);
+			if (mitmResponseHook == null) {
+				responseObserver.onNext(response);
+				responseObserver.onCompleted();
+				return;
+			}
+			LResponse lResponse = LResponse.create(response);
+			mitmResponseHook.filterResponse(lResponse);
+			responseObserver.onNext(lResponse.getMitmResponse());
 			responseObserver.onCompleted();
 		}
 		
 	}
 	
-	private List<MitmFlowFilter> mitmFlowFilters = new ArrayList<>();
-	
-	public void addMitmFlowFilter(MitmFlowFilter mitmFlowFilter) {
-		mitmFlowFilters.add(mitmFlowFilter);
-	}
-	
-	public void removeMitmFlowFilter(MitmFlowFilter mitmFlowFilter) {
-		mitmFlowFilters.remove(mitmFlowFilter);
-	}
 	
 }

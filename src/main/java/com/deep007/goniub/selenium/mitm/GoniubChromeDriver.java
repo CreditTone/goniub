@@ -1,5 +1,6 @@
 package com.deep007.goniub.selenium.mitm;
 
+import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -11,36 +12,40 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import com.deep007.goniub.ServiceManager;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHookGetter;
+
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
-public class ChromeAjaxHookDriver extends ChromeDriver {
+public class GoniubChromeDriver extends ChromeDriver {
 	
 	public static final Random random = new Random();
 	
 	/**
 	 * 每个浏览器的唯一标示
 	 */
-	private String cloudId = null;
+	private String browserId = null;
 	
-	private MyMitmFlowFilter mitmFlowFilter;
+	private MitmFlowHookGetter mitmFlowHookGetter;
 	
-	public ChromeAjaxHookDriver(MyChromeOptions options) {
+	public GoniubChromeDriver(GoniubChromeOptions options) {
 		super(options);
-		cloudId = (String) options.getCapability(MyChromeOptions.USER_AGENTID);
+		browserId = (String) options.getCapability(GoniubChromeOptions.USER_AGENTID);
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
-		mitmFlowFilter = options.getWithMitmproxy4j();
+		ServiceManager.onNewGoniubChromeDriver(this);
 	}
 	
-	public ChromeAjaxHookDriver addAjaxHook(AjaxHook hook) {
-		if (hook != null && mitmFlowFilter != null) {
-			mitmFlowFilter.addAjaxHook(cloudId, hook);
-		}
-		return this;
+	public void setMitmFlowHookGetter(MitmFlowHookGetter mitmFlowHookGetter) {
+		this.mitmFlowHookGetter = mitmFlowHookGetter;
+	}
+	
+	public MitmFlowHookGetter getMitmFlowHookGetter() {
+		return this.mitmFlowHookGetter;
 	}
 	
 	public void hideElement(WebElement elm) {
@@ -105,12 +110,10 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 
 	@Override
 	public void quit() {
-		boolean success = false;
 		try {
-			//MitmServer.getInstance().removeHooks(cloudIdValue);
+			ServiceManager.onQuitGoniubChromeDriver(this);
 			Thread.sleep(1000);
 			super.quit();
-			success = true;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
@@ -238,4 +241,6 @@ public class ChromeAjaxHookDriver extends ChromeDriver {
 		}
 		return false;
 	}
+	
+	
 }
