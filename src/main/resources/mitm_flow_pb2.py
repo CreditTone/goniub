@@ -18,36 +18,29 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='mitm',
   syntax='proto3',
   serialized_options=b'\n(com.deep007.goniub.selenium.mitm.monitorB\024MitmFlowMonitorProtoP\001',
-  serialized_pb=b'\n\x0fmitm_flow.proto\x12\x04mitm\"A\n\x0bMitmRequest\x12\x14\n\x0cmitmserverId\x18\x01 \x01(\t\x12\x0f\n\x07\x63loudId\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\"S\n\x0cMitmResponse\x12\x14\n\x0cmitmserverId\x18\x01 \x01(\t\x12\x0f\n\x07\x63loudId\x18\x02 \x01(\t\x12\x0b\n\x03url\x18\x03 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\x0c\x32\x86\x01\n\x0fMitmFlowMonitor\x12\x37\n\ronMitmRequest\x12\x11.mitm.MitmRequest\x1a\x11.mitm.MitmRequest\"\x00\x12:\n\x0eonMitmResponse\x12\x12.mitm.MitmResponse\x1a\x12.mitm.MitmResponse\"\x00\x42\x42\n(com.deep007.goniub.selenium.mitm.monitorB\x14MitmFlowMonitorProtoP\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0fmitm_flow.proto\x12\x04mitm\")\n\nMitmHeader\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\t\"6\n\x0bMitmBinding\x12\x14\n\x0cmitmserverId\x18\x01 \x01(\t\x12\x11\n\tbrowserId\x18\x02 \x01(\t\"\x86\x01\n\x0bMitmRequest\x12&\n\x0bmitmBinding\x18\x01 \x01(\x0b\x32\x11.mitm.MitmBinding\x12\x0b\n\x03url\x18\x02 \x01(\t\x12\x0e\n\x06method\x18\x03 \x01(\t\x12!\n\x07headers\x18\x04 \x03(\x0b\x32\x10.mitm.MitmHeader\x12\x0f\n\x07\x63ontent\x18\x05 \x01(\x0c\"\xa2\x01\n\x0cMitmResponse\x12&\n\x0bmitmBinding\x18\x01 \x01(\x0b\x32\x11.mitm.MitmBinding\x12\"\n\x07request\x18\x02 \x01(\x0b\x32\x11.mitm.MitmRequest\x12!\n\x07headers\x18\x03 \x03(\x0b\x32\x10.mitm.MitmHeader\x12\x0f\n\x07\x63ontent\x18\x05 \x01(\x0c\x12\x12\n\nstatusCode\x18\x06 \x01(\x05\x32\x86\x01\n\x0fMitmFlowMonitor\x12\x37\n\ronMitmRequest\x12\x11.mitm.MitmRequest\x1a\x11.mitm.MitmRequest\"\x00\x12:\n\x0eonMitmResponse\x12\x12.mitm.MitmResponse\x1a\x12.mitm.MitmResponse\"\x00\x42\x42\n(com.deep007.goniub.selenium.mitm.monitorB\x14MitmFlowMonitorProtoP\x01\x62\x06proto3'
 )
 
 
 
 
-_MITMREQUEST = _descriptor.Descriptor(
-  name='MitmRequest',
-  full_name='mitm.MitmRequest',
+_MITMHEADER = _descriptor.Descriptor(
+  name='MitmHeader',
+  full_name='mitm.MitmHeader',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='mitmserverId', full_name='mitm.MitmRequest.mitmserverId', index=0,
+      name='name', full_name='mitm.MitmHeader.name', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='cloudId', full_name='mitm.MitmRequest.cloudId', index=1,
+      name='value', full_name='mitm.MitmHeader.value', index=1,
       number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='url', full_name='mitm.MitmRequest.url', index=2,
-      number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -65,41 +58,86 @@ _MITMREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=25,
-  serialized_end=90,
+  serialized_end=66,
 )
 
 
-_MITMRESPONSE = _descriptor.Descriptor(
-  name='MitmResponse',
-  full_name='mitm.MitmResponse',
+_MITMBINDING = _descriptor.Descriptor(
+  name='MitmBinding',
+  full_name='mitm.MitmBinding',
   filename=None,
   file=DESCRIPTOR,
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='mitmserverId', full_name='mitm.MitmResponse.mitmserverId', index=0,
+      name='mitmserverId', full_name='mitm.MitmBinding.mitmserverId', index=0,
       number=1, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='cloudId', full_name='mitm.MitmResponse.cloudId', index=1,
+      name='browserId', full_name='mitm.MitmBinding.browserId', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=68,
+  serialized_end=122,
+)
+
+
+_MITMREQUEST = _descriptor.Descriptor(
+  name='MitmRequest',
+  full_name='mitm.MitmRequest',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='mitmBinding', full_name='mitm.MitmRequest.mitmBinding', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='url', full_name='mitm.MitmRequest.url', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='url', full_name='mitm.MitmResponse.url', index=2,
+      name='method', full_name='mitm.MitmRequest.method', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='content', full_name='mitm.MitmResponse.content', index=3,
-      number=4, type=12, cpp_type=9, label=1,
+      name='headers', full_name='mitm.MitmRequest.headers', index=3,
+      number=4, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='content', full_name='mitm.MitmRequest.content', index=4,
+      number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -116,13 +154,93 @@ _MITMRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=92,
-  serialized_end=175,
+  serialized_start=125,
+  serialized_end=259,
 )
 
+
+_MITMRESPONSE = _descriptor.Descriptor(
+  name='MitmResponse',
+  full_name='mitm.MitmResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='mitmBinding', full_name='mitm.MitmResponse.mitmBinding', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='request', full_name='mitm.MitmResponse.request', index=1,
+      number=2, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='headers', full_name='mitm.MitmResponse.headers', index=2,
+      number=3, type=11, cpp_type=10, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='content', full_name='mitm.MitmResponse.content', index=3,
+      number=5, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='statusCode', full_name='mitm.MitmResponse.statusCode', index=4,
+      number=6, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=262,
+  serialized_end=424,
+)
+
+_MITMREQUEST.fields_by_name['mitmBinding'].message_type = _MITMBINDING
+_MITMREQUEST.fields_by_name['headers'].message_type = _MITMHEADER
+_MITMRESPONSE.fields_by_name['mitmBinding'].message_type = _MITMBINDING
+_MITMRESPONSE.fields_by_name['request'].message_type = _MITMREQUEST
+_MITMRESPONSE.fields_by_name['headers'].message_type = _MITMHEADER
+DESCRIPTOR.message_types_by_name['MitmHeader'] = _MITMHEADER
+DESCRIPTOR.message_types_by_name['MitmBinding'] = _MITMBINDING
 DESCRIPTOR.message_types_by_name['MitmRequest'] = _MITMREQUEST
 DESCRIPTOR.message_types_by_name['MitmResponse'] = _MITMRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+MitmHeader = _reflection.GeneratedProtocolMessageType('MitmHeader', (_message.Message,), {
+  'DESCRIPTOR' : _MITMHEADER,
+  '__module__' : 'mitm_flow_pb2'
+  # @@protoc_insertion_point(class_scope:mitm.MitmHeader)
+  })
+_sym_db.RegisterMessage(MitmHeader)
+
+MitmBinding = _reflection.GeneratedProtocolMessageType('MitmBinding', (_message.Message,), {
+  'DESCRIPTOR' : _MITMBINDING,
+  '__module__' : 'mitm_flow_pb2'
+  # @@protoc_insertion_point(class_scope:mitm.MitmBinding)
+  })
+_sym_db.RegisterMessage(MitmBinding)
 
 MitmRequest = _reflection.GeneratedProtocolMessageType('MitmRequest', (_message.Message,), {
   'DESCRIPTOR' : _MITMREQUEST,
@@ -147,8 +265,8 @@ _MITMFLOWMONITOR = _descriptor.ServiceDescriptor(
   file=DESCRIPTOR,
   index=0,
   serialized_options=None,
-  serialized_start=178,
-  serialized_end=312,
+  serialized_start=427,
+  serialized_end=561,
   methods=[
   _descriptor.MethodDescriptor(
     name='onMitmRequest',

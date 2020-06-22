@@ -1,14 +1,10 @@
 package com.deep007.goniub.selenium.mitm;
 
-import java.io.IOException;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowGRPCServer;
-import com.deep007.goniub.terminal.LinuxTerminal;
-import com.deep007.goniub.terminal.Terminal;
-import com.deep007.goniub.terminal.WindowsTerminal;
+import com.deep007.goniub.terminal.*;
 import com.deep007.goniub.util.Boot;
 
 import lombok.extern.slf4j.Slf4j;
@@ -24,28 +20,34 @@ public class Mitmproxy4j {
 	private final int mitmproxyPort;
 	
 	/**
-	 * mitmproxy grpc通信端口
-	 */
-	private final int mitmproxyFlowGrpcServerPort;
-
-	/**
 	 * 上游的代理，不设置默认走本地
 	 */
 	private HttpsProxy upstreamProxy;
 	
 
 	private Pattern cloudIdPattern = Pattern.compile("\\s+Cloud/([a-z0-9]+)");
+	
+	private Terminal terminal = null;
 
 	public Mitmproxy4j() {
-		this(8120, MitmFlowGRPCServer.MONITOR_GRPC_SERVER_PORT);
+		this(8120);
 	}
 
-	public Mitmproxy4j(int mitmproxyPort, int mitmproxyFlowGrpcServerPort) {
+	public Mitmproxy4j(int mitmproxyPort) {
 		this.mitmproxyPort = mitmproxyPort;
-		this.mitmproxyFlowGrpcServerPort = mitmproxyFlowGrpcServerPort;
 	}
 
-	public synchronized void start() throws IOException {
+	public synchronized void stop() throws Exception {
+		if (terminal != null) {
+			terminal.kill();
+			terminal = null;
+		}
+	}
+	
+	public synchronized void start() throws Exception {
+		if (terminal != null) {
+			return;
+		}
 		MitmdumpScript.init();
 		String cmd = "mitmdump -p " + mitmproxyPort;
 		if (upstreamProxy != null) {
@@ -55,23 +57,14 @@ public class Mitmproxy4j {
 			}
 		}
 		try {
-			Terminal terminal = null;
 			if (Boot.isUnixSystem()) {
-				terminal = new LinuxTerminal() {
-					@Override
-					public void onOutputLog(String log) {
-						Mitmproxy4j.this.log.info(log);
-					}
-				};
+				terminal = new LinuxTerminal(cmd);
 			}else if (Boot.isWindowsSystem()) {
-				terminal = new WindowsTerminal() {
-					@Override
-					public void onOutputLog(String log) {
-						Mitmproxy4j.this.log.info(log);
-					}
-				};
+				terminal = new WindowsTerminal(cmd);
+			}else {
+				new RuntimeException("Can not matching this computer'system.");
 			}
-			terminal.execute(cmd);
+			terminal.execute();
 			log.info("mitmserver启动成功.*:" + mitmproxyPort);
 		} catch (Exception e) {
 			log.warn("mitmserver启动失败", e);

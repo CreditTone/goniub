@@ -11,6 +11,7 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.terminal.LinuxTerminal;
+import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
 
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoniubChromeOptions extends ChromeOptions {
 
-	public static final String USER_AGENTID = "cloudId";
+	public static final String USER_AGENTID = "BrowserId";
 
 	public static final String ANDROID_USER_AGENT = "Mozilla/5.0 (Linux; Android 7.0; PLUS Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36";
 
@@ -30,7 +31,7 @@ public class GoniubChromeOptions extends ChromeOptions {
 	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
 			String userAgent) {
-		String CHROME_BINARY = LinuxTerminal.findAbsoluteVar("google-chrome");
+		String CHROME_BINARY = LinuxTerminalHelper.findAbsoluteVar("google-chrome");
 		if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {
 			throw new RuntimeException("请安装google-chrome.");
 		}
@@ -52,10 +53,10 @@ public class GoniubChromeOptions extends ChromeOptions {
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
-		String cloudIdValue = UUID.randomUUID().toString().substring(0, 6);
-		userAgent += " Cloud/" + cloudIdValue;
+		String browserId = UUID.randomUUID().toString().substring(0, 6);
+		userAgent += " "+USER_AGENTID+"/" + browserId;
 		options.addArguments("--user-agent='" + userAgent + "'");
-		options.setCapability(USER_AGENTID, cloudIdValue);
+		options.setCapability(USER_AGENTID, browserId);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
 		options.setCapability("acceptInsecureCerts", true);
