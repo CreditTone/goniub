@@ -38,6 +38,7 @@ public class MitmFlowGRPCServer {
 	public synchronized void start() throws IOException {
 		if (!isStarted) {
 			server.start();
+			System.out.println("MitmFlowGRPCServer start");
 			log.info("MitmFlowHub Server started, listening on {}", MONITOR_GRPC_SERVER_PORT);
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
@@ -63,6 +64,7 @@ public class MitmFlowGRPCServer {
 		
 		@Override
 		public void onMitmRequest(MitmRequest request, StreamObserver<MitmRequest> responseObserver) {
+			System.out.println("onMitmRequest:"+request.getUrl());
 			GoniubChromeDriver goniubChromeDriver = ServiceManager
 					.getRunningChromeDriver(request.getMitmBinding().getBrowserId());
 			if (goniubChromeDriver == null) {
@@ -90,6 +92,7 @@ public class MitmFlowGRPCServer {
 		
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
+			System.out.println("onMitmResponse:"+response.getRequest().getUrl());
 			GoniubChromeDriver goniubChromeDriver = ServiceManager
 					.getRunningChromeDriver(response.getMitmBinding().getBrowserId());
 			if (goniubChromeDriver == null) {

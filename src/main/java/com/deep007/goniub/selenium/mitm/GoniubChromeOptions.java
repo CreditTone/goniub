@@ -10,7 +10,6 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.terminal.LinuxTerminal;
 import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
 
@@ -19,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoniubChromeOptions extends ChromeOptions {
 
-	public static final String USER_AGENTID = "BrowserId";
+	public static final String BROWSER_ID = "BrowserId";
 
 	public static final String ANDROID_USER_AGENT = "Mozilla/5.0 (Linux; Android 7.0; PLUS Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36";
 
@@ -29,18 +28,39 @@ public class GoniubChromeOptions extends ChromeOptions {
 	
 	private Mitmproxy4j withMitmproxy4j;
 	
+	public static String CHROME_DRIVER;
+	
+	public GoniubChromeOptions() {
+		this(false, false, null, CHROME_USER_AGENT);
+	}
+	
+	public GoniubChromeOptions(boolean disableLoadImage, boolean headless) {
+		this(disableLoadImage, headless, null, CHROME_USER_AGENT);
+	}
+	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
 			String userAgent) {
-		String CHROME_BINARY = LinuxTerminalHelper.findAbsoluteVar("google-chrome");
-		if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {
-			throw new RuntimeException("请安装google-chrome.");
-		}
 		this.withMitmproxy4j = withMitmproxy4j;
 		ChromeOptions options = this;
-		if (Boot.isLinuxSystem()) {
+		if (Boot.isMacSystem()) {
+			String chromeDriver = CHROME_DRIVER;
+			if (chromeDriver == null) {
+				chromeDriver = System.getProperty("webdriver.chrome.driver");
+			}
+			if (chromeDriver == null) {
+				throw new RuntimeException("请设置CHROME_DRIVER的路径");
+			}
+			System.setProperty("webdriver.chrome.driver", chromeDriver);
+		}else if (Boot.isLinuxSystem()) {
+			String CHROME_BINARY = LinuxTerminalHelper.findAbsoluteVar("google-chrome");
+			if (CHROME_BINARY == null || CHROME_BINARY.equals("google-chrome")) {
+				throw new RuntimeException("请安装google-chrome.");
+			}
 			options.setBinary(CHROME_BINARY);
+		}else if (Boot.isWindowsSystem()) {
+			
 		}
-		if (Boot.isLinuxSystem() || headless) {
+		if (Boot.isLinuxSystem() && headless) {
 			options.addArguments("--headless");// headless mode
 		}
 		options.addArguments("--header-args");
@@ -54,9 +74,9 @@ public class GoniubChromeOptions extends ChromeOptions {
 			userAgent = CHROME_USER_AGENT;
 		}
 		String browserId = UUID.randomUUID().toString().substring(0, 6);
-		userAgent += " "+USER_AGENTID+"/" + browserId;
+		userAgent += " "+BROWSER_ID+"/" + browserId;
 		options.addArguments("--user-agent='" + userAgent + "'");
-		options.setCapability(USER_AGENTID, browserId);
+		options.setCapability(BROWSER_ID, browserId);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
 		options.setCapability("acceptInsecureCerts", true);

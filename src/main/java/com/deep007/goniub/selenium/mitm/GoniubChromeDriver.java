@@ -1,6 +1,5 @@
 package com.deep007.goniub.selenium.mitm;
 
-import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -16,6 +15,7 @@ import com.deep007.goniub.ServiceManager;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHookGetter;
 
 import lombok.Data;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -27,17 +27,24 @@ public class GoniubChromeDriver extends ChromeDriver {
 	/**
 	 * 每个浏览器的唯一标示
 	 */
+	@Getter
 	private String browserId = null;
 	
 	private MitmFlowHookGetter mitmFlowHookGetter;
 	
+	public GoniubChromeDriver() {
+		this(new GoniubChromeOptions());
+	}
+	
 	public GoniubChromeDriver(GoniubChromeOptions options) {
 		super(options);
-		browserId = (String) options.getCapability(GoniubChromeOptions.USER_AGENTID);
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
-		ServiceManager.onNewGoniubChromeDriver(this);
+		browserId = (String) options.getCapability(GoniubChromeOptions.BROWSER_ID);
+		if (browserId != null) {
+			ServiceManager.onNewGoniubChromeDriver(this);
+		}
 	}
 	
 	public void setMitmFlowHookGetter(MitmFlowHookGetter mitmFlowHookGetter) {
@@ -111,8 +118,10 @@ public class GoniubChromeDriver extends ChromeDriver {
 	@Override
 	public void quit() {
 		try {
-			ServiceManager.onQuitGoniubChromeDriver(this);
-			Thread.sleep(1000);
+			if (browserId != null) {
+				ServiceManager.onQuitGoniubChromeDriver(this);
+				Thread.sleep(1000);
+			}
 			super.quit();
 		} catch (Exception e) {
 			e.printStackTrace();

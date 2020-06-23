@@ -22,12 +22,15 @@ public class ServiceManager {
 				try {
 					mitmFlowGrpcServer = new MitmFlowGRPCServer();
 					mitmFlowGrpcServer.start();
+					System.out.println("启动mitmflow grpc");
 				} catch (IOException e) {
 					throw new RuntimeException(e);
 				}
 			}
 		}
 	}
+	
+	public static void init() {}
 	
 	public static MitmFlowGRPCServer mitmFlowGRPCServer() {
 		return mitmFlowGrpcServer;

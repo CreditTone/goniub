@@ -3,7 +3,9 @@ package com.deep007.goniub.selenium.mitm;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import com.deep007.goniub.ServiceManager;
 import com.deep007.goniub.request.HttpsProxy;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowGRPCServer;
 import com.deep007.goniub.terminal.*;
 import com.deep007.goniub.util.Boot;
 
@@ -37,7 +39,7 @@ public class Mitmproxy4j {
 		this.mitmproxyPort = mitmproxyPort;
 	}
 
-	public synchronized void stop() throws Exception {
+	private synchronized void stop() throws Exception {
 		if (terminal != null) {
 			terminal.kill();
 			terminal = null;
@@ -48,6 +50,7 @@ public class Mitmproxy4j {
 		if (terminal != null) {
 			return;
 		}
+		ServiceManager.init();
 		MitmdumpScript.init();
 		String cmd = "mitmdump -p " + mitmproxyPort;
 		if (upstreamProxy != null) {
@@ -56,6 +59,7 @@ public class Mitmproxy4j {
 				cmd += " --upstream-auth " + upstreamProxy.getUsername() + ":" + upstreamProxy.getPassword();
 			}
 		}
+		cmd += " -s mitm_start_script.py";
 		try {
 			if (Boot.isUnixSystem()) {
 				terminal = new LinuxTerminal(cmd);
@@ -65,7 +69,18 @@ public class Mitmproxy4j {
 				new RuntimeException("Can not matching this computer'system.");
 			}
 			terminal.execute();
+			Thread.sleep(1000 * 10);
 			log.info("mitmserver启动成功.*:" + mitmproxyPort);
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				@Override
+				public void run() {
+					try {
+						Mitmproxy4j.this.stop();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			});
 		} catch (Exception e) {
 			log.warn("mitmserver启动失败", e);
 		}
