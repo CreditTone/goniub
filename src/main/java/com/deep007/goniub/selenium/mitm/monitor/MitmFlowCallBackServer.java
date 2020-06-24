@@ -1,9 +1,9 @@
 package com.deep007.goniub.selenium.mitm.monitor;
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.deep007.goniub.ServiceManager;
-import com.deep007.goniub.selenium.mitm.GoniubChromeDriver;
 import com.deep007.goniub.selenium.mitm.monitor.grpc.MitmFlowMonitorGrpc;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
 import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
@@ -14,37 +14,46 @@ import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class MitmFlowGRPCServer {
+public class MitmFlowCallBackServer {
 	
-	public static final int MONITOR_GRPC_SERVER_PORT = 8013;
-
 	private Server server;
 	
-	private int port;
+	private final int port;
 	
 	private boolean isStarted = false;
 	
-	public MitmFlowGRPCServer(int port) {
+	private final Map<String,MitmFlowHookGetter> mitmFlowHookGetterMapping = new ConcurrentHashMap<>();
+	
+	public MitmFlowCallBackServer(int port) throws IOException {
 		this.port = port;
 		this.server = ServerBuilder.forPort(port).addService(new MonitorServerImpl()).build();
-	}
-	
-	public MitmFlowGRPCServer() {
-		this(MONITOR_GRPC_SERVER_PORT);
+		start();
 	}
 	
 	
+	public int getPort() {
+		return port;
+	}
 	
-	public synchronized void start() throws IOException {
+	public void setMitmFlowHookGetter(String browserId, MitmFlowHookGetter mitmFlowHookGetter) {
+		mitmFlowHookGetterMapping.put(browserId, mitmFlowHookGetter);
+	}
+	
+	public void removeMitmFlowHookGetter(String browserId) {
+		mitmFlowHookGetterMapping.remove(browserId);
+	}
+
+
+	private void start() throws IOException {
 		if (!isStarted) {
 			server.start();
 			System.out.println("MitmFlowGRPCServer start");
-			log.info("MitmFlowHub Server started, listening on {}", MONITOR_GRPC_SERVER_PORT);
+			log.info("MitmFlowHub Server started, listening on {}", port);
 			Runtime.getRuntime().addShutdownHook(new Thread() {
 				@Override
 				public void run() {
 					log.info("*** MitmFlowHub shutting down gRPC server since JVM is shutting down");
-					MitmFlowGRPCServer.this.stop();
+					MitmFlowCallBackServer.this.stop();
 					log.info("*** MitmFlowHub server shut down");
 				}
 			});
@@ -53,7 +62,7 @@ public class MitmFlowGRPCServer {
 		
 	}
  
-	public synchronized void stop() {
+	private void stop() {
 		if (isStarted && server != null) {
 			server.shutdownNow();
 			server = null;
@@ -65,14 +74,7 @@ public class MitmFlowGRPCServer {
 		@Override
 		public void onMitmRequest(MitmRequest request, StreamObserver<MitmRequest> responseObserver) {
 			System.out.println("onMitmRequest:"+request.getUrl());
-			GoniubChromeDriver goniubChromeDriver = ServiceManager
-					.getRunningChromeDriver(request.getMitmBinding().getBrowserId());
-			if (goniubChromeDriver == null) {
-				responseObserver.onNext(request);
-				responseObserver.onCompleted();
-				return;
-			}
-			MitmFlowHookGetter mitmFlowHookGetter = goniubChromeDriver.getMitmFlowHookGetter();
+			MitmFlowHookGetter mitmFlowHookGetter = mitmFlowHookGetterMapping.get(request.getMitmBinding().getBrowserId());
 			if (mitmFlowHookGetter == null) {
 				responseObserver.onNext(request);
 				responseObserver.onCompleted();
@@ -93,14 +95,7 @@ public class MitmFlowGRPCServer {
 		@Override
 		public void onMitmResponse(MitmResponse response, StreamObserver<MitmResponse> responseObserver) {
 			System.out.println("onMitmResponse:"+response.getRequest().getUrl());
-			GoniubChromeDriver goniubChromeDriver = ServiceManager
-					.getRunningChromeDriver(response.getMitmBinding().getBrowserId());
-			if (goniubChromeDriver == null) {
-				responseObserver.onNext(response);
-				responseObserver.onCompleted();
-				return;
-			}
-			MitmFlowHookGetter mitmFlowHookGetter = goniubChromeDriver.getMitmFlowHookGetter();
+			MitmFlowHookGetter mitmFlowHookGetter = mitmFlowHookGetterMapping.get(response.getMitmBinding().getBrowserId());
 			if (mitmFlowHookGetter == null) {
 				responseObserver.onNext(response);
 				responseObserver.onCompleted();

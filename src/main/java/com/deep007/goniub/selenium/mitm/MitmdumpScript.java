@@ -471,12 +471,20 @@ public class MitmdumpScript {
 			FileUtils.write(mitm_flow_pb2_grpc_file, mitm_flow_pb2_grpc, false);
 			File mitm_flow_pb2_file = new File("mitm_flow_pb2.py");
 			FileUtils.write(mitm_flow_pb2_file, mitm_flow_pb2, false);
-			File mitm_start_script_file = new File("mitm_start_script.py");
-			FileUtils.write(mitm_start_script_file, mitm_start_script, false);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public static void init() {}
+	public static String init_mitm_start_script(int callbackServerPort) {
+		try {
+			File mitm_start_script_file = new File("mitm_start_script_call_"+callbackServerPort+".py");
+			String new_mitm_start_script = mitm_start_script.replace("8013", String.valueOf(callbackServerPort));
+			FileUtils.write(mitm_start_script_file, new_mitm_start_script, false);
+			return mitm_start_script_file.getAbsolutePath();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }

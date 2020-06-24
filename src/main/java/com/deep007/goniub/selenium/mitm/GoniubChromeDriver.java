@@ -11,26 +11,17 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
-import com.deep007.goniub.ServiceManager;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHookGetter;
 
-import lombok.Data;
-import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Data
 public class GoniubChromeDriver extends ChromeDriver {
 	
 	public static final Random random = new Random();
 	
-	/**
-	 * 每个浏览器的唯一标示
-	 */
-	@Getter
-	private String browserId = null;
-	
-	private MitmFlowHookGetter mitmFlowHookGetter;
+	private GoniubChromeOptions options;
 	
 	public GoniubChromeDriver() {
 		this(new GoniubChromeOptions());
@@ -41,18 +32,12 @@ public class GoniubChromeDriver extends ChromeDriver {
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
-		browserId = (String) options.getCapability(GoniubChromeOptions.BROWSER_ID);
-		if (browserId != null) {
-			ServiceManager.onNewGoniubChromeDriver(this);
-		}
+		this.options = options;
 	}
 	
 	public void setMitmFlowHookGetter(MitmFlowHookGetter mitmFlowHookGetter) {
-		this.mitmFlowHookGetter = mitmFlowHookGetter;
-	}
-	
-	public MitmFlowHookGetter getMitmFlowHookGetter() {
-		return this.mitmFlowHookGetter;
+		options.getMitmFlowCallBackServer().setMitmFlowHookGetter(options.getBrowserId()
+				, mitmFlowHookGetter);;
 	}
 	
 	public void hideElement(WebElement elm) {
@@ -118,8 +103,9 @@ public class GoniubChromeDriver extends ChromeDriver {
 	@Override
 	public void quit() {
 		try {
-			if (browserId != null) {
-				ServiceManager.onQuitGoniubChromeDriver(this);
+			MitmFlowCallBackServer mitmFlowHookGetter = options.getMitmFlowCallBackServer();
+			if (mitmFlowHookGetter != null) {
+				mitmFlowHookGetter.removeMitmFlowHookGetter(options.getBrowserId());
 				Thread.sleep(1000);
 			}
 			super.quit();

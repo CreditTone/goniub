@@ -10,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
+import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
 
@@ -18,29 +19,29 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class GoniubChromeOptions extends ChromeOptions {
 
-	public static final String BROWSER_ID = "BrowserId";
-
 	public static final String ANDROID_USER_AGENT = "Mozilla/5.0 (Linux; Android 7.0; PLUS Build/NRD90M) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.98 Mobile Safari/537.36";
 
 	public static final String IOS_USER_AGENT = "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0_1 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A402 Safari/604.1";
 
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
 	
-	private Mitmproxy4j withMitmproxy4j;
-	
 	public static String CHROME_DRIVER;
 	
+	private String browserId;
+	
+	private MitmFlowCallBackServer mitmFlowCallBackServer;
+	
 	public GoniubChromeOptions() {
-		this(false, false, null, CHROME_USER_AGENT);
+		this(false, false, null, null, CHROME_USER_AGENT);
 	}
 	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless) {
-		this(disableLoadImage, headless, null, CHROME_USER_AGENT);
+		this(disableLoadImage, headless, null, null, CHROME_USER_AGENT);
 	}
 	
-	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, Mitmproxy4j withMitmproxy4j,
+	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy, MitmFlowCallBackServer mitmFlowCallBackServer,
 			String userAgent) {
-		this.withMitmproxy4j = withMitmproxy4j;
+		this.mitmFlowCallBackServer = mitmFlowCallBackServer;
 		ChromeOptions options = this;
 		if (Boot.isMacSystem()) {
 			String chromeDriver = CHROME_DRIVER;
@@ -73,24 +74,22 @@ public class GoniubChromeOptions extends ChromeOptions {
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
-		String browserId = UUID.randomUUID().toString().substring(0, 6);
-		userAgent += " "+BROWSER_ID+"/" + browserId;
+		browserId = UUID.randomUUID().toString().substring(0, 6);
+		userAgent += " BrowserId/" + browserId;
 		options.addArguments("--user-agent='" + userAgent + "'");
-		options.setCapability(BROWSER_ID, browserId);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
 		options.setCapability("acceptInsecureCerts", true);
-		if (withMitmproxy4j != null) {
-			HttpsProxy proxy = withMitmproxy4j.getSelfProxyService();
-			if (proxy.getUsername() != null && proxy.getPassword() != null) {
+		if (httpsProxy != null) {
+			if (httpsProxy.getUsername() != null && httpsProxy.getPassword() != null) {
 				options.addArguments("--start-maximized");
-				File extension = ChromeExtensionUtil.createProxyauthExtension(proxy.getServer(), proxy.getPort(),
-						proxy.getUsername(), proxy.getPassword());
+				File extension = ChromeExtensionUtil.createProxyauthExtension(httpsProxy.getServer(), httpsProxy.getPort(),
+						httpsProxy.getUsername(), httpsProxy.getPassword());
 				log.info("createProxyauthExtension:" + extension.getAbsolutePath());
 				options.addExtensions(extension);
 			} else {
 				options.addArguments("--disable-extensions");
-				options.addArguments("proxy-server=" + proxy.getServer() + ":" + proxy.getPort());
+				options.addArguments("proxy-server=" + httpsProxy.getServer() + ":" + httpsProxy.getPort());
 			}
 		} else {
 			options.addArguments("--disable-extensions");
@@ -105,8 +104,12 @@ public class GoniubChromeOptions extends ChromeOptions {
 		options.setExperimentalOption("prefs", prefs);
 	}
 
-	public Mitmproxy4j getWithMitmproxy4j() {
-		return withMitmproxy4j;
+	public MitmFlowCallBackServer getMitmFlowCallBackServer() {
+		return mitmFlowCallBackServer;
+	}
+
+	public String getBrowserId() {
+		return browserId;
 	}
 
 }

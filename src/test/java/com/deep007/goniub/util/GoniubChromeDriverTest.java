@@ -7,12 +7,7 @@ public class GoniubChromeDriverTest {
 
 	public static void main(String[] args) throws Exception {
 		GoniubChromeOptions.CHROME_DRIVER = "/Users/stephen/Downloads/chromedriver";
-		boolean disableLoadImage = false;
-		boolean headless = false;
-		GoniubChromeDriver driver = new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, 
-				headless,
-				null, 
-				GoniubChromeOptions.IOS_USER_AGENT)); 
+		GoniubChromeDriver driver = new GoniubChromeDriver(); 
 		driver.get("https://www.baidu.com");
 		Thread.sleep(1000 * 60);
 		driver.quit();

@@ -35,7 +35,7 @@ public class LinuxTerminal implements Terminal {
 						BufferedReader buf = new BufferedReader(new InputStreamReader(input));
 						String line = null;
 						while ((line = buf.readLine()) != null && running) {
-							onOutputLog(line);
+							//onOutputLog(line);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
