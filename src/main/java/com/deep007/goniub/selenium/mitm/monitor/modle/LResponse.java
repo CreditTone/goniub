@@ -1,14 +1,14 @@
 package com.deep007.goniub.selenium.mitm.monitor.modle;
 
 import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.deep007.goniub.selenium.mitm.monitor.MitmHeader;
 import com.deep007.goniub.selenium.mitm.monitor.MitmResponse;
 import com.google.protobuf.ByteString;
 
 public final class LResponse {
+	
+	public static final String CLASS_NAME = LResponse.class.getName();
 	
 	public final static LResponse create(MitmResponse response) {
 		LBinding binding = LBinding.create(response.getMitmBinding());

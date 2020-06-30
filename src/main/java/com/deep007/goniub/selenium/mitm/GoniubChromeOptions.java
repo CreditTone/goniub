@@ -1,8 +1,11 @@
 package com.deep007.goniub.selenium.mitm;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,6 +14,11 @@ import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
+import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilter;
+import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilterRequest;
+import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilterResponse;
+import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
+import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
 
@@ -30,6 +38,10 @@ public class GoniubChromeOptions extends ChromeOptions {
 	private String browserId;
 	
 	private MitmFlowCallBackServer mitmFlowCallBackServer;
+	
+	private List<FlowFilterRequest> flowFilterRequests = new ArrayList<>();
+	
+	private List<FlowFilterResponse> flowFilterResponses = new ArrayList<>();
 	
 	public GoniubChromeOptions() {
 		this(false, false, null, null, CHROME_USER_AGENT);
@@ -103,13 +115,40 @@ public class GoniubChromeOptions extends ChromeOptions {
 		}
 		options.setExperimentalOption("prefs", prefs);
 	}
-
+	
 	public MitmFlowCallBackServer getMitmFlowCallBackServer() {
 		return mitmFlowCallBackServer;
 	}
 
 	public String getBrowserId() {
 		return browserId;
+	}
+	
+	public void addFlowFilterObject(Object obj) {
+		Method[] declaredMethods = obj.getClass().getDeclaredMethods();
+		for (int i = 0;declaredMethods != null &&  i < declaredMethods.length; i++) {
+			Method declaredMethod = declaredMethods[i];
+			if (declaredMethod.getParameterCount() != 1) {
+				continue;
+			}
+			String paramClassName = declaredMethod.getParameterTypes()[0].getName();
+			FlowFilter flowFilter = declaredMethod.getAnnotation(FlowFilter.class);
+			if (flowFilter != null) {
+				if (paramClassName.equals(LRequest.CLASS_NAME)) {
+					flowFilterRequests.add(new FlowFilterRequest(flowFilter, declaredMethod, obj));
+				}else if (paramClassName.equals(LResponse.CLASS_NAME)) {
+					flowFilterResponses.add(new FlowFilterResponse(flowFilter, declaredMethod, obj));
+				}
+			}
+		}
+	}
+	
+	public List<FlowFilterRequest> getFlowFilterRequests() {
+		return flowFilterRequests;
+	}
+	
+	public List<FlowFilterResponse> getFlowFilterResponses() {
+		return flowFilterResponses;
 	}
 
 }

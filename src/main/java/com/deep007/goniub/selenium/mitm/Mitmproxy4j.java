@@ -60,6 +60,9 @@ public class Mitmproxy4j {
 			}
 		}
 		cmd += " -s " + mitmScriptFile;
+		String logFile = mitmScriptFile + ".log";
+		cmd += " > " +logFile;
+		System.out.println(cmd);
 		try {
 			if (Boot.isUnixSystem()) {
 				terminal = new LinuxTerminal(cmd);

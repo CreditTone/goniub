@@ -400,7 +400,9 @@ public class MitmdumpScript {
 			"# @@protoc_insertion_point(module_scope)\n" + 
 			"";
 	
-	public static final String mitm_start_script = "import grpc\n" + 
+	public static final String mitm_start_script = "import re\n" + 
+			"import sys\n" + 
+			"import grpc\n" + 
 			"import mitm_flow_pb2\n" + 
 			"import mitm_flow_pb2_grpc\n" + 
 			"from mitmproxy import http\n" + 

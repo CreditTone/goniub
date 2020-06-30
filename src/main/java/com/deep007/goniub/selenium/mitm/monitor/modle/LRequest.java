@@ -8,6 +8,8 @@ import com.google.protobuf.ByteString;
 
 public final class LRequest {
 	
+	public static final String CLASS_NAME = LRequest.class.getName();
+	
 	
 	public static LRequest create(MitmRequest request) {
 		LBinding binding = LBinding.create(request.getMitmBinding());

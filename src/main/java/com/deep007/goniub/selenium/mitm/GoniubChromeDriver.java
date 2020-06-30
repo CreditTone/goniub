@@ -12,7 +12,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowHookGetter;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,11 +32,14 @@ public class GoniubChromeDriver extends ChromeDriver {
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
 		this.options = options;
+		MitmFlowCallBackServer mitmFlowCallBackServer = options.getMitmFlowCallBackServer();
+		if (mitmFlowCallBackServer != null) {
+			mitmFlowCallBackServer.onCreateChrome(options.getBrowserId(), options);
+		}
 	}
 	
-	public void setMitmFlowHookGetter(MitmFlowHookGetter mitmFlowHookGetter) {
-		options.getMitmFlowCallBackServer().setMitmFlowHookGetter(options.getBrowserId()
-				, mitmFlowHookGetter);;
+	public void addFlowFilterObject(Object obj) {
+		options.addFlowFilterObject(obj);
 	}
 	
 	public void hideElement(WebElement elm) {
@@ -103,9 +105,9 @@ public class GoniubChromeDriver extends ChromeDriver {
 	@Override
 	public void quit() {
 		try {
-			MitmFlowCallBackServer mitmFlowHookGetter = options.getMitmFlowCallBackServer();
-			if (mitmFlowHookGetter != null) {
-				mitmFlowHookGetter.removeMitmFlowHookGetter(options.getBrowserId());
+			MitmFlowCallBackServer mitmFlowCallBackServer = options.getMitmFlowCallBackServer();
+			if (mitmFlowCallBackServer != null) {
+				mitmFlowCallBackServer.onQuitChrome(options.getBrowserId());
 				Thread.sleep(1000);
 			}
 			super.quit();
@@ -236,6 +238,5 @@ public class GoniubChromeDriver extends ChromeDriver {
 		}
 		return false;
 	}
-	
 	
 }
