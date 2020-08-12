@@ -3,7 +3,6 @@ package com.deep007.goniub.selenium.mitm;
 import java.util.UUID;
 
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 import com.deep007.goniub.terminal.*;
 import com.deep007.goniub.util.Boot;
 
@@ -27,18 +26,12 @@ public class Mitmproxy4j {
 
 	private Terminal terminal = null;
 	
-	private final MitmFlowCallBackServer mitmFlowCallBackServer;
-	
-	private String mitmScriptFile;
-
-	public Mitmproxy4j(MitmFlowCallBackServer mitmFlowCallBackServer) {
-		this(8120, mitmFlowCallBackServer);
+	public Mitmproxy4j() {
+		this(8120);
 	}
 
-	public Mitmproxy4j(int mitmproxyPort, MitmFlowCallBackServer mitmFlowCallBackServer) {
+	public Mitmproxy4j(int mitmproxyPort) {
 		this.mitmproxyPort = mitmproxyPort;
-		this.mitmFlowCallBackServer = mitmFlowCallBackServer;
-		this.mitmScriptFile = MitmdumpScript.init_mitm_start_script(mitmFlowCallBackServer.getPort());
 	}
 
 	private synchronized void stop() throws Exception {
@@ -59,8 +52,9 @@ public class Mitmproxy4j {
 				cmd += " --upstream-auth " + upstreamProxy.getUsername() + ":" + upstreamProxy.getPassword();
 			}
 		}
+		String mitmScriptFile = MitmdumpScript.init_mitm_start_script(mitmproxyPort);
 		cmd += " -s " + mitmScriptFile;
-		String logFile = mitmScriptFile + ".log";
+		String logFile = "Mitmproxy4j_"+mitmproxyPort+".log";
 		cmd += " > " +logFile;
 		System.out.println(cmd);
 		try {
@@ -95,30 +89,6 @@ public class Mitmproxy4j {
 
 	public HttpsProxy getProxyAddr() {
 		return new HttpsProxy("127.0.0.1", mitmproxyPort);
-	}
-	
-	public GoniubChromeDriver newChromeInstance(boolean disableLoadImage, boolean headless) {
-		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless,
-				getProxyAddr(), mitmFlowCallBackServer, GoniubChromeOptions.CHROME_USER_AGENT));
-	}
-
-	public GoniubChromeDriver newAndroidInstance(boolean disableLoadImage, boolean headless) {
-		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, 
-				getProxyAddr(), mitmFlowCallBackServer, GoniubChromeOptions.ANDROID_USER_AGENT));
-	}
-
-	public GoniubChromeDriver newIOSInstance(boolean disableLoadImage, boolean headless) {
-		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless,
-				getProxyAddr(), mitmFlowCallBackServer, GoniubChromeOptions.IOS_USER_AGENT));
-	}
-	
-	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless,String userAgent) {
-		//log.debug("你启动的是没有钩子功能的浏览器");
-		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, null, null, userAgent));
-	}
-	
-	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless) {
-		return newNoHookBrowserInstance(disableLoadImage, headless, null);
 	}
 
 }

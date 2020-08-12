@@ -37,23 +37,20 @@ public class GoniubChromeOptions extends ChromeOptions {
 	
 	private String browserId;
 	
-	private MitmFlowCallBackServer mitmFlowCallBackServer;
-	
 	private List<FlowFilterRequest> flowFilterRequests = new ArrayList<>();
 	
 	private List<FlowFilterResponse> flowFilterResponses = new ArrayList<>();
 	
 	public GoniubChromeOptions() {
-		this(false, false, null, null, CHROME_USER_AGENT);
+		this(false, false, null, CHROME_USER_AGENT);
 	}
 	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless) {
-		this(disableLoadImage, headless, null, null, CHROME_USER_AGENT);
+		this(disableLoadImage, headless, null, CHROME_USER_AGENT);
 	}
 	
-	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy, MitmFlowCallBackServer mitmFlowCallBackServer,
+	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy,
 			String userAgent) {
-		this.mitmFlowCallBackServer = mitmFlowCallBackServer;
 		ChromeOptions options = this;
 		if (Boot.isMacSystem()) {
 			String chromeDriver = CHROME_DRIVER;
@@ -88,6 +85,11 @@ public class GoniubChromeOptions extends ChromeOptions {
 		}
 		browserId = UUID.randomUUID().toString().substring(0, 6);
 		userAgent += " BrowserId/" + browserId;
+		MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
+		if (mitmFlowCallBackServer != null) {
+			userAgent += " NHost/"+mitmFlowCallBackServer.callBackIp+ ":" + mitmFlowCallBackServer.port;
+		}
+		
 		options.addArguments("--user-agent='" + userAgent + "'");
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
@@ -116,10 +118,6 @@ public class GoniubChromeOptions extends ChromeOptions {
 		options.setExperimentalOption("prefs", prefs);
 	}
 	
-	public MitmFlowCallBackServer getMitmFlowCallBackServer() {
-		return mitmFlowCallBackServer;
-	}
-
 	public String getBrowserId() {
 		return browserId;
 	}

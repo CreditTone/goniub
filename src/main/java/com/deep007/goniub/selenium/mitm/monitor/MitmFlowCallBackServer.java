@@ -22,16 +22,54 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MitmFlowCallBackServer {
 	
+	
+	private static MitmFlowCallBackServer mitmFlowCallBackServer;
+	
+	public static MitmFlowCallBackServer getInstance() {
+		return mitmFlowCallBackServer;
+	}
+	
+	/**
+	 * 初始化MitmFlowCallBackServer
+	 * @param port
+	 * @throws Exception
+	 */
+	public static void init(String callBackIp, int port) throws Exception {
+		if (mitmFlowCallBackServer != null) {
+			return;
+		}
+		mitmFlowCallBackServer = new MitmFlowCallBackServer(callBackIp, port);
+	}
+	
+	
+	public static void onCreateChrome(String browserId, GoniubChromeOptions options) {
+		if (mitmFlowCallBackServer == null) {
+			throw new RuntimeException("请先初始化MitmFlowCallBackServer");
+		}
+		mitmFlowCallBackServer.goniubChromeOptionsMapping.put(browserId, options);
+	}
+	
+	public static void onQuitChrome(String browserId) {
+		if (mitmFlowCallBackServer == null) {
+			throw new RuntimeException("请先初始化MitmFlowCallBackServer");
+		}
+		mitmFlowCallBackServer.goniubChromeOptionsMapping.remove(browserId);
+	}
+	
+	
 	private Server server;
 	
-	private final int port;
+	public final int port;
+	
+	public final String callBackIp;
 	
 	private boolean isStarted = false;
 	
 	private final Map<String,GoniubChromeOptions> goniubChromeOptionsMapping = new ConcurrentHashMap<>();
 	
-	public MitmFlowCallBackServer(int port) throws Exception {
+	private MitmFlowCallBackServer(String callBackIp, int port) throws Exception {
 		this.port = port;
+		this.callBackIp = callBackIp;
 		this.server = ServerBuilder.forPort(port).addService(new MonitorServerImpl()).build();
 		start();
 	}
@@ -41,15 +79,6 @@ public class MitmFlowCallBackServer {
 		return port;
 	}
 	
-	public void onCreateChrome(String browserId, GoniubChromeOptions options) {
-		goniubChromeOptionsMapping.put(browserId, options);
-	}
-	
-	public void onQuitChrome(String browserId) {
-		goniubChromeOptionsMapping.remove(browserId);
-	}
-
-
 	private void start() throws Exception {
 		if (!isStarted) {
 			server.start();

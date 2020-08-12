@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 
 import lombok.extern.slf4j.Slf4j;
@@ -26,19 +27,24 @@ public class GoniubChromeDriver extends ChromeDriver {
 		this(new GoniubChromeOptions());
 	}
 	
+	@SuppressWarnings("static-access")
 	public GoniubChromeDriver(GoniubChromeOptions options) {
 		super(options);
 		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
 		this.options = options;
-		MitmFlowCallBackServer mitmFlowCallBackServer = options.getMitmFlowCallBackServer();
+		MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
 		if (mitmFlowCallBackServer != null) {
 			mitmFlowCallBackServer.onCreateChrome(options.getBrowserId(), options);
 		}
 	}
 	
 	public void addFlowFilterObject(Object obj) {
+		if (MitmFlowCallBackServer.getInstance() == null) {
+			quit();
+			throw new RuntimeException("请先初始化MitmFlowCallBackServer");
+		}
 		options.addFlowFilterObject(obj);
 	}
 	
@@ -102,10 +108,11 @@ public class GoniubChromeDriver extends ChromeDriver {
 	}
 	
 
+	@SuppressWarnings("static-access")
 	@Override
 	public void quit() {
 		try {
-			MitmFlowCallBackServer mitmFlowCallBackServer = options.getMitmFlowCallBackServer();
+			MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
 			if (mitmFlowCallBackServer != null) {
 				mitmFlowCallBackServer.onQuitChrome(options.getBrowserId());
 				Thread.sleep(1000);
@@ -239,4 +246,27 @@ public class GoniubChromeDriver extends ChromeDriver {
 		return false;
 	}
 	
+	public static GoniubChromeDriver newChromeInstance(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy) {
+		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless,
+				httpsProxy, GoniubChromeOptions.CHROME_USER_AGENT));
+	}
+
+	public static GoniubChromeDriver newAndroidInstance(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy) {
+		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, 
+				httpsProxy, GoniubChromeOptions.ANDROID_USER_AGENT));
+	}
+
+	public static GoniubChromeDriver newIOSInstance(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy) {
+		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless,
+				httpsProxy, GoniubChromeOptions.IOS_USER_AGENT));
+	}
+	
+	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless,String userAgent) {
+		//log.debug("你启动的是没有钩子功能的浏览器");
+		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, null, userAgent));
+	}
+	
+	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless) {
+		return newNoHookBrowserInstance(disableLoadImage, headless, null);
+	}
 }

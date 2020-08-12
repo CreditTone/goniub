@@ -405,13 +405,13 @@ public class MitmdumpScript {
 			"import grpc\n" + 
 			"import mitm_flow_pb2\n" + 
 			"import mitm_flow_pb2_grpc\n" + 
+			"import threading\n" + 
 			"from mitmproxy import http\n" + 
+			"from _ast import Try\n" + 
 			"\n" + 
-			"_HOST = '127.0.0.1'\n" + 
-			"_PORT = '8013'\n" + 
+			"NotifyServerCache = {}\n" + 
 			"\n" + 
-			"channel = grpc.insecure_channel(\"{0}:{1}\".format(_HOST, _PORT))\n" + 
-			"client = mitm_flow_pb2_grpc.MitmFlowMonitorStub(channel=channel)\n" + 
+			"locker = threading.Lock()\n" + 
 			"\n" + 
 			"def getBrowserId(userAgent):\n" + 
 			"    if not userAgent:\n" + 
@@ -420,6 +420,32 @@ public class MitmdumpScript {
 			"    if not m:\n" + 
 			"        return None\n" + 
 			"    return m.group(1)\n" + 
+			"\n" + 
+			"def getNotifyServerAddr(userAgent):\n" + 
+			"    if not userAgent:\n" + 
+			"        return None\n" + 
+			"    m = re.search(\"NHost/([\\w\\d\\.]+:\\d+)\", userAgent)\n" + 
+			"    if not m:\n" + 
+			"        return None\n" + 
+			"    return m.group(1)\n" + 
+			"\n" + 
+			"def getNotifyServerRPCClient(userAgent):\n" + 
+			"    notifyServerAddr = getNotifyServerAddr(userAgent)\n" + 
+			"    if not notifyServerAddr:\n" + 
+			"        return None\n" + 
+			"    grpcClient = None\n" + 
+			"    try:\n" + 
+			"        locker.acquire()\n" + 
+			"        grpcClient = NotifyServerCache.get(notifyServerAddr)\n" + 
+			"        if grpcClient == None:\n" + 
+			"            channel = grpc.insecure_channel(notifyServerAddr)\n" + 
+			"            grpcClient = mitm_flow_pb2_grpc.MitmFlowMonitorStub(channel=channel)\n" + 
+			"            NotifyServerCache[notifyServerAddr] = grpcClient\n" + 
+			"    except:\n" + 
+			"        print(traceback.format_exc())\n" + 
+			"    finally:\n" + 
+			"        locker.release()\n" + 
+			"    return grpcClient\n" + 
 			"\n" + 
 			"def createMitmRequest(req:http.HTTPRequest):\n" + 
 			"    userAgent = req.headers[\"User-Agent\"];\n" + 
@@ -437,8 +463,10 @@ public class MitmdumpScript {
 			"\n" + 
 			"def request(flow: http.HTTPFlow) -> None:\n" + 
 			"    req:http.HTTPRequest = flow.request\n" + 
+			"    userAgent = req.headers[\"User-Agent\"];\n" + 
 			"    mitmRequest = createMitmRequest(req)\n" + 
-			"    if mitmRequest == None:\n" + 
+			"    client = getNotifyServerRPCClient(userAgent)\n" + 
+			"    if mitmRequest == None or client == None:\n" + 
 			"        return\n" + 
 			"    fixedMitmRequest = client.onMitmRequest(mitmRequest)\n" + 
 			"    req.url = fixedMitmRequest.url\n" + 
@@ -451,8 +479,10 @@ public class MitmdumpScript {
 			"def response(flow: http.HTTPFlow) -> None:\n" + 
 			"    req:http.HTTPRequest = flow.request\n" + 
 			"    res:http.HTTPResponse = flow.response\n" + 
+			"    userAgent = req.headers[\"User-Agent\"];\n" + 
 			"    mitmRequest = createMitmRequest(req)\n" + 
-			"    if mitmRequest == None:\n" + 
+			"    client = getNotifyServerRPCClient(userAgent)\n" + 
+			"    if mitmRequest == None or client == None:\n" + 
 			"        return\n" + 
 			"    mitmBinding = mitmRequest.mitmBinding;\n" + 
 			"    mitmHeaders = []\n" + 
@@ -478,11 +508,10 @@ public class MitmdumpScript {
 		}
 	}
 	
-	public static String init_mitm_start_script(int callbackServerPort) {
+	public static String init_mitm_start_script(int mitmport) {
 		try {
-			File mitm_start_script_file = new File("mitm_start_script_call_"+callbackServerPort+".py");
-			String new_mitm_start_script = mitm_start_script.replace("8013", String.valueOf(callbackServerPort));
-			FileUtils.write(mitm_start_script_file, new_mitm_start_script, false);
+			File mitm_start_script_file = new File("mitm_start_script_"+mitmport+".py");
+			FileUtils.write(mitm_start_script_file, mitm_start_script, false);
 			return mitm_start_script_file.getAbsolutePath();
 		} catch (Exception e) {
 			e.printStackTrace();

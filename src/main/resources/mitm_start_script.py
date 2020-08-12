@@ -3,13 +3,13 @@ import sys
 import grpc
 import mitm_flow_pb2
 import mitm_flow_pb2_grpc
+import threading
 from mitmproxy import http
+from _ast import Try
 
-_HOST = '127.0.0.1'
-_PORT = '8013'
+NotifyServerCache = {}
 
-channel = grpc.insecure_channel("{0}:{1}".format(_HOST, _PORT))
-client = mitm_flow_pb2_grpc.MitmFlowMonitorStub(channel=channel)
+locker = threading.Lock()
 
 def getBrowserId(userAgent):
     if not userAgent:
@@ -18,6 +18,32 @@ def getBrowserId(userAgent):
     if not m:
         return None
     return m.group(1)
+
+def getNotifyServerAddr(userAgent):
+    if not userAgent:
+        return None
+    m = re.search("NHost/([\w\d\.]+:\d+)", userAgent)
+    if not m:
+        return None
+    return m.group(1)
+
+def getNotifyServerRPCClient(userAgent):
+    notifyServerAddr = getNotifyServerAddr(userAgent)
+    if not notifyServerAddr:
+        return None
+    grpcClient = None
+    try:
+        locker.acquire()
+        grpcClient = NotifyServerCache.get(notifyServerAddr)
+        if grpcClient == None:
+            channel = grpc.insecure_channel(notifyServerAddr)
+            grpcClient = mitm_flow_pb2_grpc.MitmFlowMonitorStub(channel=channel)
+            NotifyServerCache[notifyServerAddr] = grpcClient
+    except:
+        print(traceback.format_exc())
+    finally:
+        locker.release()
+    return grpcClient
 
 def createMitmRequest(req:http.HTTPRequest):
     userAgent = req.headers["User-Agent"];
@@ -35,8 +61,10 @@ def createMitmRequest(req:http.HTTPRequest):
 
 def request(flow: http.HTTPFlow) -> None:
     req:http.HTTPRequest = flow.request
+    userAgent = req.headers["User-Agent"];
     mitmRequest = createMitmRequest(req)
-    if mitmRequest == None:
+    client = getNotifyServerRPCClient(userAgent)
+    if mitmRequest == None or client == None:
         return
     fixedMitmRequest = client.onMitmRequest(mitmRequest)
     req.url = fixedMitmRequest.url
@@ -49,8 +77,10 @@ def request(flow: http.HTTPFlow) -> None:
 def response(flow: http.HTTPFlow) -> None:
     req:http.HTTPRequest = flow.request
     res:http.HTTPResponse = flow.response
+    userAgent = req.headers["User-Agent"];
     mitmRequest = createMitmRequest(req)
-    if mitmRequest == None:
+    client = getNotifyServerRPCClient(userAgent)
+    if mitmRequest == None or client == None:
         return
     mitmBinding = mitmRequest.mitmBinding;
     mitmHeaders = []
