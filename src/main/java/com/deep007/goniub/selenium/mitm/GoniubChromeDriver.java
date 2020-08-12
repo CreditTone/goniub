@@ -11,6 +11,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 
+import com.deep007.goniub.request.Cookies;
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 
@@ -22,6 +23,8 @@ public class GoniubChromeDriver extends ChromeDriver {
 	public static final Random random = new Random();
 	
 	private GoniubChromeOptions options;
+	
+	private HookCookies hookCookies;
 	
 	public GoniubChromeDriver() {
 		this(new GoniubChromeOptions());
@@ -46,6 +49,22 @@ public class GoniubChromeDriver extends ChromeDriver {
 			throw new RuntimeException("请先初始化MitmFlowCallBackServer");
 		}
 		options.addFlowFilterObject(obj);
+	}
+	
+	public GoniubChromeDriver enableCookieHook() {
+		if (hookCookies != null) {
+			return this;
+		}
+		hookCookies = new HookCookies();
+		options.addFlowFilterObject(hookCookies);
+		return this;
+	}
+	
+	public Cookies getCookies() {
+		if (hookCookies != null) {
+			return hookCookies.catchCookies;
+		}
+		throw new RuntimeException("请先打开enableCookieHook.");
 	}
 	
 	public void hideElement(WebElement elm) {

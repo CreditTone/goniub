@@ -29,8 +29,10 @@ public class MitmproxyTest {
 		mitmproxy4j.start();
 		GoniubChromeDriver chromeDriver = GoniubChromeDriver.newChromeInstance(false, false, mitmproxy4j.getProxyAddr());
 		chromeDriver.addFlowFilterObject(new FilterMyRequests());
+		chromeDriver.enableCookieHook();
 		chromeDriver.get("https://www.baidu.com");
 		Thread.sleep(1000 * 60 * 2);
+		System.out.println(chromeDriver.getCookies());
 		chromeDriver.quit();
 	}
 	
