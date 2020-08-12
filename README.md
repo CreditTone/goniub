@@ -7,7 +7,7 @@
 <dependency>
   <groupId>com.deep007</groupId>
   <artifactId>goniub</artifactId>
-  <version>1.8.4</version>
+  <version>1.8.5</version>
 </dependency>
 ```
 ### 源码级依赖请安装lombok https://blog.csdn.net/lizhiyuan_eagle/article/details/91790299
