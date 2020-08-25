@@ -32,7 +32,7 @@ public class BlockTimer extends Thread {
 				queue.add(new Object());
 			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(10);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

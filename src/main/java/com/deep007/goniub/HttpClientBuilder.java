@@ -52,11 +52,13 @@ public final class HttpClientBuilder {
 		configBuilder.setSocketTimeout(15 * 1000);
 		// 设置从连接池获取连接实例的超时
 		configBuilder.setConnectionRequestTimeout(5 * 1000);
+		//修复Invalid cookie header: "Set-Cookie: _abck=FF7CB6C5704559B9929A6F79F8C8FE09~-1~YAAQHsr
+		configBuilder.setCookieSpec(CookieSpecs.STANDARD);
 		RequestConfig requestConfig = configBuilder.build();
 		CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(requestConfig)
 				.setDefaultCookieStore(cookieStore)
 				.setRetryHandler(new MyHttpRequestRetryHandler())
-				.setDefaultCookieSpecRegistry(registry)
+				//.setDefaultCookieSpecRegistry(registry)
 				.setConnectionManager(cm)
 				.setConnectionManagerShared(true)
 				.build();
