@@ -144,8 +144,7 @@ public class CURLUtils {
 
 	@Override
 	public String toString() {
-		return "CURL [command=" + command + ", url=" + url + ", headers=" + headers + ", data=" + data + ", dataType="
-				+ dataType + "]";
+		return command;
 	}
 	
 }
