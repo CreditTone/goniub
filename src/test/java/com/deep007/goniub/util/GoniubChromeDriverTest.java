@@ -2,6 +2,7 @@ package com.deep007.goniub.util;
 
 import com.deep007.goniub.selenium.mitm.GoniubChromeDriver;
 import com.deep007.goniub.selenium.mitm.GoniubChromeOptions;
+import com.deep007.goniub.terminal.LinuxTerminalHelper;
 
 public class GoniubChromeDriverTest {
 

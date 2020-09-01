@@ -52,7 +52,7 @@ public class GoniubChromeOptions extends ChromeOptions {
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy,
 			String userAgent) {
 		ChromeOptions options = this;
-		if (Boot.isMacSystem()) {
+		if (Boot.isMacSystem() || CHROME_DRIVER != null) {
 			String chromeDriver = CHROME_DRIVER;
 			if (chromeDriver == null) {
 				chromeDriver = System.getProperty("webdriver.chrome.driver");
