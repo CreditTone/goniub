@@ -45,7 +45,7 @@ public class Mitmproxy4j {
 		if (terminal != null) {
 			return;
 		}
-		String cmd = "mitmdump -p " + mitmproxyPort;
+		String cmd = LinuxTerminalHelper.findAbsoluteVar("mitmdump") + " -p " + mitmproxyPort;
 		if (upstreamProxy != null) {
 			cmd += " --mode upstream:http://" + upstreamProxy.getServer() + ":" + upstreamProxy.getPort();
 			if (upstreamProxy.authed()) {

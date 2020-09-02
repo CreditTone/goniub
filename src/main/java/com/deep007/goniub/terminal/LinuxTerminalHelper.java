@@ -16,7 +16,7 @@ import com.deep007.goniub.util.Boot;
 public class LinuxTerminalHelper {
 
 	private static Set<File> PATH_DIRS = new HashSet<File>();
-	private static Set<File> PATH_VARS = new HashSet<File>();
+	public static Set<File> PATH_VARS = new HashSet<File>();
 	
 	private static final File getBashProfile() {
 		if (Boot.isLinuxSystem()) {
@@ -83,19 +83,12 @@ public class LinuxTerminalHelper {
 	private static final Pattern COMMAND_MATCHER = Pattern.compile("(^|\\||&\\s*)(\\w+)");
 	
 	public static String findAbsoluteVar(String cmd) {
-		String newCmd = cmd;
-		Matcher varMatcher = COMMAND_MATCHER.matcher(cmd.startsWith("nohup")?cmd.substring(5).trim():cmd);
-		Set<String> vars = new HashSet<String>();
-		while (varMatcher.find()) {
-			vars.add(varMatcher.group(2));
-		}
 		for (File var : PATH_VARS) {
-			if (vars.contains(var.getName())) {
-				newCmd = newCmd.replaceAll(var.getName(), var.getAbsolutePath());
-				vars.remove(var.getName());
+			if (var.getName().equals(cmd)) {
+				return var.getAbsolutePath();
 			}
 		}
-		return newCmd;
+		return cmd;
 	}
 	
 	public static Set<String> getPids(String command) throws Exception {

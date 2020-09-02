@@ -27,7 +27,7 @@ public class LinuxTerminal implements Terminal {
 			public void run() {
 				try {
 					running = true;
-					String newCmd = LinuxTerminalHelper.findAbsoluteVar(command);
+					String newCmd = command;
 					Process pro = Runtime.getRuntime().exec(new String[] {"/bin/bash", "-c", newCmd});
 					InputStream input = pro.getInputStream();
 					OutputStream output = pro.getOutputStream();
