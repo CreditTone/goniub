@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
@@ -41,6 +42,7 @@ public class GoniubChromeDriver extends ChromeDriver {
 		if (mitmFlowCallBackServer != null) {
 			mitmFlowCallBackServer.onCreateChrome(options.getBrowserId(), options);
 		}
+		manage().window().setSize(new Dimension(1024, 768));
 	}
 	
 	public void addFlowFilterObject(Object obj) {
