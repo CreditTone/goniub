@@ -62,15 +62,17 @@ public abstract class ChromeDriverTeam {
 	protected abstract ChromeDriver createChromeDriver();
 
 	public void release() {
-		ChromeDriver chromeDriver = idleChromeDrivers.poll();
-		while (chromeDriver != null) {
-			chromeDriver.quit();
-			chromeDriver = idleChromeDrivers.poll();
-		}
-		for (ChromeDriver chromeDriver2 : activeChromeDrivers.values()) {
+		while (true) {
+			ChromeDriver chromeDriver = idleChromeDrivers.poll();
+			if (chromeDriver != null) {
+				chromeDriver.quit();
+			}
+			if (activeChromeDrivers.isEmpty() && idleChromeDrivers.isEmpty()) {
+				break;
+			}
 			try {
-				chromeDriver2.quit();
-			} catch (Exception e) {
+				Thread.sleep(0);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
