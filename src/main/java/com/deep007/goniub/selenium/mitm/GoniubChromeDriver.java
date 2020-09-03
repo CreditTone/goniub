@@ -42,7 +42,7 @@ public class GoniubChromeDriver extends ChromeDriver {
 		if (mitmFlowCallBackServer != null) {
 			mitmFlowCallBackServer.onCreateChrome(options.getBrowserId(), options);
 		}
-		manage().window().setSize(new Dimension(1024, 768));
+		manage().window().setSize(new Dimension(1300, 1024));
 	}
 	
 	public void addFlowFilterObject(Object obj) {
@@ -85,7 +85,7 @@ public class GoniubChromeDriver extends ChromeDriver {
 				super.get(url);
 				log.debug("visit:"+url);
 			}catch(Exception e){
-				log.warn("chrome请求异常", e);
+				log.warn("chrome请求异常:"+url, e);
 				continue;
 			}
 			break;
