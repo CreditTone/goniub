@@ -43,12 +43,22 @@ public class CountableThreadPool implements Closeable {
 	public void execute(final Runnable runnable) {
 		executorService.execute(runnable);
 	}
+	
+	public long getTaskCount() {
+		return executorService.getTaskCount();
+	}
 
 	public boolean isShutdown() {
 		return executorService.isShutdown();
 	}
 
 	public void shutdown() {
+		while(getTaskCount() > 0) {
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}
+		}
 		executorService.shutdown();
 	}
 
