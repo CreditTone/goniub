@@ -257,13 +257,9 @@ public class DefaultHttpDownloader {
 		}
 		for (int i = 0 ; i < maxRetry ; i ++) {
 			log.warn("downloadWithVrify:"+request.getUrl());
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			page = download(request);
 			if (page == null) {
+				sleep(2000);
 				continue;
 			}
 			for (int k = 0; verifyPattern != null && k < verifyPattern.length; k++) {
@@ -276,6 +272,7 @@ public class DefaultHttpDownloader {
 					return page;
 				}
 			}
+			sleep(2000);
 		}
 		return page;
 	}
@@ -289,13 +286,9 @@ public class DefaultHttpDownloader {
 		Page page = null;
 		for (int i = 0 ; i < maxRetry ; i ++) {
 			log.warn("downloadWithVrify:"+request.getUrl());
-			try {
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
 			page = download(request);
 			if (page == null) {
+				sleep(2000);
 				continue;
 			}
 			try {
@@ -303,10 +296,20 @@ public class DefaultHttpDownloader {
 					break;
 				}
 			} catch (Exception e) {
+				sleep(2000);
 				continue;
 			}
+			sleep(2000);
 		}
 		return page;
+	}
+
+	private void sleep(long timemills) {
+		try {
+			Thread.sleep(timemills);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private String getOwnerUrl(HttpContext context) {
