@@ -1,21 +1,51 @@
 package com.deep007.goniub.util;
 
-import java.io.Closeable;
+import java.util.Queue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
  * 可计数的线程池
  */
-public class CountableThreadPool implements Closeable {
+public class CountableThreadPool{
 
 	private final int threadNum;
 
 	private ScheduledThreadPoolExecutor executorService;
+	
+	private final Queue<Runnable> runnables = new LinkedBlockingDeque<>();
+	
+	private final Thread readThread;
+	
+	private boolean shutdown = false;
 
 	public CountableThreadPool(int corePoolSize) {
 		this.threadNum = corePoolSize;
 		executorService = new ScheduledThreadPoolExecutor(threadNum + 10);
+		readThread = new Thread() {
+			public void run() {
+				while(!shutdown) {
+					try {
+						CountableThreadPool.this.waitIdleThread();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					Runnable runnable = runnables.poll();
+					if (runnable != null) {
+						executorService.execute(runnable);
+						continue;
+					}else {
+						try {
+							Thread.sleep(10);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+		};
+		readThread.start();
 	}
 
 	public int getThreadAlive() {
@@ -41,7 +71,7 @@ public class CountableThreadPool implements Closeable {
 	}
 
 	public void execute(final Runnable runnable) {
-		executorService.execute(runnable);
+		runnables.add(runnable);
 	}
 	
 	public long getTaskCount() {
@@ -53,21 +83,12 @@ public class CountableThreadPool implements Closeable {
 	}
 
 	public void shutdown() {
-		while(getTaskCount() > 0) {
+		while(!runnables.isEmpty()) {
 			try {
 				Thread.sleep(10);
 			} catch (InterruptedException e) {
 			}
 		}
-		executorService.shutdown();
-	}
-
-	public int getIdleThreadCount() {
-		return executorService.getMaximumPoolSize() - getThreadAlive();
-	}
-
-	@Override
-	public void close() {
 		executorService.shutdown();
 		try {
 			while (!executorService.awaitTermination(1, TimeUnit.SECONDS)) {
@@ -76,6 +97,11 @@ public class CountableThreadPool implements Closeable {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+		shutdown = true;
+	}
+
+	public int getIdleThreadCount() {
+		return executorService.getMaximumPoolSize() - getThreadAlive();
 	}
 
 }
