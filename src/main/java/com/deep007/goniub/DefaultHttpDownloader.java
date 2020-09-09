@@ -271,7 +271,7 @@ public class DefaultHttpDownloader {
 					return page;
 				}
 			}
-			log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
+			log.warn("download vrify page failure url:"+request.getUrl() + " status:"+page.getStatus());
 			sleep(100);
 		}
 		return page;
@@ -296,10 +296,10 @@ public class DefaultHttpDownloader {
 				}
 			} catch (Exception e) {
 				sleep(100);
-				log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
+				log.warn("download vrify page failure title:"+request.getUrl() + " status:"+page.getStatus());
 				continue;
 			}
-			log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
+			log.warn("download vrify page failure title:"+request.getUrl()+ " status:"+page.getStatus());
 			sleep(100);
 		}
 		return page;
