@@ -256,10 +256,9 @@ public class DefaultHttpDownloader {
 			}catch(Exception e) {}
 		}
 		for (int i = 0 ; i < maxRetry ; i ++) {
-			log.warn("downloadWithVrify:"+request.getUrl());
 			page = download(request);
 			if (page == null) {
-				sleep(2000);
+				sleep(100);
 				continue;
 			}
 			for (int k = 0; verifyPattern != null && k < verifyPattern.length; k++) {
@@ -272,7 +271,8 @@ public class DefaultHttpDownloader {
 					return page;
 				}
 			}
-			sleep(2000);
+			log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
+			sleep(100);
 		}
 		return page;
 	}
@@ -285,10 +285,9 @@ public class DefaultHttpDownloader {
 	public Page downloadWithVrify(PageRequest request, int maxRetry, DownloadVerifier downloadVerifier) {
 		Page page = null;
 		for (int i = 0 ; i < maxRetry ; i ++) {
-			log.warn("downloadWithVrify:"+request.getUrl());
 			page = download(request);
 			if (page == null) {
-				sleep(2000);
+				sleep(100);
 				continue;
 			}
 			try {
@@ -296,10 +295,12 @@ public class DefaultHttpDownloader {
 					break;
 				}
 			} catch (Exception e) {
-				sleep(2000);
+				sleep(100);
+				log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
 				continue;
 			}
-			sleep(2000);
+			log.warn("download vrify page failure title:"+page.getTitle() + " status:"+page.getStatus());
+			sleep(100);
 		}
 		return page;
 	}

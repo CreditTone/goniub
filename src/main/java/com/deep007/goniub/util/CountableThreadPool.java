@@ -21,8 +21,8 @@ public class CountableThreadPool{
 	private boolean shutdown = false;
 
 	public CountableThreadPool(int corePoolSize) {
-		this.threadNum = corePoolSize;
-		executorService = new ScheduledThreadPoolExecutor(threadNum + 10);
+		this.threadNum = corePoolSize < 1? 1:corePoolSize;
+		executorService = new ScheduledThreadPoolExecutor(threadNum);
 		readThread = new Thread() {
 			public void run() {
 				while(!shutdown) {
