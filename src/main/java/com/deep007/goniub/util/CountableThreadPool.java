@@ -1,10 +1,8 @@
 package com.deep007.goniub.util;
 
 import java.util.Queue;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.ThreadPoolExecutor.CallerRunsPolicy;
@@ -18,7 +16,7 @@ public class CountableThreadPool{
 
 	private ThreadPoolExecutor executorService;
 	
-	private final Queue<Runnable> runnables = new LinkedBlockingDeque<>();
+	private final Queue<PriorityTask> runnables = new PriorityBlockingQueue<>();
 	
 	private final Thread readThread;
 	
@@ -76,9 +74,34 @@ public class CountableThreadPool{
 			}
 		}
 	}
+	
+	public static abstract class PriorityTask implements Runnable, Comparable<PriorityTask> {
+		
+		private final int priority;
+		
+		public PriorityTask(int priority) {
+			this.priority = priority;
+		}
+		
+		@Override
+		public int compareTo(PriorityTask o) {
+			return this.priority <= o.priority ? 1 : -1;
+		}
+		
+	}
+	
+	public void execute(Runnable runnable) {
+		execute(runnable, 0);
+	}
 
-	public void execute(final Runnable runnable) {
-		runnables.add(runnable);
+	public void execute(final Runnable runnable, int priority) {
+		runnables.add(new PriorityTask(priority) {
+			
+			@Override
+			public void run() {
+				runnable.run();
+			}
+		});
 	}
 	
 	public long getTaskCount() {
