@@ -1,13 +1,17 @@
 package com.deep007.goniub;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.NoSuchAlgorithmException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.config.Registry;
 import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.DnsResolver;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
@@ -17,6 +21,7 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
+import org.apache.http.impl.conn.SystemDefaultDnsResolver;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.ssl.SSLContextBuilder;
 
@@ -31,7 +36,10 @@ public final class HttpClientBuilder {
 //			.register(CookieSpecs.STANDARD_STRICT, new HttpCookieSpecProvider())
 			.build();
 	
-	public static CloseableHttpClient createHttpClient(BasicCookieStore cookieStore) throws NoSuchAlgorithmException {
+	public static CloseableHttpClient createHttpClient(BasicCookieStore cookieStore, DnsResolver dnsResolver) throws NoSuchAlgorithmException {
+		if (dnsResolver == null) {
+			dnsResolver = new SystemDefaultDnsResolver();
+		}
 		PoolingHttpClientConnectionManager cm = null;
 		SSLContextBuilder sslContextBuilder = new SSLContextBuilder();
 		try {
@@ -39,7 +47,7 @@ public final class HttpClientBuilder {
 			SSLConnectionSocketFactory socketFactory = new SSLConnectionSocketFactory(sslContextBuilder.build());
 			Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory> create()
 					.register("https", socketFactory).register("http", new PlainConnectionSocketFactory()).build();
-			cm = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
+			cm = new PoolingHttpClientConnectionManager(socketFactoryRegistry, dnsResolver);
 			cm.setMaxTotal(3000);
 			cm.setDefaultMaxPerRoute(1500);
 		} catch (Exception e) {

@@ -1,10 +1,11 @@
-package com.deep007.goniub.util;
+package com.deep007.goniub.hybridtest;
 
 import java.io.File;
 
 import com.deep007.goniub.DefaultHttpDownloader;
 import com.deep007.goniub.request.PageRequest;
 import com.deep007.goniub.response.Page;
+import com.deep007.goniub.util.CURLUtils;
 
 public class CURLUtilsTest {
 	

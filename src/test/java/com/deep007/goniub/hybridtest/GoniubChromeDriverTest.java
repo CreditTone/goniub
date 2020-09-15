@@ -1,4 +1,4 @@
-package com.deep007.goniub.util;
+package com.deep007.goniub.hybridtest;
 
 import com.deep007.goniub.selenium.mitm.GoniubChromeDriver;
 import com.deep007.goniub.selenium.mitm.GoniubChromeOptions;

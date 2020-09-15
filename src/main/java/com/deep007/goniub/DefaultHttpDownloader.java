@@ -31,6 +31,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.conn.DnsResolver;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -79,12 +80,8 @@ public class DefaultHttpDownloader {
 	private String userAgent;
 	
 	private Set<Class<? extends Exception>> ignoreExceptions = new HashSet<>();
-	
-	public DefaultHttpDownloader() {
-		this(new Cookies());
-	}
 
-	public DefaultHttpDownloader(Cookies initCookies) {
+	public DefaultHttpDownloader(Cookies initCookies, DnsResolver dnsResolver) {
 		cookieStore = new BasicCookieStore();
 		if (initCookies != null) {
 			Iterator<Cookie> iter = initCookies.iterator();
@@ -94,13 +91,25 @@ public class DefaultHttpDownloader {
 			}
 		}
 		try {
-			httpClient = HttpClientBuilder.createHttpClient(cookieStore);
+			httpClient = HttpClientBuilder.createHttpClient(cookieStore, dnsResolver);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
 	}
 	
-	public DefaultHttpDownloader(String jsonCookies) {
+	public DefaultHttpDownloader(Cookies initCookies) {
+		this(initCookies, null);
+	}
+	
+	public DefaultHttpDownloader(DnsResolver dnsResolver) {
+		this(new Cookies(), dnsResolver);
+	}
+	
+	public DefaultHttpDownloader() {
+		this(new Cookies());
+	}
+	
+	public DefaultHttpDownloader(String jsonCookies, DnsResolver dnsResolver) {
 		cookieStore = new BasicCookieStore();
 		try {
 			JSONArray baiduCookies = JSON.parseArray(jsonCookies);
@@ -116,10 +125,14 @@ public class DefaultHttpDownloader {
 			e.printStackTrace();
 		} 
 		try {
-			httpClient = HttpClientBuilder.createHttpClient(cookieStore);
+			httpClient = HttpClientBuilder.createHttpClient(cookieStore, dnsResolver);
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	public DefaultHttpDownloader(String jsonCookies) {
+		this(jsonCookies, null);
 	}
 	
 	public void addIgnoreException(Class<? extends Exception> e) {
