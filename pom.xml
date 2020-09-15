@@ -126,6 +126,13 @@
 
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<version>5.7.0</version>
+			<scope>test</scope>
+		</dependency>
 		<!-- grpc -->
 		<dependency>
 			<groupId>io.grpc</groupId>
@@ -280,25 +287,12 @@
 				</configuration>
 			</plugin>
 			<!-- 编译grpc时使用 eg:mvn generate-sources -->
-			<!-- <plugin>
-				<groupId>org.xolstice.maven.plugins</groupId>
-				<artifactId>protobuf-maven-plugin</artifactId>
-				<version>0.6.1</version>
-				<configuration>
-					<protocArtifact>com.google.protobuf:protoc:3.5.1-1:exe:${os.detected.classifier}</protocArtifact>
-					<pluginId>grpc-java</pluginId>
-					<pluginArtifact>io.grpc:protoc-gen-grpc-java:1.15.0:exe:${os.detected.classifier}</pluginArtifact>
-					<protoSourceRoot>src/main/resources</protoSourceRoot>
-				</configuration>
-				<executions>
-					<execution>
-						<goals>
-							<goal>compile</goal>
-							<goal>compile-custom</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin> -->
+			<!-- <plugin> <groupId>org.xolstice.maven.plugins</groupId> <artifactId>protobuf-maven-plugin</artifactId> 
+				<version>0.6.1</version> <configuration> <protocArtifact>com.google.protobuf:protoc:3.5.1-1:exe:${os.detected.classifier}</protocArtifact> 
+				<pluginId>grpc-java</pluginId> <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.15.0:exe:${os.detected.classifier}</pluginArtifact> 
+				<protoSourceRoot>src/main/resources</protoSourceRoot> </configuration> <executions> 
+				<execution> <goals> <goal>compile</goal> <goal>compile-custom</goal> </goals> 
+				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 </project>
