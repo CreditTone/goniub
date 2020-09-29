@@ -36,7 +36,7 @@ public class XJavaScriptEngine implements ScriptEngine {
 			} catch (ScriptException e) {
 				String varName = XCrawlerUtils.regexMatch(e.getMessage(), "\"(.+)\" is not defined", 1);
 				if (varName != null) {
-					put(varName, 0);
+					put(varName, varName);
 					continue;
 				}else {
 					break;
