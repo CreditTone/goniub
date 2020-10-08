@@ -151,7 +151,11 @@ public final class PageRequestBuilder {
 				ret.setPageEncoding(pageEncoding);
 			}
 		}
-		ret.setMethod(method);
+		if (postHttpEntity != null) {
+			ret.setMethod(Method.POST);
+		}else {
+			ret.setMethod(method);
+		}
 		for (Entry<String, String> entry : headers.entrySet()) {
 			ret.putHeader(entry.getKey(), entry.getValue());
 		}

@@ -167,6 +167,10 @@ public class DefaultHttpDownloader {
 		return false;
 	}
 	
+	public BasicCookieStore getCookieStore() {
+		return cookieStore;
+	}
+	
 	public Page download(String url) {
 		try {
 			Page page = download(PageRequestBuilder.custom().url(url).build());

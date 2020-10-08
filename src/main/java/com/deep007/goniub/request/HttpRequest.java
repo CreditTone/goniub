@@ -13,6 +13,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.deep007.goniub.DefaultHttpDownloader;
 import com.deep007.goniub.util.URLEncodedUtils;
 
 import java.util.Map.Entry;
@@ -175,5 +176,4 @@ public abstract class HttpRequest extends BasicRequest {
 			setUrl(baseUrl + url);
 		}
 	}
-
 }

@@ -1,5 +1,8 @@
 package com.deep007.goniub.request;
 
+import com.deep007.goniub.DefaultHttpDownloader;
+import com.deep007.goniub.response.Page;
+
 /**
  * 网页类型Request的表示。
  *
@@ -36,6 +39,10 @@ public final class PageRequest extends HttpRequest {
 		if(pageEncoding != null){
 			this.pageEncoding = pageEncoding;
 		}
+	}
+	
+	public Page execute() {
+		return DefaultHttpDownloader.getDefaultInstance().download(this);
 	}
 	
 }
