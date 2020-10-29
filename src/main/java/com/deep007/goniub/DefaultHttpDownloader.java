@@ -80,6 +80,10 @@ public class DefaultHttpDownloader {
 	private String userAgent;
 	
 	private Set<Class<? extends Exception>> ignoreExceptions = new HashSet<>();
+	
+	private boolean keepSession = true;
+	
+	private DnsResolver dnsResolver;
 
 	public DefaultHttpDownloader(Cookies initCookies, DnsResolver dnsResolver) {
 		cookieStore = new BasicCookieStore();
@@ -95,6 +99,7 @@ public class DefaultHttpDownloader {
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
+		this.dnsResolver = dnsResolver;
 	}
 	
 	public DefaultHttpDownloader(Cookies initCookies) {
@@ -137,6 +142,10 @@ public class DefaultHttpDownloader {
 	
 	public void addIgnoreException(Class<? extends Exception> e) {
 		ignoreExceptions.add(e);
+	}
+	
+	public void setKeepSession(boolean keepSession) {
+		this.keepSession = keepSession;
 	}
 	
 	private BasicHttpContext getHttpContext(HttpRequest request) {
@@ -196,15 +205,23 @@ public class DefaultHttpDownloader {
 	}
 	
 	public Page download(PageRequest request) {
+		CloseableHttpClient useHttpClient = httpClient;
+		if (!keepSession) {
+			try {
+				useHttpClient = HttpClientBuilder.createHttpClient(null, dnsResolver);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
 		Page page = null;
 		CloseableHttpResponse response = null;
 		HttpRequestBase method = null;
 		try {
 			method = buildHttpUriRequest(request);
 			HttpContext httpContext = getHttpContext(request);
-			response = httpClient.execute(method, httpContext);
+			response = useHttpClient.execute(method, httpContext);
 			page = new Page(request, response);
-			page.setDriverId(String.valueOf(httpClient.hashCode()));
+			page.setDriverId(String.valueOf(useHttpClient.hashCode()));
             page.setOwnerUrl(getOwnerUrl(httpContext));
             page.setRedirected(!method.getURI().toString().equals(page.getOwnerUrl()));
 		} catch (Exception e) {
@@ -231,13 +248,21 @@ public class DefaultHttpDownloader {
 	}
 	
 	public StreamResponse downloadAsStreamResponse(PageRequest request) {
+		CloseableHttpClient useHttpClient = httpClient;
+		if (!keepSession) {
+			try {
+				useHttpClient = HttpClientBuilder.createHttpClient(null, dnsResolver);
+			} catch (NoSuchAlgorithmException e) {
+				e.printStackTrace();
+			}
+		}
 		StreamResponse streamResponse = null;
 		HttpRequestBase method = null;
 		CloseableHttpResponse response = null;
 		try {
 			method = buildHttpUriRequest(request);
 			HttpContext httpContext = getHttpContext(request);
-			response = httpClient.execute(method, httpContext);
+			response = useHttpClient.execute(method, httpContext);
 			streamResponse = new StreamResponse(request, response);
 		} catch (Exception e) {
 			if (!isIgnoreException(e)) {
