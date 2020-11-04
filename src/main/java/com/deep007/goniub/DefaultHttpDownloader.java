@@ -83,6 +83,8 @@ public class DefaultHttpDownloader {
 	
 	private boolean keepSession = true;
 	
+	private boolean disableAutoHeaders = false;
+	
 	private DnsResolver dnsResolver;
 
 	public DefaultHttpDownloader(Cookies initCookies, DnsResolver dnsResolver) {
@@ -147,7 +149,11 @@ public class DefaultHttpDownloader {
 	public void setKeepSession(boolean keepSession) {
 		this.keepSession = keepSession;
 	}
-	
+
+	public void setDisableAutoHeaders(boolean disableAutoHeaders) {
+		this.disableAutoHeaders = disableAutoHeaders;
+	}
+
 	private BasicHttpContext getHttpContext(HttpRequest request) {
 		BasicHttpContext defaultContext = new BasicHttpContext();
 		Builder build = RequestConfig.custom().setSocketTimeout(timeout * 1000 * 3).setConnectTimeout(6 * 1000)
@@ -380,11 +386,16 @@ public class DefaultHttpDownloader {
 	 */
 	private final HttpRequestBase buildHttpUriRequest(HttpRequest request) throws UnsupportedEncodingException {
 		Map<String, String> custom_headers = request.getHedaers();
-		Map<String, String> headers = getFirefoxHeaders();
-		if (userAgent != null) {
-			headers.put("User-Agent", userAgent);
+		Map<String, String> headers = null;
+		if (!disableAutoHeaders) {
+			headers = getFirefoxHeaders();
+			if (userAgent != null) {
+				headers.put("User-Agent", userAgent);
+			}
+			headers.putAll(custom_headers);// 覆盖自定义请求头
+		}else {
+			headers = new HashMap<>();
 		}
-		headers.putAll(custom_headers);// 覆盖自定义请求头
 		Set<Entry<String, String>> keyValues = headers.entrySet();
 		if (request.getMethod() == Method.GET) {
 			HttpGet get = new HttpGet(request.getUrl());
