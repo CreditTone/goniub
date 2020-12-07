@@ -13,14 +13,10 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
-import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilter;
-import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilterRequest;
-import com.deep007.goniub.selenium.mitm.monitor.modle.FlowFilterResponse;
-import com.deep007.goniub.selenium.mitm.monitor.modle.LRequest;
-import com.deep007.goniub.selenium.mitm.monitor.modle.LResponse;
 import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
+import com.deep007.mitmproxyjava.modle.FlowFilterRequest;
+import com.deep007.mitmproxyjava.modle.FlowFilterResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,8 +30,6 @@ public class GoniubChromeOptions extends ChromeOptions {
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
 	
 	public static String CHROME_DRIVER;
-	
-	private String browserId;
 	
 	private List<FlowFilterRequest> flowFilterRequests = new ArrayList<>();
 	
@@ -83,13 +77,6 @@ public class GoniubChromeOptions extends ChromeOptions {
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
-		browserId = UUID.randomUUID().toString().substring(0, 6);
-		userAgent += " BrowserId/" + browserId;
-		MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
-		if (mitmFlowCallBackServer != null) {
-			userAgent += " NHost/"+mitmFlowCallBackServer.callBackIp+ ":" + mitmFlowCallBackServer.port;
-		}
-		
 		options.addArguments("--user-agent='" + userAgent + "'");
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
@@ -118,35 +105,4 @@ public class GoniubChromeOptions extends ChromeOptions {
 		options.setExperimentalOption("prefs", prefs);
 	}
 	
-	public String getBrowserId() {
-		return browserId;
-	}
-	
-	public void addFlowFilterObject(Object obj) {
-		Method[] declaredMethods = obj.getClass().getDeclaredMethods();
-		for (int i = 0;declaredMethods != null &&  i < declaredMethods.length; i++) {
-			Method declaredMethod = declaredMethods[i];
-			if (declaredMethod.getParameterCount() != 1) {
-				continue;
-			}
-			String paramClassName = declaredMethod.getParameterTypes()[0].getName();
-			FlowFilter flowFilter = declaredMethod.getAnnotation(FlowFilter.class);
-			if (flowFilter != null) {
-				if (paramClassName.equals(LRequest.CLASS_NAME)) {
-					flowFilterRequests.add(new FlowFilterRequest(flowFilter, declaredMethod, obj));
-				}else if (paramClassName.equals(LResponse.CLASS_NAME)) {
-					flowFilterResponses.add(new FlowFilterResponse(flowFilter, declaredMethod, obj));
-				}
-			}
-		}
-	}
-	
-	public List<FlowFilterRequest> getFlowFilterRequests() {
-		return flowFilterRequests;
-	}
-	
-	public List<FlowFilterResponse> getFlowFilterResponses() {
-		return flowFilterResponses;
-	}
-
 }

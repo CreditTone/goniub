@@ -133,21 +133,27 @@
 			<version>5.7.0</version>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.annotation/javax.annotation-api -->
+		<dependency>
+			<groupId>javax.annotation</groupId>
+			<artifactId>javax.annotation-api</artifactId>
+			<version>1.3.2</version>
+		</dependency>
 		<!-- grpc -->
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-netty-shaded</artifactId>
-			<version>1.20.0</version>
+			<version>1.34.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-protobuf</artifactId>
-			<version>1.20.0</version>
+			<version>1.34.0</version>
 		</dependency>
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-stub</artifactId>
-			<version>1.20.0</version>
+			<version>1.34.0</version>
 		</dependency>
 		<!-- phantomjsdriver 支持库，虽然selenium已经废弃。但是少数情况下，任可以完成chrome完成不了的工作 -->
 		<dependency>

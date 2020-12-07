@@ -14,7 +14,6 @@ import org.openqa.selenium.interactions.Actions;
 
 import com.deep007.goniub.request.Cookies;
 import com.deep007.goniub.request.HttpsProxy;
-import com.deep007.goniub.selenium.mitm.monitor.MitmFlowCallBackServer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -38,29 +37,9 @@ public class GoniubChromeDriver extends ChromeDriver {
 		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
 		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
 		this.options = options;
-		MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
-		if (mitmFlowCallBackServer != null) {
-			mitmFlowCallBackServer.onCreateChrome(options.getBrowserId(), options);
-		}
 		manage().window().setSize(new Dimension(1300, 1024));
 	}
 	
-	public void addFlowFilterObject(Object obj) {
-		if (MitmFlowCallBackServer.getInstance() == null) {
-			quit();
-			throw new RuntimeException("请先初始化MitmFlowCallBackServer");
-		}
-		options.addFlowFilterObject(obj);
-	}
-	
-	public GoniubChromeDriver enableCookieHook() {
-		if (hookCookies != null) {
-			return this;
-		}
-		hookCookies = new HookCookies();
-		options.addFlowFilterObject(hookCookies);
-		return this;
-	}
 	
 	public Cookies getCookies() {
 		if (hookCookies != null) {
@@ -133,11 +112,6 @@ public class GoniubChromeDriver extends ChromeDriver {
 	@Override
 	public void quit() {
 		try {
-			MitmFlowCallBackServer mitmFlowCallBackServer = MitmFlowCallBackServer.getInstance();
-			if (mitmFlowCallBackServer != null) {
-				mitmFlowCallBackServer.onQuitChrome(options.getBrowserId());
-				Thread.sleep(1000);
-			}
 			super.quit();
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -1,6 +1,5 @@
 package com.deep007.goniub;
 
-
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;

@@ -1,39 +1,31 @@
-package com.deep007.goniub.selenium.mitm;
+package com.deep007.mitmproxyjava.filter;
 
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.deep007.goniub.request.Cookie;
-import com.deep007.goniub.request.Cookies;
-import com.deep007.mitmproxyjava.modle.FlowFilter;
 import com.deep007.mitmproxyjava.modle.FlowRequest;
 import com.deep007.mitmproxyjava.modle.FlowResponse;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
-public class HookCookies {
+public class CookieCollectFilter implements FlowFilter {
+	
 	private Pattern SETCOOKIE_NAME_VALUE_MATCHER = Pattern.compile("^([^=]+)=([^;]*)");
 	private Pattern SETCOOKIE_DOMAIN_MATCHER = Pattern.compile("[dD]{1}omain=([^;]+)");
 	
 	private Pattern SENDCOOKIE_DOMAIN_MATCHER = Pattern.compile("http[s]?://[^\\.]+([^/]+)");
 	
-	public Cookies catchCookies = new Cookies();
+	public Set<Cookie> catchCookies = new HashSet<Cookie>();
 	
-	@FlowFilter(value = "http.*")
-	void filterRequest(FlowRequest httpRequest) {
-		String sendCookie = httpRequest.getHeaders().get("Cookie");
-		if (sendCookie == null || sendCookie.isEmpty()) {
-			return;
+	public synchronized boolean containsCookie(String name) {
+		for (Iterator<Cookie> iterator = catchCookies.iterator(); iterator.hasNext();) {
+			Cookie cookie = iterator.next();
+			if (cookie.getName().equals(name)) {
+				return true;
+			}
 		}
-		String url = httpRequest.getUrl();
-		Matcher sendcookie_domain_matcher = SENDCOOKIE_DOMAIN_MATCHER.matcher(url);
-		if (!sendcookie_domain_matcher.find()) {
-			log.warn("从url解析domain失败:"+url);
-			return;
-		}
-		String domain = sendcookie_domain_matcher.group(1);
-		extractCookies(sendCookie, domain);
+		return false;
 	}
 	
 	private void extractCookies(String sendCookie, String domain) {
@@ -42,26 +34,43 @@ public class HookCookies {
 			String item = items[i].trim();
 			if (item.contains("=")) {
 				String[] nameValue = item.split("=", 2);
-				if (!catchCookies.containsCookie(nameValue[0])) {
+				if (!containsCookie(nameValue[0])) {
 					Cookie cookie = new Cookie(nameValue[0], nameValue[1]);
 					cookie.setDomain(domain);
-					catchCookies.addCookie(cookie);
+					catchCookies.add(cookie);
 				}
 			}else if (!item.isEmpty()) {
-				log.warn("sendCookie解析错误:" + item);
+				//log.warn("sendCookie解析错误:" + item);
 			}
 		}
 	}
-	@FlowFilter(value = "http.*")
-	void filterResponse(FlowResponse response) {
-		String setCookie = response.getHeader("Set-Cookie");
+
+	@Override
+	public void filterRequest(FlowRequest flowRequest) {
+		String sendCookie = flowRequest.getHeaders().get("Cookie");
+		if (sendCookie == null || sendCookie.isEmpty()) {
+			return;
+		}
+		String url = flowRequest.getUrl();
+		Matcher sendcookie_domain_matcher = SENDCOOKIE_DOMAIN_MATCHER.matcher(url);
+		if (!sendcookie_domain_matcher.find()) {
+			//log.warn("从url解析domain失败:"+url);
+			return;
+		}
+		String domain = sendcookie_domain_matcher.group(1);
+		extractCookies(sendCookie, domain);
+	}
+
+	@Override
+	public void filterResponse(FlowResponse flowResponse) {
+		String setCookie = flowResponse.getHeader("Set-Cookie");
 		if (setCookie == null || setCookie.isEmpty()) {
 			return;
 		}
-		String url = response.getRequest().getUrl();
+		String url = flowResponse.getRequest().getUrl();
 		Matcher setdcookie_domain_matcher = SENDCOOKIE_DOMAIN_MATCHER.matcher(url);
 		if (!setdcookie_domain_matcher.find()) {
-			log.warn("从url解析domain失败:"+url);
+			//log.warn("从url解析domain失败:"+url);
 			return;
 		}
 		String domain = setdcookie_domain_matcher.group(1);
@@ -75,9 +84,11 @@ public class HookCookies {
 				cookie.setDomain(domain);
 			}
 			cookie.setHttpOnly(setCookie.contains("HttpOnly") || setCookie.contains("httpOnly"));
-			catchCookies.addCookie(cookie);
+			catchCookies.add(cookie);
 		}else {
-			log.warn("setCookie解析错误:" + setCookie);
+			//log.warn("setCookie解析错误:" + setCookie);
+			System.err.println("setCookie解析错误:" + setCookie);
 		}
 	}
+
 }
