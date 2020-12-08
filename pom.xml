@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.deep007</groupId>
 	<artifactId>goniub</artifactId>
-	<version>1.9.3</version>
+	<version>1.9.5</version>
 	<name>goniub</name>
 	<url>https://github.com/CreditTone/goniub</url>
 	<packaging>jar</packaging>
@@ -29,7 +29,7 @@
 		<developerConnection>scm:git:git@github.com:CreditTone/goniub.git</developerConnection>
 		<url>git@github.com:CreditTone/goniub.git</url>
 	</scm>
-	<description>基于selenium、browserproxy、okhttp等研发的工具包，方便使用。够牛逼！</description>
+	<description>一个爬虫开发的工具包，方便使用。够牛逼！</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -138,22 +138,6 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.3.2</version>
-		</dependency>
-		<!-- grpc -->
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-netty-shaded</artifactId>
-			<version>1.34.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-protobuf</artifactId>
-			<version>1.34.0</version>
-		</dependency>
-		<dependency>
-			<groupId>io.grpc</groupId>
-			<artifactId>grpc-stub</artifactId>
-			<version>1.34.0</version>
 		</dependency>
 		<!-- phantomjsdriver 支持库，虽然selenium已经废弃。但是少数情况下，任可以完成chrome完成不了的工作 -->
 		<dependency>
@@ -292,13 +276,6 @@
 					<encoding>UTF-8</encoding>
 				</configuration>
 			</plugin>
-			<!-- 编译grpc时使用 eg:mvn generate-sources -->
-			<!-- <plugin> <groupId>org.xolstice.maven.plugins</groupId> <artifactId>protobuf-maven-plugin</artifactId> 
-				<version>0.6.1</version> <configuration> <protocArtifact>com.google.protobuf:protoc:3.5.1-1:exe:${os.detected.classifier}</protocArtifact> 
-				<pluginId>grpc-java</pluginId> <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.15.0:exe:${os.detected.classifier}</pluginArtifact> 
-				<protoSourceRoot>src/main/resources</protoSourceRoot> </configuration> <executions> 
-				<execution> <goals> <goal>compile</goal> <goal>compile-custom</goal> </goals> 
-				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
 </project>

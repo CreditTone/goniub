@@ -24,8 +24,6 @@ public class GoniubChromeDriver extends ChromeDriver {
 	
 	private GoniubChromeOptions options;
 	
-	private HookCookies hookCookies;
-	
 	public GoniubChromeDriver() {
 		this(new GoniubChromeOptions());
 	}
@@ -40,13 +38,6 @@ public class GoniubChromeDriver extends ChromeDriver {
 		manage().window().setSize(new Dimension(1300, 1024));
 	}
 	
-	
-	public Cookies getCookies() {
-		if (hookCookies != null) {
-			return hookCookies.catchCookies;
-		}
-		throw new RuntimeException("请先打开enableCookieHook.");
-	}
 	
 	public void hideElement(WebElement elm) {
 		if (elm != null) {

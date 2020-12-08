@@ -15,8 +15,6 @@ import org.openqa.selenium.remote.CapabilityType;
 import com.deep007.goniub.request.HttpsProxy;
 import com.deep007.goniub.terminal.LinuxTerminalHelper;
 import com.deep007.goniub.util.Boot;
-import com.deep007.mitmproxyjava.modle.FlowFilterRequest;
-import com.deep007.mitmproxyjava.modle.FlowFilterResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,10 +28,6 @@ public class GoniubChromeOptions extends ChromeOptions {
 	public static final String CHROME_USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; WOW64; rv:56.0) Gecko/20100101 Firefox/56.0";
 	
 	public static String CHROME_DRIVER;
-	
-	private List<FlowFilterRequest> flowFilterRequests = new ArrayList<>();
-	
-	private List<FlowFilterResponse> flowFilterResponses = new ArrayList<>();
 	
 	public GoniubChromeOptions() {
 		this(false, false, null, CHROME_USER_AGENT);
