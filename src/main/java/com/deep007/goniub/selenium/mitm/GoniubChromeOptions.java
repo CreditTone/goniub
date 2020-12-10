@@ -4,6 +4,7 @@ import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,7 +68,10 @@ public class GoniubChromeOptions extends ChromeOptions {
 		options.addArguments("--no-sandbox"); //关闭沙盒模式
 		options.addArguments("--disable-dev-shm-usage");
 		//options.addArguments("user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data");//待研究
-		options.setExperimentalOption("excludeSwitches", Arrays.asList("enable-automation"));// 防止大平台检测selenium
+		//不提示“Chrome正受到自动测试软件控制” 
+		options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation") );
+		options.setExperimentalOption("useAutomationExtension", false);
+
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}

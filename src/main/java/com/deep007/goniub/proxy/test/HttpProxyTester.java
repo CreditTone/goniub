@@ -7,20 +7,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.deep007.goniub.request.HttpsProxy;
+import org.apache.http.client.methods.HttpDelete;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import com.deep007.goniub.DefaultHttpDownloader;
+import com.deep007.goniub.request.HttpsProxy;
 
 public abstract class HttpProxyTester {
 	
 	private ProxyReport test(HttpsProxy httpsProxy, List<TestUrl> testUrls) {
-		OkHttpClient okClient = new OkHttpClient
-				.Builder()
-		        .connectTimeout(5, TimeUnit.SECONDS)//设置连接超时时间
-		        .readTimeout(10, TimeUnit.SECONDS)//设置读取超时时间
-				.proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(httpsProxy.getServer(), httpsProxy.getPort())))
-				.build();
+		DefaultHttpDownloader httpDownloader = new DefaultHttpDownloader();
 		ProxyReport report = new ProxyReport();
 		report.proxyIp = httpsProxy.getServer();
 		report.proxyPort = httpsProxy.getPort();
@@ -29,8 +24,7 @@ public abstract class HttpProxyTester {
 			testReport.url = testUrl.getUrl();
 			testReport.startTime = System.currentTimeMillis();
 			try {
-				Request request = new Request.Builder().url(testUrl.getUrl()).build();
-				String response = okClient.newCall(request).execute().body().string();
+				String response = httpDownloader.download(testUrl.getUrl()).getContent();
 				Matcher matcher = Pattern.compile(testUrl.getValidateRegex()).matcher(response);
 				testReport.success = matcher.find();
 				if (!testReport.success) {

@@ -1,16 +1,23 @@
 package com.deep007.goniub.selenium.mitm;
 
+import java.io.IOException;
+import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.springframework.core.io.ClassPathResource;
 
 import com.deep007.goniub.request.Cookies;
 import com.deep007.goniub.request.HttpsProxy;
@@ -31,11 +38,19 @@ public class GoniubChromeDriver extends ChromeDriver {
 	@SuppressWarnings("static-access")
 	public GoniubChromeDriver(GoniubChromeOptions options) {
 		super(options);
-		manage().timeouts().setScriptTimeout(120, TimeUnit.SECONDS);//脚步执行超时
-		manage().timeouts().pageLoadTimeout(120, TimeUnit.SECONDS);//页面加载超时
-		manage().timeouts().implicitlyWait(120, TimeUnit.SECONDS);
+		manage().timeouts().setScriptTimeout(Duration.ofSeconds(30));//脚步执行超时
+		manage().timeouts().pageLoadTimeout(Duration.ofSeconds(100));//页面加载超时
+		manage().timeouts().implicitlyWait(Duration.ofSeconds(120));
 		this.options = options;
 		manage().window().setSize(new Dimension(1300, 1024));
+		Map<String,Object> parameters = new HashMap<>();
+		ClassPathResource classPathResource = new ClassPathResource("stealth.min.js");
+		try {
+			parameters.put("source", FileUtils.readFileToString(classPathResource.getFile()));
+			executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", parameters);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	
@@ -72,7 +87,7 @@ public class GoniubChromeDriver extends ChromeDriver {
 	
 	public boolean checkElement(String cssSelect) {
 		try {
-			return findElementByCssSelector(cssSelect).isDisplayed();
+			return findElement(By.cssSelector(cssSelect)).isDisplayed();
 		}catch(Exception e) {
 		}
 		return false;
@@ -247,12 +262,4 @@ public class GoniubChromeDriver extends ChromeDriver {
 				httpsProxy, GoniubChromeOptions.IOS_USER_AGENT));
 	}
 	
-	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless,String userAgent) {
-		//log.debug("你启动的是没有钩子功能的浏览器");
-		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, null, userAgent));
-	}
-	
-	public static final GoniubChromeDriver newNoHookBrowserInstance(boolean disableLoadImage,boolean headless) {
-		return newNoHookBrowserInstance(disableLoadImage, headless, null);
-	}
 }

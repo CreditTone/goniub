@@ -14,12 +14,6 @@ import com.deep007.goniub.request.PageRequest;
 import com.deep007.goniub.request.PageRequestBuilder;
 import com.google.common.collect.Sets;
 
-import okhttp3.FormBody;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-
 public class CURLUtils {
 	
 	private static final Set<Pattern> headerPatterns = Sets.newHashSet(
@@ -111,19 +105,6 @@ public class CURLUtils {
 	
 	public void data(String data) {
 		this.data = data;
-	}
-	
-	public Request createOkHttpRequest() {
-		Headers okheaders = Headers.of(headers);
-		Request.Builder requestBuilder = new Request.Builder()
-				.url(url)
-				.headers(okheaders);
-		if (data != null) {
-			String contentType = getContentType();
-			RequestBody requestBody = FormBody.create(MediaType.parse(contentType), data);
-			requestBuilder.post(requestBody);
-		}
-		return requestBuilder.build();
 	}
 	
 	public PageRequest createPageRequest() {
