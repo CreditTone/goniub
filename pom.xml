@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.deep007</groupId>
 	<artifactId>goniub</artifactId>
-	<version>1.9.6</version>
+	<version>1.9.7</version>
 	<name>goniub</name>
 	<url>https://github.com/CreditTone/goniub</url>
 	<packaging>jar</packaging>
@@ -126,6 +126,12 @@
 
 
 	<dependencies>
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>30.0-jre</version>
+		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
@@ -134,11 +140,8 @@
 			<scope>test</scope>
 		</dependency>
 		<!-- phantomjsdriver 支持库，虽然selenium已经废弃。但是少数情况下，任可以完成chrome完成不了的工作 -->
-	<!-- 	<dependency>
-			<groupId>com.codeborne</groupId>
-			<artifactId>phantomjsdriver</artifactId>
-			<version>1.4.4</version>
-		</dependency> -->
+		<!-- <dependency> <groupId>com.codeborne</groupId> <artifactId>phantomjsdriver</artifactId> 
+			<version>1.4.4</version> </dependency> -->
 		<!-- io工具库 -->
 		<dependency>
 			<groupId>commons-io</groupId>
