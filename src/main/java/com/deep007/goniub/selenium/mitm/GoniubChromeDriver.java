@@ -5,7 +5,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,7 +18,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.springframework.core.io.ClassPathResource;
 
-import com.deep007.goniub.request.Cookies;
 import com.deep007.goniub.request.HttpsProxy;
 
 import lombok.extern.slf4j.Slf4j;

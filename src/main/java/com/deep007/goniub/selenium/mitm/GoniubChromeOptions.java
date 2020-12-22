@@ -70,12 +70,12 @@ public class GoniubChromeOptions extends ChromeOptions {
 		//options.addArguments("user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data");//待研究
 		//不提示“Chrome正受到自动测试软件控制” 
 		options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation") );
-		options.setExperimentalOption("useAutomationExtension", false);
+		//options.setExperimentalOption("useAutomationExtension", false);
 
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
-		options.addArguments("--user-agent='" + userAgent + "'");
+		options.addArguments("--user-agent=" + userAgent);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
 		options.setCapability("acceptInsecureCerts", true);
