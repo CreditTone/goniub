@@ -30,16 +30,30 @@ public class GoniubChromeOptions extends ChromeOptions {
 	
 	public static String CHROME_DRIVER;
 	
+	public final String userAgent;
+	
+	public final boolean hideFingerprint;
+	public final boolean disableLoadImage;
+	public final boolean headless;
+	
 	public GoniubChromeOptions() {
-		this(false, false, null, CHROME_USER_AGENT);
+		this(false, false);
 	}
 	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless) {
-		this(disableLoadImage, headless, null, CHROME_USER_AGENT);
+		this(disableLoadImage, headless, true, null, CHROME_USER_AGENT);
 	}
 	
 	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy,
 			String userAgent) {
+		this(disableLoadImage, headless, true, null, CHROME_USER_AGENT);
+	}
+	
+	public GoniubChromeOptions(boolean disableLoadImage, boolean headless, boolean hideFingerprint, HttpsProxy httpsProxy,
+			String userAgent) {
+		this.disableLoadImage = disableLoadImage;
+		this.headless = headless;
+		this.hideFingerprint = hideFingerprint;
 		ChromeOptions options = this;
 		if ((CHROME_DRIVER != null && new File(CHROME_DRIVER).exists()) || Boot.isMacSystem()) {
 			String chromeDriver = CHROME_DRIVER;
@@ -75,6 +89,7 @@ public class GoniubChromeOptions extends ChromeOptions {
 		if (userAgent == null) {
 			userAgent = CHROME_USER_AGENT;
 		}
+		this.userAgent = userAgent;
 		options.addArguments("--user-agent=" + userAgent);
 		//忽略ssl错误
 		options.setCapability("acceptSslCerts", true);
@@ -102,5 +117,8 @@ public class GoniubChromeOptions extends ChromeOptions {
 		}
 		options.setExperimentalOption("prefs", prefs);
 	}
-	
+
+	public String getUserAgent() {
+		return userAgent;
+	}
 }

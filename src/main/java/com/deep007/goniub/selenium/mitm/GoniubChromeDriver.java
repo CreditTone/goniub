@@ -1,6 +1,7 @@
 package com.deep007.goniub.selenium.mitm;
 
 import java.io.IOException;
+import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.openqa.selenium.interactions.Actions;
 import org.springframework.core.io.ClassPathResource;
 
 import com.deep007.goniub.request.HttpsProxy;
+import com.deep007.goniub.util.IOUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -42,13 +44,29 @@ public class GoniubChromeDriver extends ChromeDriver {
 		this.options = options;
 		manage().window().setSize(new Dimension(1300, 1024));
 		Map<String,Object> parameters = new HashMap<>();
-		ClassPathResource classPathResource = new ClassPathResource("stealth.min.js");
+		if (options.hideFingerprint) {
+			String stealth = readStealthMinJs();
+			if (stealth != null) {
+				parameters.put("source", stealth);
+				executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", parameters);
+			}
+		}
+	}
+	
+	public String readStealthMinJs() {
 		try {
-			parameters.put("source", FileUtils.readFileToString(classPathResource.getFile()));
-			executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", parameters);
-		} catch (IOException e) {
+			ClassPathResource classPathResource = new ClassPathResource("stealth.min.js");
+			return FileUtils.readFileToString(classPathResource.getFile());
+		} catch (Exception e) {
+		}
+		try {
+			URL fileURL = this.getClass().getResource("/resources/stealth.min.js"); 
+			byte[] data = IOUtils.readInputStream(fileURL.openStream());
+			return new String(data);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
 	
 	
@@ -109,6 +127,10 @@ public class GoniubChromeDriver extends ChromeDriver {
 			ret = ret.replace("<html><head></head><body>", "").replace("</body></html>", "");
 		}
 		return ret;
+	}
+	
+	public String getUserAgent() {
+		return options.getUserAgent();
 	}
 	
 
@@ -258,6 +280,11 @@ public class GoniubChromeDriver extends ChromeDriver {
 	public static GoniubChromeDriver newIOSInstance(boolean disableLoadImage, boolean headless, HttpsProxy httpsProxy) {
 		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless,
 				httpsProxy, GoniubChromeOptions.IOS_USER_AGENT));
+	}
+	
+	public static GoniubChromeDriver newInstance(boolean disableLoadImage, boolean headless, boolean hideFingerprint, HttpsProxy httpsProxy, String userAgent) {
+		return new GoniubChromeDriver(new GoniubChromeOptions(disableLoadImage, headless, hideFingerprint,
+				httpsProxy, userAgent));
 	}
 	
 }
