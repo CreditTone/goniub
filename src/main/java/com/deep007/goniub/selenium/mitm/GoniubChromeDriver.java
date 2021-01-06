@@ -64,6 +64,18 @@ public class GoniubChromeDriver extends ChromeDriver {
 			byte[] data = IOUtils.readInputStream(fileURL.openStream());
 			return new String(data);
 		} catch (Exception e) {
+		}
+		try {
+			URL fileURL = this.getClass().getResource("/BOOT-INF/classes/stealth.min.js"); 
+			byte[] data = IOUtils.readInputStream(fileURL.openStream());
+			return new String(data);
+		} catch (Exception e) {
+		}
+		try {
+			URL fileURL = this.getClass().getResource("/classes/stealth.min.js"); 
+			byte[] data = IOUtils.readInputStream(fileURL.openStream());
+			return new String(data);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
