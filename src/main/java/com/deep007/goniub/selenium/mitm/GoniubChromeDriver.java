@@ -31,6 +31,8 @@ public class GoniubChromeDriver extends ChromeDriver {
 	
 	private GoniubChromeOptions options;
 	
+	private static volatile String stealthMinJsData = null;
+	
 	public GoniubChromeDriver() {
 		this(new GoniubChromeOptions());
 	}
@@ -45,7 +47,10 @@ public class GoniubChromeDriver extends ChromeDriver {
 		manage().window().setSize(new Dimension(1300, 1024));
 		Map<String,Object> parameters = new HashMap<>();
 		if (options.hideFingerprint) {
-			String stealth = readStealthMinJs();
+			if (stealthMinJsData == null) {
+				stealthMinJsData = readStealthMinJs();
+			}
+			String stealth = stealthMinJsData;
 			if (stealth != null) {
 				parameters.put("source", stealth);
 				executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", parameters);
@@ -53,30 +58,19 @@ public class GoniubChromeDriver extends ChromeDriver {
 		}
 	}
 	
-	public String readStealthMinJs() {
+	private static String readStealthMinJs() {
+		String classPathJs = "com/deep007/goniub/selenium/mitm/stealth.min.js";
 		try {
-			ClassPathResource classPathResource = new ClassPathResource("stealth.min.js");
-			return FileUtils.readFileToString(classPathResource.getFile());
-		} catch (Exception e) {
-		}
-		try {
-			URL fileURL = this.getClass().getResource("/resources/stealth.min.js"); 
+			URL fileURL = GoniubChromeDriver.class.getResource(classPathJs); 
 			byte[] data = IOUtils.readInputStream(fileURL.openStream());
 			return new String(data);
 		} catch (Exception e) {
 		}
 		try {
-			URL fileURL = this.getClass().getResource("/BOOT-INF/classes/stealth.min.js"); 
+			URL fileURL = GoniubChromeDriver.class.getResource("/"+classPathJs); 
 			byte[] data = IOUtils.readInputStream(fileURL.openStream());
 			return new String(data);
 		} catch (Exception e) {
-		}
-		try {
-			URL fileURL = this.getClass().getResource("/classes/stealth.min.js"); 
-			byte[] data = IOUtils.readInputStream(fileURL.openStream());
-			return new String(data);
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		return null;
 	}
