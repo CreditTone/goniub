@@ -1,6 +1,7 @@
 package com.deep007.goniub.hybridtest;
 
 import java.io.File;
+import java.util.Map;
 
 import com.deep007.goniub.DefaultHttpDownloader;
 import com.deep007.goniub.request.PageRequest;
@@ -35,8 +36,15 @@ public class CURLUtilsTest {
 		//request.setUrl(url);
 		//request.putHeader(name, value);
 		DefaultHttpDownloader defaultHttpDownloader = new DefaultHttpDownloader();
+		defaultHttpDownloader.download("");
 		Page page = defaultHttpDownloader.download(request);
-		System.out.println("结果:"+page.getContent());
+		page.getContent();//请求响应内容
+		page.getContentType();//响应类型 对应 response header的content-type
+		page.getOwnerUrl();//请求的url
+		page.getRedirectUrl();//如果请过程中发生了302、303、304的重定向，getRedirectUrl()可以拿到重定向之后的真实url。这个功能是不是很击中了很多爬虫工程师的痛点？哈哈，继续......
+		page.isRedirected();//是否发生过重定向。试问，其他的http库有没有专门为爬虫场景定义这样一个快捷的方法？没有吧。这就是爬虫工程师自己封装http库的好处，他知道你们平时用什么功能最多。把这些功能都搞成快捷方法了
+		page.getResponseHeader();//得到Response的Header，Map<String, String>类型
+		page.getStatus();//http响应代码，通常是200对吧
 	}
 
 }
