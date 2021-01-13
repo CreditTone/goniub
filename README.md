@@ -16,10 +16,7 @@
 ### 快速开始
 
 ##### 不要直接使用HttpClient、OKHttp
-	我知道大家做java爬虫实现网络请求非常喜欢用Apache旗下的HttpClient或者OKHttp，
-	但是我想告诉大家HttpClient直接使用的话，构造请求代码太多、
-	太啰嗦。OKHttp比HttpClient体验好，但是在管理cookie层面体验又没有HttpClient好。
-	毕竟OKHttp最初的设计是用来做服务层接口调用的，是你们用它来做爬虫。
+> 我知道大家做java爬虫实现网络请求非常喜欢用Apache旗下的HttpClient或者OKHttp，但是我想告诉大家HttpClient直接使用的话，构造请求代码太多、太啰嗦。OKHttp比HttpClient体验好，但是在管理cookie层面体验又没有HttpClient好。毕竟OKHttp最初的设计是用来做服务层接口调用的，是你们用它来做爬虫。
 	
 ##### 我构造了自己的http请求库HttpDownloader, 来使用DefaultHttpDownloader发送一个请求
 
@@ -53,22 +50,17 @@
 		.postText(body)//有些恶心的网络请求是post一个不规则的（既不是json、也不是urlencode）字符串body，他会将request.header.content-type设置为text/plain; charset=utf-8
 		.httpEntity(mediaType, postBody)//如果postJSON postText还不满足你遇到恶心的奇怪请求请使用httpEntity自定义post实体
 		.build();//构建pagerequest
-		Page page = defaultHttpDownloader.download("https://www.example.com");
+		Page page = defaultHttpDownloader.download(request);
 ```
 
-##### 最大的高效的构造请求的方式是直击将curl命令解析成功PageRequest
-	大家做爬虫第一步是抓包对吧，然后分析抓包请求将请求用代码实现一遍。
-	我不知道大家有没有去反思，就是我们每天为构造这些对网站来说“合法”的请求是不是有点浪费时间？
-	我认为非常浪费时间，因为不管你用什么http库，你无非都是各种header、params、postbody上做各种get、set。
-	抓包都用chrome或火狐，network选卡列表中的请求记录都可以进行copy as curl
-	我们通常验证请求都是用curl命令，如果能将curl直击解析成对应http库的request那么我们将节省大量时间。
+##### （爬虫观念普及）最大的高效的构造请求的方式是直击将curl命令解析成功PageRequest
+> 大家做爬虫第一步是抓包对吧，然后分析抓包请求将请求用代码实现一遍。我不知道大家有没有去反思，就是我们每天为构造这些对网站来说“合法”的请求是不是有点浪费时间？我认为非常浪费时间，因为不管你用什么http库，你无非都是各种header、params、postbody上做各种get、set。抓包都用chrome或火狐，network选卡列表中的请求记录都可以进行copy as curl。我们通常验证请求都是用curl命令，如果能将curl直击解析成对应http库的request那么我们将节省大量时间。
 	
 	
 
 ##### CURLUtils的使用
-	这个知乎的请求我管TMD的哪个参数是动态的哪个是静态的，我先用CURLUtils解析成PageRequest，
-	放到HttpDownloader就可以发生合法的请求了。 
-	作为爬虫工程师，你尽量把精力放在可变参数上,其他的套用curl模版就可以
+> 这个curl的知乎的请求我管TMD的哪个参数是动态的哪个是静态的，我先用CURLUtils解析成PageRequest，放到HttpDownloader就可以发生合法的请求了。 作为爬虫工程师，你尽量把精力放在可变参数上,其他的套用curl模版就可以。
+
 ```java
 	//知乎某页面的curl
 	String zhihuCommand = "curl 'https://www.zhihu.com/question/399149898/answer/1262844798' -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:56.0) Gecko/20100101 Firefox/56.0' -H 'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' -H 'Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2' --compressed -H 'Referer: https://www.zhihu.com/' -H 'Connection: keep-alive' -H 'Cookie: _zap=d65e2855-f52a-4817-a2e1-6b9baac5f49c; d_c0=\"ACCmrPHAGBCPTlBVca50WongWu1r9-qghA8=|1569319098\"; Hm_lvt_98beee57fd2ef70ccdd5ca52b9740c49=1590215082,1590291119,1591272812; _ga=GA1.2.837698776.1582867010; capsion_ticket=\"2|1:0|10:1591272812|14:capsion_ticket|44:MjZmMThhZWI0MmYwNDgwMjhkODBlZTNhZGJjODJjMzE=|bde0488dcfcdfdd1349e5a5e86cdee1a4eed5ae4c7b8e7ccd19fe1d7c8675fe4\"; _xsrf=bb3DT7yoQTuHOF08LKCCymQad9lhPqaX; KLBRSID=031b5396d5ab406499e2ac6fe1bb1a43|1591272973|1591272810; Hm_lpvt_98beee57fd2ef70ccdd5ca52b9740c49=1591272963; SESSIONID=D3rjYUzS6blIto55L2SHzqmgRm7aU8ltfwDCUr4IhAB; _gid=GA1.2.854982874.1591272814; JOID=VloWBULuyHD6lChmf-yD4KkmyTJprPoHn8B7HSnVrB2270pVS4QpoqafL2J1wqCawBDW6JGAqYNsdwFH41E1_Yg=; osd=W14XBE3jzHH7myVifu2M7a0nyD1kqPsGkM1_HCjaoRm37kVYT4UoraubLmN6z6SbwR_b7JCBpo5odgBI7lU0_Ic=; z_c0=\"2|1:0|10:1591272919|4:z_c0|92:Mi4xUEhWVUFnQUFBQUFBSUthczhjQVlFQ1lBQUFCZ0FsVk4xelBHWHdCWC1MNFRnV185VVFYVWJPVlZXaUJCajNjZFZR|20a417b73fe617f9c3fd24ba1c3db87a5f468dab15cfffb3a8a6fdbb148a1c70\"; unlock_ticket=\"ABBKdHIjEgkmAAAAYAJVTd_s2F5M3g-f1vqOC3mOWiC4hngxaZiU5w==\"; tst=r; _gat_gtag_UA_149949619_1=1' -H 'Upgrade-Insecure-Requests: 1' -H 'Pragma: no-cache' -H 'Cache-Control: no-cache' -H 'TE: Trailers'";
@@ -78,4 +70,33 @@
 	request.putHeader("over write header name 1", "v1");//你可以添加或覆盖原有的header参数
 	request.setUrl("https://www.zhihu.com/question/399149898/answer/2262844799");//重新定义url
 ```
+
+##### 隐藏浏览器指纹的selenium
+> 原生的selenium是不支持隐藏浏览器指纹的，因为模拟浏览器有几十个特征可以被检测，仅仅隐藏 webdriver 这一个值是没有任何意义的。而因为“天生”具有隐藏指纹的Puppeteer/Pyppeteer出来之后，java的爬虫工程师们就纷纷涌向了Puppeteer的阵营。这对于喜爱selenium爬虫工程师来说是一个永远痛。不过selenium4.x出来之后新出了一个executeCdpCommand("Page.addScriptToEvaluateOnNewDocument", parameters)方法，它允许你在渲染每个网页之前执行给定的js脚本。利用这个特性我们就可以实现js前置抹除模拟浏览器指纹。详情请看贴“Selenium模拟浏览器如何正确隐藏特征” https://jishuin.proginn.com/p/763bfbd338cc
+
+> goniub已经把以上特征移植到了GoniubChromeDriver，实际上你只需要简单的api就可以享受具有隐藏浏览器指纹的webdriver
+
+```java
+		GoniubChromeOptions.CHROME_DRIVER = "/Users/stephen/Downloads/chromedriver";
+		GoniubChromeDriver hideMockerFeatureDriver = GoniubChromeDriver.newChromeInstance(false, false, null);
+		hideMockerFeatureDriver.get("https://www.taobao.com");
+		Object ret = hideMockerFeatureDriver.executeScript("return window.navigator.webdriver");
+		System.out.println(ret);//null，成功隐藏指纹
+		hideMockerFeatureDriver.quit();
+```
+
+> 而使用原生selenium的api,效果
+
+```java
+		System.setProperty("webdriver.chrome.driver", "/Users/stephen/Downloads/chromedriver");
+		ChromeDriver driver = new ChromeDriver();
+		driver.get("https://www.taobao.com");
+		Object ret = driver.executeScript("return window.navigator.webdriver");
+		System.out.println(ret);//true，模拟浏览器指纹已被暴露
+		driver.quit();
+```
+
+
+
+
 	

@@ -13,12 +13,13 @@ public class GoniubChromeDriverTest {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		GoniubChromeOptions.CHROME_DRIVER = "/Users/stephen/Downloads/chromedriver";
-		GoniubChromeDriver driver = GoniubChromeDriver.newChromeInstance(false, false, null);
-		driver.get("https://www.taobao.com");
-		Thread.sleep(1000 * 60);
-		driver.quit();
+		GoniubChromeDriver hideMockerFeatureDriver = GoniubChromeDriver.newChromeInstance(false, false, null);
+		hideMockerFeatureDriver.get("https://www.taobao.com");
+		Object ret = hideMockerFeatureDriver.executeScript("return window.navigator.webdriver");
+		System.out.println(ret);
+		hideMockerFeatureDriver.quit();
 	}
 	
 	/**
@@ -26,11 +27,12 @@ public class GoniubChromeDriverTest {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main2(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		System.setProperty("webdriver.chrome.driver", "/Users/stephen/Downloads/chromedriver");
 		ChromeDriver driver = new ChromeDriver();
 		driver.get("https://www.taobao.com");
-		Thread.sleep(1000 * 60);
+		Object ret = driver.executeScript("return window.navigator.webdriver");
+		System.out.println(ret);
 		driver.quit();
 	}
 }
