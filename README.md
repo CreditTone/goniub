@@ -96,6 +96,14 @@
 		driver.quit();
 ```
 
+##### 解决selenium无法得到全量的cookie
+
+> 某爬虫工程师：selenium无法得到全量的cookie？这是什么问题？我用起来没问题啊。嗯，是的。如果你仅仅抓取单域名网站很可能遇不到这个问题，仅仅通过webDriver.manage().getCookies()这个方法就可以获取cookie。selenium无法得到全量的cookie的场景有如下情况。
+
+>> 1、多域名网站群。
+
+>> 2、js本地生成cookie
+
 
 
 
