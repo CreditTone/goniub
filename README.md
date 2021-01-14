@@ -98,11 +98,22 @@
 
 ##### 解决selenium无法得到全量的cookie
 
-> 某爬虫工程师：selenium无法得到全量的cookie？这是什么问题？我用起来没问题啊。嗯，是的。如果你仅仅抓取单域名网站很可能遇不到这个问题，仅仅通过webDriver.manage().getCookies()这个方法就可以获取cookie。selenium无法得到全量的cookie的场景有如下情况。
+> 某爬虫工程师：selenium无法得到全量的cookie？这是什么问题？我用起来没问题啊。嗯，是的。如果你仅仅抓取单域名网站很可能遇不到这个问题，仅仅通过webDriver.manage().getCookies()这个方法就可以获取cookie。selenium无法得到全量的cookie的场景：
 
->> 1、多域名网站群。
+>> 多域名网站群。实战场景举例：当年我在某互金公司做淘宝、支付宝网站用户信息抓取的项目的时候，用户会通过我们爬虫服务api传给我们账户/密码或者扫码我们劫持的淘宝登录二维码。这样我们服务器的爬虫就可以模拟完成用户登录，大家应该知道从淘宝的个人中心页面点击“账户余额”可以直接跳转到支付宝页面对吧！我们用selenium模拟点击账户余额跳转到支付宝，这时候支付宝给浏览器也种了支付宝登录状态的cookie。好，这时候浏览器相当于淘宝+支付宝的cookie我们都有了。但是当我们通过webDriver.manage().getCookies()获取cookie的时候。我们发现我们只能获取支付宝的cookie，而当前浏览器停留在支付宝页面*.alipay.com/xxx。当我们回到淘宝页面的时候再次webDriver.manage().getCookies()发现又只能获取taobao.com的cookie。先不追究webdriver的底层原因，我们按这个现象就可以知道selenium无法获取全量cookie。其实也很好理解为什么webdriver底层不愿意给你浏览器浏览过的全量cookie，因为selenium最初设计是做一个自动化网页测试工具，人家并不是给你做爬虫用的。是很多爬虫工程看到了selenium在爬虫场景的威力，才把它当成一个“爬虫工具”。其实网上也有人遇到过这样的问题
+![selenium_nofullcookies](./selenium_nofullcookies.png "selenium_nofullcookies")
 
->> 2、js本地生成cookie
+> 大家都是怎么克服的？
+
+>> 1、一些人干脆直接不获取cookie了，从头到尾直接用selenium进行采集。（但是这样你就会很慢......，只要你的业务场景能够容忍你这样慢。OK！没问题！）
+
+>> 2、一些人自己定制浏览器，基于webkit或者chromium开发自己爬虫浏览器。（这种方式，我觉得，你挺猛阿。c/c++玩的这么溜。最后大多数人都是失败告终，或者做出来的工具api体验度跟selenium比就跟屎一样。）
+
+>> 3、一些在selenium浏览器前面设置一个中间人攻击代理，因为中间人代理可以监控http(s)的发出request.headers和response.headers。从headers拦截cookie记录下来。（这种也是我一直用的方法，很投机取巧吧。付出最少的努力，就可以达到比方案二更稳定的效果。）
+
+> 下面我们讲解下，第三种通过中间人代理获取全量cookie在goniub的集成。
+
+>> 1、中间人代理技术选型，目前市面上的中间人代理有：mitmproxy(python)、LittleProxy(java)、Browsermob-Proxy（java）
 
 
 
