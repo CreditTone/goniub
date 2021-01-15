@@ -103,17 +103,22 @@
 >> 多域名网站群。实战场景举例：当年我在某互金公司做淘宝、支付宝网站用户信息抓取的项目的时候，用户会通过我们爬虫服务api传给我们账户/密码或者扫码我们劫持的淘宝登录二维码。这样我们服务器的爬虫就可以模拟完成用户登录，大家应该知道从淘宝的个人中心页面点击“账户余额”可以直接跳转到支付宝页面对吧！我们用selenium模拟点击账户余额跳转到支付宝，这时候支付宝给浏览器也种了支付宝登录状态的cookie。好，这时候浏览器相当于淘宝+支付宝的cookie我们都有了。但是当我们通过webDriver.manage().getCookies()获取cookie的时候。我们发现我们只能获取支付宝的cookie，而当前浏览器停留在支付宝页面*.alipay.com/xxx。当我们回到淘宝页面的时候再次webDriver.manage().getCookies()发现又只能获取taobao.com的cookie。先不追究webdriver的底层原因，我们按这个现象就可以知道selenium无法获取全量cookie。其实也很好理解为什么webdriver底层不愿意给你浏览器浏览过的全量cookie，因为selenium最初设计是做一个自动化网页测试工具，人家并不是给你做爬虫用的。是很多爬虫工程看到了selenium在爬虫场景的威力，才把它当成一个“爬虫工具”。其实网上也有人遇到过这样的问题
 ![selenium_nofullcookies](./selenium_nofullcookies.png "selenium_nofullcookies")
 
-> 大家都是怎么克服的？
+> 大家都是怎么克服的？一般有以下三种方案
 
->> 1、一些人干脆直接不获取cookie了，从头到尾直接用selenium进行采集。（但是这样你就会很慢......，只要你的业务场景能够容忍你这样慢。OK！没问题！）
+>> 1、干脆直接不获取cookie了，从头到尾直接用selenium进行采集。（但是这样你就会很慢......，只要你的业务场景能够容忍你这样慢。OK！没问题！）
 
->> 2、一些人自己定制浏览器，基于webkit或者chromium开发自己爬虫浏览器。（这种方式，我觉得，你挺猛阿。c/c++玩的这么溜。最后大多数人都是失败告终，或者做出来的工具api体验度跟selenium比就跟屎一样。）
+>> 2、定制浏览器，基于webkit或者chromium开发自己爬虫浏览器。（这种方式，我觉得，你挺猛阿。c/c++玩的这么溜。最后大多数人都是失败告终，或者做出来的工具api体验度跟selenium比就跟屎一样。）
 
->> 3、一些在selenium浏览器前面设置一个中间人攻击代理，因为中间人代理可以监控http(s)的发出request.headers和response.headers。从headers拦截cookie记录下来。（这种也是我一直用的方法，很投机取巧吧。付出最少的努力，就可以达到比方案二更稳定的效果。）
+>> 3、在selenium浏览器前面设置一个中间人攻击代理，因为中间人代理可以监控http(s)的发出request.headers和response.headers。从headers拦截cookie记录下来。（这种也是我一直用的方法，很投机取巧吧。付出最少的努力，就可以达到比方案二更稳定的效果。）
 
-> 下面我们讲解下，第三种通过中间人代理获取全量cookie在goniub的集成。
+> 中间人代理获取全量cookie在goniub的实践
 
->> 1、中间人代理技术选型，目前市面上的中间人代理有：mitmproxy(python)、LittleProxy(java)、Browsermob-Proxy（java）
+>> 第一步是中间人代理技术选型，目前市面上的中间人代理有：mitmproxy(python)、LittleProxy(java)、Browsermob-Proxy（java）、等等还有其他。其中最mitmproxy是最稳定且功能最全。LittleProxy至今4年未更新。Browsermob-Proxy在LittleProxy的基础上进行了API封装，并支持Restful管理方式。但是自从LittleProxy不更新，Browsermob-Proxy也不更新了，使用起来有许多bug。所以mitmproxy就是goniub最好的选择。
+
+>> 第二步是跨语言集成。mitmproxy是python写的，goniub是服务于java爬虫工程师的项目。那么java如何驾驭python实现的mitmproxy。由此goniub采用了grpc + proto3实现java和python跨语言调用。而mitmproxy实例管理goniub引入了mitmproxy-hub的概念。就是一个python进程内可以开启多个mitmproxy实例，基于java通过grpc调用mitmproxy内部api进行实例管理。原理图如下：
+![mitmproxy-hub架构图](./mitmproxy-hub.png "mitmproxy-hub架构图")
+
+>> 第二步是模块拆分。
 
 
 
