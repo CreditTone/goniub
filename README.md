@@ -113,14 +113,31 @@
 
 > 中间人代理获取全量cookie在goniub的实践
 
->> 第一步是中间人代理技术选型，目前市面上的中间人代理有：mitmproxy(python)、LittleProxy(java)、Browsermob-Proxy（java）、等等还有其他。其中最mitmproxy是最稳定且功能最全。LittleProxy至今4年未更新。Browsermob-Proxy在LittleProxy的基础上进行了API封装，并支持Restful管理方式。但是自从LittleProxy不更新，Browsermob-Proxy也不更新了，使用起来有许多bug。所以mitmproxy就是goniub最好的选择。
+>> 第一步是中间人代理技术选型，目前市面上的中间人代理有：mitmproxy(python)、LittleProxy(java)、Browsermob-Proxy（java）、等等还有其他更小众的。其中最mitmproxy是最稳定且功能最全。LittleProxy至今4年未更新。Browsermob-Proxy在LittleProxy的基础上进行了API封装，并支持Restful管理方式。但是自从LittleProxy不更新，Browsermob-Proxy也不更新了，使用起来有许多bug。所以mitmproxy就是goniub最好的选择。
 
 >> 第二步是跨语言集成。mitmproxy是python写的，goniub是服务于java爬虫工程师的项目。那么java如何驾驭python实现的mitmproxy。由此goniub采用了grpc + proto3实现java和python跨语言调用。而mitmproxy实例管理goniub引入了mitmproxy-hub的概念。就是一个python进程内可以开启多个mitmproxy实例，基于java通过grpc调用mitmproxy内部api进行实例管理。原理图如下：
 ![mitmproxy-hub架构图](./mitmproxy-hub.png "mitmproxy-hub架构图")
 
->> 第二步是模块拆分。
+>> 第三步是模块化拆分。既然java中Browsermob-Proxy已经日落西山了，索性作者就把[mitmproxy-java](https://github.com/CreditTone/mitmproxy-java "mitmproxy-java")和单独拆分出来，跟着[mitmproxy-hub](https://github.com/CreditTone/mitmproxy-hub "mitmproxy-hub")一起。mitmproxy-hub其定义了和外部通信的proto3接口，今后方便继续扩展c++、golang、php等语言。作者并不能写一个像mitmproxy那样优秀的项目，但是他懂得用优雅的方式站在巨人的肩膀上。
 
 
+
+> 获取selenium全量cookie在goniun中是这样的
+
+```java
+	public static void main(String[] args) throws InterruptedException {
+		RemoteMitmproxy remoteMitmproxy = new RemoteMitmproxy("mitmproxy-hub启动的服务ip", mitmproxy-hub启动端口60051, "127.0.0.1", 8866);
+		CookieCollectFilter cookieCollectFilter = new CookieCollectFilter();
+		remoteMitmproxy.addFlowFilter(cookieCollectFilter);
+		remoteMitmproxy.start();
+		
+	     Thread.sleep(1000 * 60 * 5);
+	     remoteMitmproxy.stop();
+	     for (Cookie cookie : cookieCollectFilter.catchCookies) {
+	    		System.out.println(cookie.getDomain() + ">>>"+ cookie.getName()+"="+cookie.getValue() +" path:"+cookie.getPath());
+	     }
+}
+```
 
 
 	
