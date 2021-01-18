@@ -122,11 +122,31 @@
 
 
 
-> 获取selenium全量cookie在goniun中是这样的
+> 获取selenium全量cookie示例步骤：
+
+
+>> 1、启动远端的mitmproxy-hub服务
+
+```shell
+git clone https://github.com/CreditTone/mitmproxy-hub.git
+cd mitmproxy-hub/mitmproxy-hub/
+python3 server.py//port of the service default on 60051
+```
+>> 2、java项目依赖mitmproxy-java
+
+```xml
+		<dependency>
+			<groupId>com.deep007</groupId>
+			<artifactId>mitmproxy-java</artifactId>
+			<version>1.0.6</version>
+		</dependency>
+```
+
+>> 3、准备就绪，发车......
 
 ```java
 	public static void main(String[] args) throws InterruptedException {
-		RemoteMitmproxy remoteMitmproxy = new RemoteMitmproxy("mitmproxy-hub启动的服务ip", mitmproxy-hub启动端口60051, "127.0.0.1", 8866);
+		RemoteMitmproxy remoteMitmproxy = new RemoteMitmproxy("127.0.0.1", 60051, "127.0.0.1", 8866);
 		CookieCollectFilter cookieCollectFilter = new CookieCollectFilter();
 		remoteMitmproxy.addFlowFilter(cookieCollectFilter);
 		remoteMitmproxy.start();
