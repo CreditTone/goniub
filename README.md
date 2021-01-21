@@ -150,12 +150,19 @@ python3 server.py//port of the service default on 60051
 		CookieCollectFilter cookieCollectFilter = new CookieCollectFilter();
 		remoteMitmproxy.addFlowFilter(cookieCollectFilter);
 		remoteMitmproxy.start();
-		
-	     Thread.sleep(1000 * 60 * 5);
-	     remoteMitmproxy.stop();
+		HttpsProxy httpsProxy = new HttpsProxy("127.0.0.1", 8866);
+		System.out.println("启动浏览器");
+		System.out.println("使用代理" + httpsProxy.getServer() + ":" + httpsProxy.getPort());
+		GoniubChromeDriver chromeDriver = GoniubChromeDriver.newInstance(true, true, true, httpsProxy, GoniubChromeOptions.CHROME_USER_AGENT);
+		chromeDriver.get("https://www.taobao.com");
+		//登录逻辑省略。。。。。。。阿巴阿巴
+		//跳转到支付宝代码省略。。。。。。阿巴阿巴
 	     for (Cookie cookie : cookieCollectFilter.catchCookies) {
 	    		System.out.println(cookie.getDomain() + ">>>"+ cookie.getName()+"="+cookie.getValue() +" path:"+cookie.getPath());
 	     }
+	     //此处将打印浏览器历史sent和receive所有的cookie
+	     remoteMitmproxy.stop();
+	     chromeDriver.quit();
 }
 ```
 
