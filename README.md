@@ -157,12 +157,12 @@ python3 server.py//port of the service default on 60051
 		chromeDriver.get("https://www.taobao.com");
 		//登录逻辑省略。。。。。。。阿巴阿巴
 		//跳转到支付宝代码省略。。。。。。阿巴阿巴
-	     for (Cookie cookie : cookieCollectFilter.catchCookies) {
-	    		System.out.println(cookie.getDomain() + ">>>"+ cookie.getName()+"="+cookie.getValue() +" path:"+cookie.getPath());
-	     }
-	     //此处将打印浏览器历史sent和receive所有的cookie
-	     remoteMitmproxy.stop();
-	     chromeDriver.quit();
+		for (Cookie cookie : cookieCollectFilter.catchCookies) {
+			System.out.println(cookie.getDomain() + ">>>"+ cookie.getName()+"="+cookie.getValue() +" path:"+cookie.getPath());
+		}
+		//此处将打印浏览器历史sent和receive所有的cookie
+		remoteMitmproxy.stop();
+		chromeDriver.quit();
 }
 ```
 
