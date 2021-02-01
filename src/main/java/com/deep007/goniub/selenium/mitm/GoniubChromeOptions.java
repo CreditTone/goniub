@@ -81,6 +81,7 @@ public class GoniubChromeOptions extends ChromeOptions {
 		options.addArguments("--ignore-certificate-errors");
 		options.addArguments("--no-sandbox"); //关闭沙盒模式
 		options.addArguments("--disable-dev-shm-usage");
+		options.addArguments("--disable-blink-features=AutomationControlled");
 		//options.addArguments("user-data-dir=C:/Users/Administrator/AppData/Local/Google/Chrome/User Data");//待研究
 		//不提示“Chrome正受到自动测试软件控制” 
 		options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation") );

@@ -58,7 +58,7 @@ public class GoniubChromeDriver extends ChromeDriver {
 		}
 	}
 	
-	private static String readStealthMinJs() {
+	public static String readStealthMinJs() {
 		String classPathJs = "com/deep007/goniub/selenium/mitm/stealth.min.js";
 		try {
 			URL fileURL = GoniubChromeDriver.class.getResource(classPathJs); 

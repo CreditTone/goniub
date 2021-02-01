@@ -9,7 +9,7 @@
 <dependency>
   <groupId>com.deep007</groupId>
   <artifactId>goniub</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2</version>
 </dependency>
 ```
 
@@ -53,7 +53,7 @@
 		Page page = defaultHttpDownloader.download(request);
 ```
 
-##### （爬虫观念普及）最大的高效的构造请求的方式是直击将curl命令解析成功PageRequest
+##### （爬虫观念普及）最大的高效的构造请求的方式是直接将curl命令解析成功PageRequest
 > 大家做爬虫第一步是抓包对吧，然后分析抓包请求将请求用代码实现一遍。我不知道大家有没有去反思，就是我们每天为构造这些对网站来说“合法”的请求是不是有点浪费时间？我认为非常浪费时间，因为不管你用什么http库，你无非都是各种header、params、postbody上做各种get、set。抓包都用chrome或火狐，network选卡列表中的请求记录都可以进行copy as curl。我们通常验证请求都是用curl命令，如果能将curl直击解析成对应http库的request那么我们将节省大量时间。
 	
 	

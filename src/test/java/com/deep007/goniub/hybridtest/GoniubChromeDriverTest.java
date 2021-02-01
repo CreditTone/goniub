@@ -13,7 +13,7 @@ public class GoniubChromeDriverTest {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main2(String[] args) throws Exception {
+	public static void main(String[] args) throws Exception {
 		GoniubChromeOptions.CHROME_DRIVER = "/Users/stephen/Downloads/chromedriver";
 		GoniubChromeDriver hideMockerFeatureDriver = GoniubChromeDriver.newChromeInstance(false, false, null);
 		hideMockerFeatureDriver.get("https://www.taobao.com");
@@ -27,7 +27,7 @@ public class GoniubChromeDriverTest {
 	 * @param args
 	 * @throws Exception
 	 */
-	public static void main(String[] args) throws Exception {
+	public static void main2(String[] args) throws Exception {
 		System.setProperty("webdriver.chrome.driver", "/Users/stephen/Downloads/chromedriver");
 		ChromeDriver driver = new ChromeDriver();
 		driver.get("https://www.taobao.com");
