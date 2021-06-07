@@ -140,8 +140,10 @@ public class ReflectUtil {
 			for (Resource resource : resources) {
 				MetadataReader metadataReader = metadataReaderFactory.getMetadataReader(resource);
 				String className = metadataReader.getClassMetadata().getClassName();
-				Class<?> clz = Class.forName(className);
-				clzes.add(clz);
+				if(!className.endsWith("$1")&&!className.endsWith("$2")){
+					Class<?> clz = Class.forName(className);
+					clzes.add(clz);
+				}
 			}
 		}catch(Exception e) {
 			log.warn("扫描类失败", e);
